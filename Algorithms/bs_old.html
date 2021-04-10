@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <main>
+        <section id="svg-area">
+            <!-- <svg width="500" height="350" viewBox="0 0 500 350">
+    <g>
+        <text id="t-1" x="30" y="'500'" fill="#ED6E46" font-size="15" >
+            안뇽
+        </text>
+    </g>
+</svg> -->
+            <div>
+                <p id="svg-width-label"> svg-width : 1100 </p>
+                <p id="search-count"> search-round : 0 </p>
+            </div>
+        </section>
+        <section>
+            <div>
+                <label for="width">width</label>
+                <input type="text" id="width" name="width" value="1100">
+
+            </div>
+            <div>
+                <label for="values">type each values seperated with commas</label>
+                <input type="text" id="values" name="values" value="55,21,64,1,6,7,12">
+            </div>
+            <div>
+                <label for="target">target number to find</label>
+                <input type="text" id="target" name="target" value="12">
+            </div>
+            <div>
+
+                <button id="start-binary-search" name="start-binary-search">start simulation</button>
+            </div>
+        </section>
+    </main>
+    <script>
+        const svgArea = document.getElementById("svg-area")
+        const widthInput = document.getElementById("width")
+        let valueInput = document.getElementById("values")
+        let valuesArr = valueInput.value.split(',').filter(v => v !== 'undefined' && v !== 'null')
+        let pathArr = undefined
+        let unitWidth = widthInput.value / valuesArr.length
+        let [wv, vl] = [widthInput.value, valuesArr.length].map(v => { if (v) return Number(v) })
+        let unit = ((wv) + (wv / vl) - 80) / vl
+
+
+        const genElement = (type, attr) => {
+            type = document.createElementNS("http://www.w3.org/2000/svg", type)
+            for (const [key, value] of Object.entries(attr)) {
+                type.setAttributeNS(null, key.toLowerCase(), value);
+            }
+            return type
+        }
+
+        let svg = genElement('svg', { width: widthInput.value, height: 500, viewBox: `50 50 ${widthInput.value} 500` })
+        let eventArea = genElement('rect', { width: widthInput.value, height: 500, viewBox: `50 50 ${widthInput.value} 500`, 'fill': 'black' })
+        let indicatorLine = genElement('line',{  x1:550, y1:0, x2:550,y2:500, style:'stroke:white;stroke-width:2' })
+        svgArea.appendChild(svg)
+        svg.appendChild(eventArea)
+        svg.appendChild(indicatorLine)
+
+        const onChangeWidth = (v) => {
+            valuesArr = valueInput.value.split(',').filter(v => v !== 'undefined' && v !== 'null')
+
+            let [wv, vl] = [widthInput.value, valuesArr.length].map(v => Number(v))
+            const svgWidth = document.getElementById("svg-width-label")
+            unit = (wv + (wv / vl)) / vl
+            svgArea.removeChild(svg)
+            svg = genElement('svg', { width: wv, height: 500, viewBox: `50 50 ${wv} 500` })
+            eventArea = genElement('rect', { width: wv, height: 500, viewBox: `50 50 ${wv} 500`, 'fill': 'black' })
+            svg.appendChild(eventArea)
+            svgArea.appendChild(svg)
+            // console.log(svg.getRecta)
+            svgWidth.innerHTML = `svg-width-label : ${Number(wv)}`
+            updateTexts(textEl, box, valuesArr, unit, genElement)(svg)
+
+        }
+
+        const textEl = (i, w, create) => create('text', { width: w - 30, height: 40, x: i * w / 1.1 + 65, y: 200, "fill": 'white', "dominant-baseline": "end", "text-anchor": "end" })
+        const box = (i, w, create) => create('rect', { width: 80, height: 80, x: i * w / 1.1 + 20, y: 150, 'stroke': 'white', 'stroke-width': 3 })
+
+        const onChangeValue = (v) => {
+            valuesArr = valueInput.value.split(',').filter(v => v !== 'undefined' && v !== 'null')
+            const textEl = (i, w, create) => create('text', { width: w - 30, height: 40, x: i * w / 1.1 + 65, y: 200, "fill": 'white', "dominant-baseline": "end", "text-anchor": "end" })
+        const box = (i, w, create) => create('rect', { width: 80, height: 80, x: i * w / 1.1 + 20, y: 150, 'stroke': 'white', 'stroke-width': 3 })
+
+            let [wv, vl] = [widthInput.value, valuesArr.length].map(v => Number(v))
+            valueInput = document.getElementById("values")
+            console.log(vl)
+            let svgWidth = document.getElementById("svg-width-label")
+            unit = ((wv) + (wv / vl)) / vl
+            // let b = box(i, w, gen)
+            // let t = textEl(i, w, gen)
+            // svg.removeChild(rect)
+            // svg.removeChild(text)
+            // scvArea=  ""
+            // svgArea.removeChild(svg)
+            // svg = genElement('svg', { width: wv, height: 500, viewBox: `50 50 ${wv} 500` })
+            // svgArea.appendChild(svg)
+            // eventArea = genElement('rect', { width: wv, height: 500, viewBox: `50 50 ${wv} 500`, 'fill': 'black' })
+            // svg.appendChild(eventArea)
+            updateTexts(textEl, box, valuesArr, unit, genElement)(svg)
+
+
+        }
+        widthInput.addEventListener("input", onChangeWidth)
+        valueInput.addEventListener("input", onChangeValue)
+        const drawLinePath = () => {
+
+        }
+
+        const updateTexts = (t, b, v, w, gen) => (svg) => {
+            let i = 0
+
+            while(svg.firstChild)
+            {
+                svg.removeChild(svg.firstChild)
+            }
+            for (const text of v) {
+                let box = b(i, w, gen)
+                let textEl = t(i, w, gen)
+                // svg.removeChild(box)
+                // svg.removeChild(textEl)
+
+                textEl.textContent = text
+                svg.appendChild(box)
+                svg.appendChild(textEl)
+                console.log(textEl)
+                i++
+            }
+        }
+        updateTexts(textEl, box, valuesArr, unit, genElement)(svg)
+
+    </script>
+</body>
+
+</html>
