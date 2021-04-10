@@ -10,175 +10,141 @@
   <body>
     <main>
       <section>
-          <h4>Status</h4>
-        <p>svg-width :<span id="svg-width-label">1100</span> </p>
-        <p>search-round :<span id="search-count">0</span> </p>
+        <h4>Status</h4>
+        <p>svg-width :<span id="svg-width-label">1100</span></p>
+        <p>search-round :<span id="search-count">0</span></p>
       </section>
       <section id="svg-area">
-          <h4>SVG</h4>
+        <h4>SVG</h4>
       </section>
       <section>
-      <article>
+        <article>
           <h4>Data</h4>
-        <div>
-          <label for="width">width</label>
-          <input type="text" id="width" name="width" value="1100" />
-        </div>
-        <div>
-          <label for="data-list">type each data seperated with commas</label>
-          <input
-            type="text"
-            id="data-list"
-            name="data-list"
-            value="55,21,64,1,6,7,12"
-          />
-        </div>
-        <div>
-          <label for="target">target number to find</label>
-          <input type="text" id="target" name="target" value="12" />
-        </div>
-        <div>
-          <button id="start-binary-search" name="start-binary-search">
-            start simulation
-          </button>
-        </div>
-      </article>
-    </section>
+          <div>
+            <label for="width">width</label>
+            <input type="text" id="width" name="width" value="1100" />
+          </div>
+          <div>
+            <label for="data-list">type each data seperated with commas</label>
+            <input
+              type="text"
+              id="data-list"
+              name="data-list"
+              value="55,21,64,1,6,7,12"
+            />
+          </div>
+          <div>
+            <label for="target">target number to find</label>
+            <input type="text" id="target" name="target" value="12" />
+          </div>
+          <div>
+            <button id="start-binary-search" name="start-binary-search">
+              start simulation
+            </button>
+          </div>
+        </article>
+      </section>
     </main>
     <script>
-      const input = target => document.getElementById(target)
-      const label = title => document.getElementById(title)
-      const getInputData = target => target.value.includes(',') ? 
-                                     target.value.split(',').map( _ => Number(_) ).filter( v => typeof v === 'number' && v ) : Number(target.value)
+      const elById = (target) => document.getElementById(target);
 
-       
-      const getUnitSize = (w,d) =>
-      {
-          const gap = unit / d.length
-          const box = d.length * 50 > w - unit ? 50 - 50 / d.length : 50
-          const unit = (w + box) / d.length
-          return { gap, box, unit }
-      }
+      const inputData = (el) =>
+        el.value.includes(",")
+          ? el.value
+              .split(",")
+              .map((_) => Number(_))
+              .filter((v) => typeof v === "number" && v)
+          : Number(el.value);
+
+      const getUnitSize = (w, d) => {
+        const gap = unit / d.length;
+        const box = d.length * 80 > w - unit ? 80 - 80 / d.length : 80;
+        const unit = (w + box) / d.length;
+        return { gap, box, unit, width: w, height: 500, margin: 50, data: {text: {width: 30,height: 20}, box }, line: 3};
+      };
       const genElement = (type, attr) => {
         type = document.createElementNS("http://www.w3.org/2000/svg", type);
-        for (const [t, v] of Object.entries(attr)) 
-        {
-            type.setAttributeNS(null, t.toLowerCase(), v);
+        for (const [t, v] of Object.entries(attr)) {
+          type.setAttributeNS(null, t.toLowerCase(), v);
         }
         return type;
-      }
+      };
       /**
        *   요소의 x거리를 알아야 하는 경우에는 i를 인자로 받음
        * */
-      const attr = 
-      {
-        margin: 50,
-        height: 500,
-        color: { bg: "black", default: "white", focus: "red"},
-        style: { line: `stroke: ${color.default}; stroke-width: 2` },
-        svg:   
-        {
-            width: widthInput.value,
-            height: 500,
-            viewBox: `${margin} ${margin} ${widthInput.value} ${height}`,
-        },
-        eventArea:
-        {
-            ...svg, fill: color.bg,
-        },
-        indicatorLine:
-        {
-            x1: height + margin,
+      const attr = (w,s) => {
+        return {
+          m: s.margin,
+          h: s.height,
+          d: s.data,
+          color: { bg: "black", default: "white", focus: "red" },
+          style: { line: `stroke: ${color.default}; stroke-width: ${s.line}` },
+          svg: {
+            width: w,
+            height: h,
+            viewBox: `${m} ${m} ${w} ${h}`,
+          },
+          eventArea: {
+            ...svg,
+            fill: color.bg,
+          },
+          indicatorLine: {
+            x1: h + m,
             y1: 0,
-            x2: height + margin,
-            y2: height,
+            x2: h + m,
+            y2: h,
             style: style.line,
-        },
+          },
+          dataText: i => 
+          { return {
+            width: d.text.width,
+            height: d.text.height,
+            x: (i * w) / 1.1 + 65,
+            y: h/2 - m,
+            fill: color.default,
+            "dominant-baseline": "end",
+            "text-anchor": "end",
+          }},
+          dataBox: i =>
+          { return {
+            width: d.box,
+            height: d.box,
+            x:  (i * w) / 1.1 + 20,
+            y: h/2 - m * 2,
+            stroke: "white",
+            "stroke-width": s.line,
+          }},
 
-        
-
-      }
+        };
+      };
+      const initFuncArr = [elById,getUnitSize,genElement,attr]
+      const init = f => {
+        f['elById']('width').addEventListener('input', onChangeWidth);
+        f['elById']('data-list').addEventListener('input', onChangeValue);
+      };
+      init(initFuncArr)
 
       /**
        * 제너레이터로 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
        * */
-      let svg = genElement("svg", attr.svg);
-      let eventArea = genElement("rect", attr.eventArea);
-      let indicatorLine = genElement("line", attr.indicatorLine);
+      let svg = genElement("svg", attr(w).svg);
+      let eventArea = genElement("rect", attr(w).eventArea);
+      let indicatorLine = genElement("line", attr(w).indicatorLine);
       svgArea.appendChild(svg);
       svg.appendChild(eventArea);
       svg.appendChild(indicatorLine);
 
       const onChangeWidth = (v) => {
-        data-listArr = dataListInput.value
-          .split(",")
-          .filter((v) => v !== "undefined" && v !== "null");
-
-        let [wv, vl] = [widthInput.value, data-listArr.length].map((v) =>
-          Number(v)
-        );
-        const svgWidth = document.getElementById("svg-width-label");
-        unit = (wv + wv / vl) / vl;
-        svgArea.removeChild(svg);
-        svg = genElement("svg", {
-          width: wv,
-          height: 500,
-          viewBox: `50 50 ${wv} 500`,
-        });
-        eventArea = genElement("rect", {
-          width: wv,
-          height: 500,
-          viewBox: `50 50 ${wv} 500`,
-          fill: "black",
-        });
-        svg.appendChild(eventArea);
-        svgArea.appendChild(svg);
-        // console.log(svg.getRecta)
-        svgWidth.innerHTML = `svg-width-label : ${Number(wv)}`;
-        updateTexts(textEl, box, data-listArr, unit, genElement)(svg);
+       
       };
 
       const onChangeValue = (v) => {
-        data-listArr = dataListInput.value
-          .split(",")
-          .filter((v) => v !== "undefined" && v !== "null");
-
-        let [wv, vl] = [widthInput.value, data-listArr.length].map((v) =>
-          Number(v)
-        );
-        dataListInput = document.getElementById("data-list");
-        console.log(vl);
-        let svgWidth = document.getElementById("svg-width-label");
-        unit = (wv + wv / vl) / vl;
-        // scvArea=  ""
-        svgArea.removeChild(svg);
-        svg = genElement("svg", {
-          width: wv,
-          height: 500,
-          viewBox: `50 50 ${wv} 500`,
-        });
-        svgArea.appendChild(svg);
-        eventArea = genElement("rect", {
-          width: wv,
-          height: 500,
-          viewBox: `50 50 ${wv} 500`,
-          fill: "black",
-        });
-        svg.appendChild(eventArea);
-        updateTexts(textEl, box, data-listArr, unit, genElement)(svg);
+       
       };
-      widthInput.addEventListener("input", onChangeWidth);
-      dataListInput.addEventListener("input", onChangeValue);
-      const drawLinePath = () => {};
+
       const textEl = (i, w, create) =>
         create("text", {
-          width: 30,
-          height: 20,
-          x: (i * w) / 1.1 + 65,
-          y: 200,
-          fill: "white",
-          "dominant-baseline": "end",
-          "text-anchor": "end",
+          attr(w,s).dataText
         });
       const box = (i, w, create) =>
         create("rect", {
@@ -202,7 +168,7 @@
           i++;
         }
       };
-      updateTexts(textEl, box, data-listArr, unit, genElement)(svg);
+      updateTexts(textEl, box, data - listArr, unit, genElement)(svg);
     </script>
   </body>
 </html>
