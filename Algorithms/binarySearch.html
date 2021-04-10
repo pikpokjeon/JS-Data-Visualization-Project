@@ -46,6 +46,7 @@
       </section>
     </main>
     <script>
+       //TODO: 파일 분할 해서 함수 호출
       const elById = (target) => document.getElementById(target);
 
       const inputData = (el) =>
@@ -56,7 +57,7 @@
               .filter((v) => typeof v === "number" && v)
           : Number(el.value);
 
-      const getUnitSize = (w, d) => {
+      const genSize = (w, d) => {
         const gap = unit / d.length;
         const box = d.length * 80 > w - unit ? 80 - 80 / d.length : 80;
         const unit = (w + box) / d.length;
@@ -72,7 +73,8 @@
       /**
        *   요소의 x거리를 알아야 하는 경우에는 i를 인자로 받음
        * */
-      const attr = (w,s) => {
+      const genAttr = (w,s,i) => 
+      {
         return {
           m: s.margin,
           h: s.height,
@@ -95,8 +97,7 @@
             y2: h,
             style: style.line,
           },
-          dataText: i => 
-          { return {
+          dataText: {
             width: d.text.width,
             height: d.text.height,
             x: (i * w) / 1.1 + 65,
@@ -104,56 +105,48 @@
             fill: color.default,
             "dominant-baseline": "end",
             "text-anchor": "end",
-          }},
-          dataBox: i =>
-          { return {
+          },
+          dataBox: {
             width: d.box,
             height: d.box,
             x:  (i * w) / 1.1 + 20,
             y: h/2 - m * 2,
             stroke: "white",
             "stroke-width": s.line,
-          }},
+          }
 
         };
       };
-      const initFuncArr = [elById,getUnitSize,genElement,attr]
+      const addInputEvents = (el,f) =>
+      {
+
+      }
+      
+      const initFuncArr = [elById,size,genElement,attr]
       const init = f => {
         f['elById']('width').addEventListener('input', onChangeWidth);
         f['elById']('data-list').addEventListener('input', onChangeValue);
       };
       init(initFuncArr)
 
-      /**
-       * 제너레이터로 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
-       * */
-      let svg = genElement("svg", attr(w).svg);
-      let eventArea = genElement("rect", attr(w).eventArea);
-      let indicatorLine = genElement("line", attr(w).indicatorLine);
-      svgArea.appendChild(svg);
-      svg.appendChild(eventArea);
-      svg.appendChild(indicatorLine);
+    //   const g
+    //   let svg = genElement("svg", attr(w).svg);
+    //   let eventArea = genElement("rect", attr(w).eventArea);
+    //   let indicatorLine = genElement("line", attr(w).indicatorLine);
+    //   svgArea.appendChild(svg);
+    //   svg.appendChild(eventArea);
+    //   svg.appendChild(indicatorLine);
 
-      const onChangeWidth = (v) => {
+
+      const onChangeInput = (v) => {
        
-      };
 
-      const onChangeValue = (v) => {
-       
       };
-
-      const textEl = (i, w, create) =>
-        create("text", {
-          attr(w,s).dataText
-        });
-      const box = (i, w, create) =>
-        create("rect", {
-          width: 80,
-          height: 80,
-          x: (i * w) / 1.1 + 20,
-          y: 150,
-          stroke: "white",
-          "stroke-width": 3,
+      // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
+      const textEl = (i, w, f) => f("text", { ...attr(w,s,i).dataText });
+      const box = (i, w, f) =>
+        f("rect", {
+          ...attr(w,s,i)
         });
 
       const updateTexts = (t, b, v, w, gen) => (svg) => {
@@ -169,6 +162,21 @@
         }
       };
       updateTexts(textEl, box, data - listArr, unit, genElement)(svg);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
     </script>
   </body>
 </html>
