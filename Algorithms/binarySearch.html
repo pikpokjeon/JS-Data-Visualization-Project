@@ -46,11 +46,14 @@
       </section>
     </main>
     <script>
-       //TODO: 파일 분할 해서 함수 호출
+
+      //TODO: 파일 분할 해서 함수 호출
+
+
+
       const elById = (target) => document.getElementById(target);
 
-      const inputData = (el) =>
-        el.value.includes(",")
+      const inputData = (el) => el.value.indexOf(",") > -1
           ? el.value
               .split(",")
               .map((_) => Number(_))
@@ -58,11 +61,21 @@
           : Number(el.value);
 
       const genSize = (w, d) => {
+        const unit = (w + 80 - (80 / d.length)) / d.length;
         const gap = unit / d.length;
-        const box = d.length * 80 > w - unit ? 80 - 80 / d.length : 80;
-        const unit = (w + box) / d.length;
-        return { gap, box, unit, width: w, height: 500, margin: 50, data: {text: {width: 30,height: 20}, box }, line: 3};
+        const box = d.length * 80 > w - unit ? 80 - (80 / d.length) : 80;
+        return {
+          gap,
+          box,
+          unit,
+          width: w,
+          height: 500,
+          margin: 50,
+          data: { text: { width: 30, height: 20 }, box },
+          line: 3,
+        };
       };
+
       const genElement = (type, attr) => {
         type = document.createElementNS("http://www.w3.org/2000/svg", type);
         for (const [t, v] of Object.entries(attr)) {
@@ -73,19 +86,28 @@
       /**
        *   요소의 x거리를 알아야 하는 경우에는 i를 인자로 받음
        * */
-      const genAttr = (w,s,i) => 
-      {
-        return {
-          m: s.margin,
-          h: s.height,
-          d: s.data,
-          color: { bg: "black", default: "white", focus: "red" },
-          style: { line: `stroke: ${color.default}; stroke-width: ${s.line}` },
-          svg: {
+      const genAttr = (w, s, i) => {
+        // s = 
+        const deepCopy = (obj) =>
+        {
+          let copiedObj = {}
+          for(const [k,v] of Object.entries(obj))
+          {
+            s[k] = v
+            console.log(s)
+          }
+        }
+        deepCopy(s)
+        const [m,h,d] = [s.margin, s.height, s.data]
+        const color = { bg: "black", default: "white", focus: "red" }
+        const style = {style: { line: `stroke: ${color.default}; stroke-width: ${s.line}` }}
+        const svg = {
             width: w,
             height: h,
             viewBox: `${m} ${m} ${w} ${h}`,
-          },
+          }
+        console.log(d,s.data.text.width)
+        const list = {
           eventArea: {
             ...svg,
             fill: color.bg,
@@ -101,7 +123,7 @@
             width: d.text.width,
             height: d.text.height,
             x: (i * w) / 1.1 + 65,
-            y: h/2 - m,
+            y: h / 2 - m,
             fill: color.default,
             "dominant-baseline": "end",
             "text-anchor": "end",
@@ -109,45 +131,50 @@
           dataBox: {
             width: d.box,
             height: d.box,
-            x:  (i * w) / 1.1 + 20,
-            y: h/2 - m * 2,
+            x: (i * w) / 1.1 + 20,
+            y: h / 2 - m * 2,
             stroke: "white",
             "stroke-width": s.line,
-          }
-
+          },
         };
+        console.log({svg,...list})
+        return {svg,...list}
       };
-      const addInputEvents = (el,f) =>
-      {
+      const addInputEvents = (el, f) => {};
 
-      }
-      
-      const initFuncArr = [elById,size,genElement,attr]
-      const init = f => {
-        f['elById']('width').addEventListener('input', onChangeWidth);
-        f['elById']('data-list').addEventListener('input', onChangeValue);
+      const initList = [elById, genSize, genElement, genAttr];
+      const init = (f) => {
+        // f["elById"]("width").addEventListener("input", onChangeWidth);
+        // f["elById"]("data-list").addEventListener("input", onChangeValue);
       };
-      init(initFuncArr)
+      init(initList)
 
-    //   const g
-    //   let svg = genElement("svg", attr(w).svg);
-    //   let eventArea = genElement("rect", attr(w).eventArea);
-    //   let indicatorLine = genElement("line", attr(w).indicatorLine);
-    //   svgArea.appendChild(svg);
-    //   svg.appendChild(eventArea);
-    //   svg.appendChild(indicatorLine);
+      // TODO: 반복되서 줄일 수 있도록 
+      // const svg = (w,s,f) => f("svg", genAttr(w, s).svg);
+      // const eventArea = (w,s,f) => f("rect", genAttr(w, s).eventArea);
+      // const indicatorLine = (w,s,f) => f("line", genAttr(w, s).indicatorLine);
+      // const dataText = (w,s,f,i) => f("text", genAttr(w, s, i).dataText);
+      // const dataBox = (w,s,f,i) => f("rect", genAttr(w, s, i).dataBox);
 
 
-      const onChangeInput = (v) => {
-       
+      const getElement  = (w,d,s,f,attr,i) => (target, type) =>  f(type, attr(w, s(w,d), i)[target])
 
-      };
+
+      const width = inputData(elById('width'))
+      const d = inputData(elById('data-list'))
+      console.log(d)
+      const getElDefault = getElement(width,d,genSize,genElement,genAttr)
+      const svg = getElDefault('svg','svg')
+      const eventArea =  getElDefault('eventArea','rect')
+      elById('svg-area').appendChild(svg)
+     svg.appendChild(eventArea)
+      //   svgArea.appendChild(svg);
+      //   svg.appendChild(eventArea);
+      //   svg.appendChild(indicatorLine);
+
+      const onChangeInput = (v) => {};
       // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
-      const textEl = (i, w, f) => f("text", { ...attr(w,s,i).dataText });
-      const box = (i, w, f) =>
-        f("rect", {
-          ...attr(w,s,i)
-        });
+
 
       const updateTexts = (t, b, v, w, gen) => (svg) => {
         let i = 0;
@@ -162,21 +189,6 @@
         }
       };
       updateTexts(textEl, box, data - listArr, unit, genElement)(svg);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
     </script>
   </body>
 </html>
