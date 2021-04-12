@@ -188,18 +188,20 @@
       };
       const initParams = [inputData, elById, genSize, genElement, genAttr,onChangeInput,updateTexts, ...params,group,svg];
       const init = (params) => {
-        const a =  {width:-1,dataArr:-1,svg:-1,g:-1,}
-        for(const [i,variable] of Object.entries(params)){
-          console.log(i,variable.toString())
-          console.log()
-          console.log(a)
-          if(variable.name === undefined){
-              if(variable > -1 ) a['width'] = variable
-              if(variable.length > 0 ) a['dataArr'] = variable
-              if()
+        const _ = params => {
+          const copied =  {}
+          for(const [i,variable] of Object.entries(params)){
+            if(variable.name === undefined){
+                if(variable > -1 ) copied['width'] = variable
+                if(variable.length > 0 ) copied['dataArr'] = variable
+                else {
+                  copied[variable.tagName] = variable
+                }
 
           }
           else a[variable.name] = variable
+        }
+          return copied
         }
        elById("width").addEventListener("input", onChangeInput);
         elById("data-list").addEventListener("input", onChangeInput);
