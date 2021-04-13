@@ -157,7 +157,7 @@
       const width = inputData(elById('width'))
       const d = inputData(elById('data-list'))
       console.log(d)
-      const params = [width,d,genSize,getElement,genElement,genAttr]
+      const textParams = [width,d,genSize,getElement,genElement,genAttr]
       const createEl = getElement(width,d,genSize,genElement,genAttr)
       const svg = createEl('svg','svg')
       const eventArea =  createEl('eventArea','rect')
@@ -172,11 +172,15 @@
       //   svgArea.appendChild(svg);
       //   svg.appendChild(eventArea);
       //   svg.appendChild(indicatorLine);
-      const onChangeInput = (e) => {console.log(e)};
-      const updateTexts = ( w, texts, size,get,gen,attr) => (g) => {
+      const onChangeInput= (params,copy)=>(e) => {console.log(e)};
+      const updateTexts = ( w, d, size,get,gen,attr) => (g) => {
         let i = 0;
-        for (const text of texts) {
-          const createEl = get(w,texts,size,gen,attr,i)
+        while(g.fistChild && g.lastChild)
+        {
+          g.removeChild(g.lastChild)
+        }
+        for (const text of d) {
+          const createEl = get(w,d,size,gen,attr,i)
           const [data,box,group] =  [createEl('dataText','text'), createEl('dataBox','rect'), createEl('g','g')]
           data.textContent = text;
           group.appendChild(box);
@@ -186,36 +190,35 @@
           i++;
         }
       };
-      const initParams = [inputData, elById, genSize, genElement, genAttr,onChangeInput,updateTexts, ...params,group,svg];
-      const init = (params) => {
-        const _ = params => {
+      // 파라메터로 받은 배열 원소들을 다른 함수에서 사용하기위해
+      const copyParams = params => {
+        console.log(params)
           const copied =  {}
           for(const [i,variable] of Object.entries(params)){
             if(variable.name === undefined){
-                if(variable > -1 ) copied['width'] = variable
-                if(variable.length > 0 ) copied['dataArr'] = variable
-                else {
                   copied[variable.tagName] = variable
-                }
-
+          }else if (typeof variable === "function") {
+            copied[variable.name] = variable
           }
-          else a[variable.name] = variable
         }
+        console.log(copied)
           return copied
         }
-       elById("width").addEventListener("input", onChangeInput);
-        elById("data-list").addEventListener("input", onChangeInput);
-        console.log((params.map(e => String(e))))
-        // console.log(b['inputData'])
+      const initParams = [inputData, elById, genSize, genElement, getElement,genAttr,onChangeInput,updateTexts,group,svg];
+      const init = (vars,copy) => {
+        const _ = copy(vars)
+        const w = _.inputData(_.elById("width"))
+        const d = _.inputData(_.elById('data-list'))
+        const onChangeInput = _.onChangeInput(vars,copy)
+        _.elById("width").addEventListener("input", onChangeInput);
+        _.elById("data-list").addEventListener("input", onChangeInput);
+        _.updateTexts(w,d,_.genSize,_.getElement,_.genElement,_.genAttr)(_.g);
       };
-      init(initParams)
-      const addInputEvents = (el, f) => {};
-
+      init(initParams,copyParams)
       // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
 
 
 
-      updateTexts(...params)(group);
     </script>
   </body>
 </html>
