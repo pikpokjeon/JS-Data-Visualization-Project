@@ -170,14 +170,12 @@ const startSimulation = (vars, copy) => (e) =>
     let _d_remain = [...d]
     let _d_counts = {}
     const _d_sorted = []
-    let countToRepeat = d.length
     for (const num of d)
     {
-        console.log(num)
         if (!_d_counts[num]) _d_counts[num] = 0
         _d_counts[num] += 1
     }
-    while (_d_remain)
+    while (_d_remain.length)
     {
         const min = Math.min.apply(null, _d_remain)
         for (let i = 0; i < _d_counts[min]; i++)
@@ -187,16 +185,17 @@ const startSimulation = (vars, copy) => (e) =>
             const _idx = _d_remain.indexOf(min)
             delete (_d[idx])
             delete (_d_remain[_idx])
-            _d = _d.flat()
+            _d = _d.flat()  
             _d_remain = _d_remain.flat()
             _d_sorted.push(min)
             const temp_d = _d_sorted.concat(_d_remain)
+            _.updateTexts(w, temp_d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+
             console.log(_d)
             console.log(temp_d)
 
         }
     }
-    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 
 
 }
