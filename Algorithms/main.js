@@ -166,10 +166,19 @@ const startSimulation = (vars, copy) => (e) =>
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
+    const updateTexts = (temp_d) => _.updateTexts(w, temp_d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
     let _d = [...d]
     let _d_remain = [...d]
     let _d_counts = {}
+    let temp_d = []
     const _d_sorted = []
+
+    const promiseFunc = (arr, delay) => new Promise(res => 
+    {
+        return setTimeout(() => res(arr), delay)
+    })
+    const getResolve = arr => updateTexts(arr)
+    
     for (const num of d)
     {
         if (!_d_counts[num]) _d_counts[num] = 0
@@ -180,22 +189,23 @@ const startSimulation = (vars, copy) => (e) =>
         const min = Math.min.apply(null, _d_remain)
         for (let i = 0; i < _d_counts[min]; i++)
         {
-            console.log(min)
             const idx = _d.indexOf(min)
             const _idx = _d_remain.indexOf(min)
             delete (_d[idx])
             delete (_d_remain[_idx])
-            _d = _d.flat()  
+            _d = _d.flat()
             _d_remain = _d_remain.flat()
             _d_sorted.push(min)
-            const temp_d = _d_sorted.concat(_d_remain)
-            _.updateTexts(w, temp_d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
-
+            temp_d.push(_d_sorted.concat(_d_remain))
             console.log(_d)
             console.log(temp_d)
 
         }
     }
+    const toDelayUpdate =  (arr, promiseFunc) => async delay => arr.map(d => promiseFunc(d, delay).then(getResolve))
+    toDelayUpdate(temp_d,promiseFunc)(500)
+
+
 
 
 }
