@@ -155,6 +155,10 @@ const onChangeInput = (vars, copy) => (e) =>
     const d = _.inputData(_.elById("data-list"))
     _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 }
+
+/**
+ * !TODO: 배열을 이어붙여, 정렬이 되는 과정을 기록한다 -> 에니메이션으로 구현
+ */
 const startSimulation = (vars, copy) => (e) =>
 {
     console.log(e)
@@ -165,6 +169,7 @@ const startSimulation = (vars, copy) => (e) =>
     let _d = [...d]
     let _d_remain = [...d]
     let _d_counts = {}
+    const _d_sorted = []
     let countToRepeat = d.length
     for (const num of d)
     {
@@ -172,17 +177,30 @@ const startSimulation = (vars, copy) => (e) =>
         if (!_d_counts[num]) _d_counts[num] = 0
         _d_counts[num] += 1
     }
-    console.log(_d_counts)
     while (countToRepeat)
     {
         const min = Math.min.apply(null, _d_remain)
-        delete (_d[min])
-        _d = _d.flat()
-        delete (_d_remain[min])
-        _d_remain = _d_remain.flat()
-        _d.unshift(min)
-        console.log(_d)
+        for (let i = 0; i < _d_counts[min]; i++)
+        {
+            console.log(min)
+            const idx = _d.indexOf(min)
+            const _idx = _d_remain.indexOf(min)
+            delete (_d[idx])
+            delete (_d_remain[_idx])
+            _d = _d.flat()
+            _d_remain = _d_remain.flat()
+            console.log(_d)
         console.log(_d_remain)
+
+        }
+        for (let i = 0; i < _d_counts[min]; i++)
+        {
+            _d_sorted.push(min)
+
+        }
+
+        console.log(_d_sorted)
+        
         countToRepeat -= 1
     }
 
