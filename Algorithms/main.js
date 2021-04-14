@@ -5,8 +5,7 @@ const inputData = (el) =>
     return el.value.indexOf(",") > -1
         ? el.value
             .split(",")
-            .map((_) => Number(_))
-            .filter((v) => typeof v === "number" && v)
+            .map(_ => Number(_))
         : Number(el.value)
 }
 
@@ -14,7 +13,7 @@ const genSize = (w, d) =>
 {
     const unit = (w + 80 - 80 / d.length) / d.length
     const gap = unit / d
-    const box = ((w)/d.length) * d.length > w ? ((w)/d.length) - d.length : ((w)/d.length)
+    const box = ((w) / d.length) * d.length > w ? ((w) / d.length) - d.length : ((w) / d.length)
     return {
         d: d.length,
         gap,
@@ -44,7 +43,7 @@ const genElement = (type, attr) =>
 const genAttr = (w, s, i) =>
 {
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
-    const dataBox = {width:data.box - d/s.unit/d,height:data.box - d/s.unit/d}
+    const dataBox = { width: data.box - d / s.unit / d, height: data.box - d / s.unit / d }
     const color = { bg: "black", default: "white", focus: "red" }
     const style = { line: `stroke: ${color.default}; stroke-width: ${s.line}` }
     const svg = {
@@ -77,8 +76,8 @@ const genAttr = (w, s, i) =>
         dataBox: {
             width: dataBox.width,
             height: dataBox.height,
-            x: ( (data.box + s.unit/d)*i) +s.unit/d,
-            y: h / 2 - s.unit/2,
+            x: ((data.box + s.unit / d) * i) + s.unit / d,
+            y: h / 2 - s.unit,
             stroke: color.default,
             "stroke-width": s.line,
         },
@@ -116,7 +115,7 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
     {
         g.removeChild(g.lastChild)
     }
-    for (const [i,text] of (Array.from(Object.entries(d))))
+    for (const [i, text] of (Array.from(Object.entries(d))))
     {
         const createEl = get(w, d, size, gen, attr, i)
         const [data, box, group] = [
@@ -148,7 +147,7 @@ const copyParams = (params) =>
     return copied
 }
 
-
+// 인풋 입력 업데이트 부
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
@@ -156,7 +155,38 @@ const onChangeInput = (vars, copy) => (e) =>
     const d = _.inputData(_.elById("data-list"))
     _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 }
+const startSimulation = (vars, copy) => (e) =>
+{
+    console.log(e)
 
+    const _ = copy(vars)
+    const w = _.inputData(_.elById("width"))
+    const d = _.inputData(_.elById("data-list"))
+    let _d = [...d]
+    let _d_remain = [...d]
+    let _d_counts = {}
+    let countToRepeat = d.length
+    for (const num of d)
+    {
+        console.log(num)
+        if (!_d_counts[num]) _d_counts[num] = 0
+        _d_counts[num] += 1
+    }
+    console.log(_d_counts)
+    while (countToRepeat)
+    {
+        const min = Math.min.apply(null, _d_remain)
+        delete (_d[min])
+        _d = _d.flat()
+        delete (_d_remain[min])
+        _d_remain = _d_remain.flat()
+        _d.unshift(min)
+        console.log(_d)
+        console.log(_d_remain)
+        countToRepeat -= 1
+    }
+
+}
 const initParams = [
     inputData,
     elById,
@@ -165,20 +195,30 @@ const initParams = [
     getElement,
     genAttr,
     onChangeInput,
+    startSimulation,
     updateTexts,
     group,
     svg,
     line,
 ]
+
+// 초기 시행 부
 const init = (vars, copy) =>
 {
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
     const onChangeInput = _.onChangeInput(vars, copy)
+    const startSimulation = _.startSimulation(vars, copy)
     _.elById("width").addEventListener("input", onChangeInput)
     _.elById("data-list").addEventListener("input", onChangeInput)
+    _.elById("start").addEventListener("click", startSimulation)
     _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 }
 init(initParams, copyParams)
 // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
+
+
+//시뮬레이션 함수
+
+//시뮬레이션 에니메이션
