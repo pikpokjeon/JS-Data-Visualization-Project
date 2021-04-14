@@ -177,7 +177,7 @@ const startSimulation = (vars, copy) => (e) =>
         if (!_d_counts[num]) _d_counts[num] = 0
         _d_counts[num] += 1
     }
-    while (countToRepeat)
+    while (_d_remain)
     {
         const min = Math.min.apply(null, _d_remain)
         for (let i = 0; i < _d_counts[min]; i++)
@@ -189,20 +189,15 @@ const startSimulation = (vars, copy) => (e) =>
             delete (_d_remain[_idx])
             _d = _d.flat()
             _d_remain = _d_remain.flat()
-            console.log(_d)
-        console.log(_d_remain)
-
-        }
-        for (let i = 0; i < _d_counts[min]; i++)
-        {
             _d_sorted.push(min)
+            const temp_d = _d_sorted.concat(_d_remain)
+            console.log(_d)
+            console.log(temp_d)
 
         }
-
-        console.log(_d_sorted)
-        
-        countToRepeat -= 1
     }
+    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+
 
 }
 const initParams = [
