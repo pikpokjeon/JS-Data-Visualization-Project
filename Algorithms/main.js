@@ -53,6 +53,9 @@ const genAttr = (w, s, i) =>
     }
     const list = {
         g: {},
+        gBox: {
+            transfrom:`translate(${s.unit*i} ${h / 2 - m})`
+        },
         eventArea: {
             ...svg,
             fill: color.bg,
@@ -67,15 +70,15 @@ const genAttr = (w, s, i) =>
         dataText: {
             width: data.text.width,
             height: data.text.height,
-            x: (i * s.unit),
+            x: (i * s.unit/2),
             y: h / 2 - m,
             fill: color.default,
-            "dominant-baseline": "end",
-            "text-anchor": "end",
+            "dominant-baseline": "start",
+            "text-anchor": "start",
         },
         dataBox: {
-            width: dataBox.width,
-            height: dataBox.height,
+            width: dataBox.width/d,
+            height: dataBox.height/d,
             x: ((data.box + s.unit / d) * i) + s.unit / d,
             y: h / 2 - s.unit,
             stroke: color.default,
@@ -113,7 +116,7 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
 {
     while (g.firstChild)
     {
-        g.removeChild(g.lastChild)
+        g.removeChild(g.firstChild)
     }
     for (const [i, text] of (Array.from(Object.entries(d))))
     {
@@ -121,7 +124,7 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
         const [data, box, group] = [
             createEl("dataText", "text"),
             createEl("dataBox", "rect"),
-            createEl("g", "g"),
+            createEl("gBox", "g"),
         ]
         data.textContent = text
         group.appendChild(box)
@@ -172,18 +175,23 @@ const startSimulation = (vars, copy) => (e) =>
     let _d_counts = {}
     let temp_d = []
     const _d_sorted = []
-
-    const promiseFunc = (arr, delay) => new Promise(res => 
-    {
-        return setTimeout(() => res(arr), delay)
-    })
-    const getResolve = arr => updateTexts(arr)
-    
     for (const num of d)
     {
         if (!_d_counts[num]) _d_counts[num] = 0
         _d_counts[num] += 1
     }
+
+    /**
+     * !TODO : 일정시간을 간격으로 정렬 과정이 보이도록 해야함
+     */
+    const promiseFunc = (arr, delay) => new Promise(res => 
+    {
+        console.log(arr, delay)
+        return setTimeout(() => res(arr), delay)
+    })
+    const getResolve = arr => updateTexts(arr)
+
+
     while (_d_remain.length)
     {
         const min = Math.min.apply(null, _d_remain)
@@ -196,14 +204,21 @@ const startSimulation = (vars, copy) => (e) =>
             _d = _d.flat()
             _d_remain = _d_remain.flat()
             _d_sorted.push(min)
-            temp_d.push(_d_sorted.concat(_d_remain))
-            console.log(_d)
-            console.log(temp_d)
-
+            temp_d = (_d_sorted.concat(_d_remain))
+        const toDelayUpdate = async (delay, temp) =>
+        {
+            await promiseFunc(temp, delay).then(getResolve)
         }
+        toDelayUpdate(1000, temp_d)
+            // console.log(_d)
+            // console.log(temp_d)
+        }
+        console.log(_d_remain.length)
+
     }
-    const toDelayUpdate =  (arr, promiseFunc) => async delay => arr.map(d => promiseFunc(d, delay).then(getResolve))
-    toDelayUpdate(temp_d,promiseFunc)(500)
+    clearTimeout()
+    const _d_s = _d_remain
+    console.log(_d_s, _d_remain)
 
 
 
