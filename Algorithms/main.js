@@ -12,8 +12,11 @@ const inputData = (el) =>
 const genSize = (w, d) =>
 {
     const unit = (w + 80 - 80 / d.length) / d.length
-    const gap = unit / d
-    const box = ((w) / d.length) * d.length > w ? ((w) / d.length) - d.length : ((w) / d.length)
+    const gap = unit / d.length
+    const box = (((w - unit) / d.length) * d.length) + gap * d.length > w ? ((w - (unit * gap + d.length)) / d.length) : ((w - unit) / d.length) - gap
+    console.log('box> ', box)
+    console.log('box * d.length> ', box * d.length, width)
+    console.log('gap> ', gap)
     return {
         d: d.length,
         gap,
@@ -43,18 +46,20 @@ const genElement = (type, attr) =>
 const genAttr = (w, s, i) =>
 {
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
-    const dataBox = { width: data.box - d / s.unit / d, height: data.box - d / s.unit / d }
+    const dataBox = { width: s.box, height: s.box }
     const color = { bg: "black", default: "white", focus: "red", blue: "blue" }
     const style = { line: `stroke: ${color.default}; stroke-width: ${s.line}` }
     const svg = {
         width: w,
         height: h,
+        style: 'overflow:visible'
         // viewBox: `${m} ${m} ${w} ${h}`,
     }
     const list = {
-        g: {width:w},
+        g: { width: w, height: h },
         gBox: {
-            transfrom: `translate(${s.unit*i}, ${h / 2})`,
+            // transfrom: `translate(${s.unit}, ${h / 2})`,
+
             // width: dataBox.width,
             // x:50,
             fill: color.blue,
@@ -71,19 +76,19 @@ const genAttr = (w, s, i) =>
             style: style.line,
         },
         dataText: {
-            x: (s.unit *i)+ dataBox.width/2,
-            y: (h - s.unit)/2,
+            x: ((s.unit * i) - s.gap +s.unit/2 ),
+            y: (h / 2) - s.gap,
             fill: color.default,
-            "dominant-baseline": "end",
+            "dominant-baseline": "start",
             "text-anchor": "middle",
         },
         dataBox: {
             // transfrom: `translate(${50*i}, 0)`,
-            width: dataBox.width ,
+            width: s.box,
             // width: dataBox.width /2 ,
-            height: dataBox.height,
-            x: (s.unit *i ),
-            y: h / 2 - s.unit,
+            height: s.box,
+            x: ((s.unit * i) + s.gap/2),
+            y: (h / 2) - s.unit / 2,
             stroke: color.default,
             "stroke-width": s.line,
             // fill : color.focus
@@ -105,16 +110,14 @@ const getElement = (w, arr, size, gen, attr, i) => (target, type) =>
 
 const width = inputData(elById("width"))
 const d = inputData(elById("data-list"))
+// const createEl = getElement(width, d, genSize, genElement, genAttr)
+
+// const svg = createEl("svg", "svg")
+// const eventArea = createEl("eventArea", "rect")
 const textParams = [width, d, genSize, getElement, genElement, genAttr]
-const createEl = getElement(width, d, genSize, genElement, genAttr)
-const svg = createEl("svg", "svg")
-const eventArea = createEl("eventArea", "rect")
-const group = createEl("g", "g")
-const line = createEl("indicatorLine", "line")
-elById("svg-area").appendChild(svg)
-svg.appendChild(eventArea)
-svg.appendChild(group)
-group.appendChild(line)
+// elById("svg-area").appendChild(svg)
+// svg.appendChild(eventArea)
+
 
 const updateTexts = (w, d, size, get, gen, attr) => (g) =>
 {
@@ -137,6 +140,28 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
 
     }
 }
+const defaultParams = [getElement, genAttr, genElement, elById, inputData]
+const updateDefault = (vars, copy) =>
+{
+    const _ = copy(vars)
+    const w = _.inputData(_.elById("width"))
+    const d = _.inputData(_.elById("data-list"))
+    const svgArea = elById("svg-area")
+    const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
+    const svg = createEl("svg", "svg")
+    const eventArea = createEl("eventArea", "rect")
+    const line = createEl("indicatorLine", "line")
+    const group = createEl("g", "g")
+    // elById("svg-area").removeChild(svg)
+    // svgArea.setAttribute('style','width: 100vh;')
+
+    svgArea.removeChild(svg)
+
+    svgArea.appendChild(svg)
+    svg.appendChild(eventArea)
+    svg.appendChild(line)
+    svg.appendChild(group)
+}
 
 const copyParams = (params) =>
 {
@@ -158,9 +183,15 @@ const copyParams = (params) =>
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
+    console.log(_)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
-    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+    const { width } = _.svg.getBoundingClientRect()
+    console.log('width',width)
+    vars = [width, d, ... vars]
+    // _.updateDefault(vars,copy)
+    _.updateTexts(width, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+
 }
 
 /**
@@ -238,9 +269,7 @@ const initParams = [
     onChangeInput,
     startSimulation,
     updateTexts,
-    group,
-    svg,
-    line,
+    updateDefault,
 ]
 
 // 초기 시행 부
@@ -249,12 +278,30 @@ const init = (vars, copy) =>
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
+    const svgArea = _.elById('svg-area')
+    const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
+
+    const svg = createEl("svg", "svg")
+    const eventArea = createEl("eventArea", "rect")
+    const line = createEl("indicatorLine", "line")
+    const group = createEl("g", "g")
+
+    const svgEls = [svg,eventArea,line,group]
+    vars = [...vars, ...svgEls]
+
+    svgArea.appendChild(svg)
+    svg.appendChild(eventArea)
+    svg.appendChild(line)
+    svg.appendChild(group)
+
+    // _.updateDefault(vars,copy)
+    
     const onChangeInput = _.onChangeInput(vars, copy)
     const startSimulation = _.startSimulation(vars, copy)
     _.elById("width").addEventListener("input", onChangeInput)
     _.elById("data-list").addEventListener("input", onChangeInput)
     _.elById("start").addEventListener("click", startSimulation)
-    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+    // _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(group)
 }
 init(initParams, copyParams)
 // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
