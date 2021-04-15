@@ -5,7 +5,7 @@ const inputData = (el) =>
     return el.value.indexOf(",") > -1
         ? el.value
             .split(",")
-            .map(_ => Number(_))
+            .map(_ => Number(_)).filter(_ => _)
         : Number(el.value)
 }
 
@@ -44,17 +44,20 @@ const genAttr = (w, s, i) =>
 {
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const dataBox = { width: data.box - d / s.unit / d, height: data.box - d / s.unit / d }
-    const color = { bg: "black", default: "white", focus: "red" }
+    const color = { bg: "black", default: "white", focus: "red", blue: "blue" }
     const style = { line: `stroke: ${color.default}; stroke-width: ${s.line}` }
     const svg = {
         width: w,
         height: h,
-        viewBox: `${m} ${m} ${w} ${h}`,
+        // viewBox: `${m} ${m} ${w} ${h}`,
     }
     const list = {
-        g: {},
+        g: {width:w},
         gBox: {
-            transfrom:`translate(${s.unit*i} ${h / 2 - m})`
+            transfrom: `translate(${s.unit*i}, ${h / 2})`,
+            // width: dataBox.width,
+            // x:50,
+            fill: color.blue,
         },
         eventArea: {
             ...svg,
@@ -68,21 +71,22 @@ const genAttr = (w, s, i) =>
             style: style.line,
         },
         dataText: {
-            width: data.text.width,
-            height: data.text.height,
-            x: (i * s.unit/2),
-            y: h / 2 - m,
+            x: (s.unit *i)+ dataBox.width/2,
+            y: (h - s.unit)/2,
             fill: color.default,
-            "dominant-baseline": "start",
-            "text-anchor": "start",
+            "dominant-baseline": "end",
+            "text-anchor": "middle",
         },
         dataBox: {
-            width: dataBox.width/d,
-            height: dataBox.height/d,
-            x: ((data.box + s.unit / d) * i) + s.unit / d,
+            // transfrom: `translate(${50*i}, 0)`,
+            width: dataBox.width ,
+            // width: dataBox.width /2 ,
+            height: dataBox.height,
+            x: (s.unit *i ),
             y: h / 2 - s.unit,
             stroke: color.default,
             "stroke-width": s.line,
+            // fill : color.focus
         },
         line: {
             x1: h + s.gap,
@@ -118,17 +122,17 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
     {
         g.removeChild(g.firstChild)
     }
-    for (const [i, text] of (Array.from(Object.entries(d))))
+    for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const createEl = get(w, d, size, gen, attr, i)
-        const [data, box, group] = [
+        const [text, box, group] = [
             createEl("dataText", "text"),
             createEl("dataBox", "rect"),
             createEl("gBox", "g"),
         ]
-        data.textContent = text
+        text.textContent = value
         group.appendChild(box)
-        group.appendChild(data)
+        group.appendChild(text)
         g.appendChild(group)
 
     }
@@ -205,11 +209,11 @@ const startSimulation = (vars, copy) => (e) =>
             _d_remain = _d_remain.flat()
             _d_sorted.push(min)
             temp_d = (_d_sorted.concat(_d_remain))
-        const toDelayUpdate = async (delay, temp) =>
-        {
-            await promiseFunc(temp, delay).then(getResolve)
-        }
-        toDelayUpdate(1000, temp_d)
+            const toDelayUpdate = async (delay, temp) =>
+            {
+                await promiseFunc(temp, delay).then(getResolve)
+            }
+            toDelayUpdate(1000, temp_d)
             // console.log(_d)
             // console.log(temp_d)
         }
