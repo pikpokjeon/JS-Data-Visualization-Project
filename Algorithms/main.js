@@ -248,14 +248,17 @@ const onChangeInput = (vars, copy) => (e) =>
 const startSimulation = (vars, copy) => (e) =>
 {
 
+
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
     const target = _.inputData(_.elById("target"))
 
+    _.elById('search-answer').innerHTML = `waiting...`
+    _.elById('search-count').innerHTML = `0`
+
     const updateTexts = ({ i, num, arr }) => new Promise(res => 
     {
-
         _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, num, i)(_.g)
         return res({ num, arr })
     })
@@ -295,9 +298,11 @@ const startSimulation = (vars, copy) => (e) =>
     {
         await updateTargetToSort(min, idx, delay, arr).then(updateTexts).then(updateLast)
     }
+
     const sort = () =>
     {
         let idxx = -1
+
         while (_d_remain.length)
         {
             const min = Math.min.apply(null, _d_remain)
@@ -321,10 +326,8 @@ const startSimulation = (vars, copy) => (e) =>
         }
     }
     sort()
-    const _d_s = _d_remain
-    console.log(_d_s, _d_remain)
 
-    const jequi = (i, arr, now) =>
+    const goBS = (i, arr, now) =>
     {
         setTimeout(() =>
         {
@@ -342,18 +345,18 @@ const startSimulation = (vars, copy) => (e) =>
                 arr = arr.slice(mid, arr.length)
 
                 console.log(i, now, arr)
-                return jequi(i + 1, arr, now)
+                return goBS(i + 1, arr, now)
             } else if (now > target)
             {
                 arr = arr.slice(0, mid)
 
                 console.log(i, now, arr)
-                return jequi(i + 1, arr, now)
+                return goBS(i + 1, arr, now)
             }
         }, 1000)
 
     }
-    jequi(0, temp_d, 0)
+    goBS(0, temp_d, 0)
 
 }
 const initParams = [
