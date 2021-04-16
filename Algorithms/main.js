@@ -56,7 +56,7 @@ const genAttr = (w, s, i) =>
         // viewBox: `${m} ${m} ${w} ${h}`,
     }
     const list = {
-        g: { width: w, height: h,style: 'overflow:visible' },
+        g: { width: w, height: h, style: 'overflow:visible' },
         gBox: {
             // transfrom: `translate(${s.unit}, ${h / 2})`,
 
@@ -82,7 +82,7 @@ const genAttr = (w, s, i) =>
             x1: h + m,
             y1: -h,
             x2: h + m,
-            y2: h ,
+            y2: h,
             style: style.line,
         },
         dataText: {
@@ -223,14 +223,14 @@ const onChangeInput = (vars, copy) => (e) =>
         {
             d = Array.from(new Set(d))
         }
-        })
+    })
     _.elById("data-list").value = `${(d)}`
     const { width } = main.getBoundingClientRect()
     if (w > width)
     {
         wth.value = width - 250
-        w = width-250
-        }
+        w = width - 250
+    }
     console.log(width)
     vars = [w, d, ...vars]
     _.updateDefault(vars, copy)
@@ -326,24 +326,34 @@ const startSimulation = (vars, copy) => (e) =>
 
     const jequi = (i, arr, now) =>
     {
-        const mid = Math.floor(arr.length / 2)
-        now = arr[mid]
-        if (target === now) return console.log('found', target)
-        if (now < target)
+        setTimeout(() =>
         {
-            arr = arr.slice(mid, arr.length - 1)
+            _.elById('search-count').innerHTML = `${i}`
+            const mid = Math.floor(arr.length / 2)
+            const last = arr[arr.length - 1]
+            now = arr[mid]
+            if (target === now || target === last)
+            {
+                _.elById('search-answer').innerHTML = `[${target}] IS FOUND!!!`
+                return console.log('found', target)
+            } 
+            if (now < target)
+            {
+                arr = arr.slice(mid, arr.length)
 
-            console.log(i,now,arr)
-            return jequi(i+1,arr,now)
-        } else if (now > target)
-        {
-            arr = arr.slice(0, mid)
+                console.log(i, now, arr)
+                return jequi(i + 1, arr, now)
+            } else if (now > target)
+            {
+                arr = arr.slice(0, mid)
 
-            console.log(i,now,arr)
-            return jequi(i+1,arr,now)
-        }
+                console.log(i, now, arr)
+                return jequi(i + 1, arr, now)
+            }
+        }, 1000)
+
     }
-    jequi(0,temp_d,0)
+    jequi(0, temp_d, 0)
 
 }
 const initParams = [
@@ -381,7 +391,7 @@ const init = (vars, copy) =>
     svg.appendChild(eventArea)
     svg.appendChild(line)
     svg.appendChild(group)
-    vars = [...svgEls, ...vars,radio]
+    vars = [...svgEls, ...vars, radio]
     // _.updateDefault(vars,copy)
 
     const onChangeInput = _.onChangeInput(vars, copy)

@@ -33,3 +33,6 @@ display: inline-flex;
   padding: 0;
   z-index: -990;
 }
+#search-answer{
+    font-size: 20px;
+}
