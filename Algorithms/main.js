@@ -251,6 +251,7 @@ const startSimulation = (vars, copy) => (e) =>
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
+    const target = _.inputData(_.elById("target"))
 
     const updateTexts = ({ i, num, arr }) => new Promise(res => 
     {
@@ -322,6 +323,27 @@ const startSimulation = (vars, copy) => (e) =>
     sort()
     const _d_s = _d_remain
     console.log(_d_s, _d_remain)
+
+    const jequi = (i, arr, now) =>
+    {
+        const mid = Math.floor(arr.length / 2)
+        now = arr[mid]
+        if (target === now) return console.log('found', target)
+        if (now < target)
+        {
+            arr = arr.slice(mid, arr.length - 1)
+
+            console.log(i,now,arr)
+            return jequi(i+1,arr,now)
+        } else if (now > target)
+        {
+            arr = arr.slice(0, mid)
+
+            console.log(i,now,arr)
+            return jequi(i+1,arr,now)
+        }
+    }
+    jequi(0,temp_d,0)
 
 }
 const initParams = [
