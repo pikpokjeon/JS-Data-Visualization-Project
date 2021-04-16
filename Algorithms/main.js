@@ -60,7 +60,7 @@ const genAttr = (w, s, i) =>
 
             // width: dataBox.width,
             // x:50,
-            fill: color.blue,
+            fill: color.bg,
         },
         animateBox: {
             "attribute-Name": "x",
@@ -128,8 +128,9 @@ const textParams = [width, d, genSize, getElement, genElement, genAttr]
 // svg.appendChild(eventArea)
 
 
-const updateTexts = (w, d, size, get, gen, attr, elById, num) => (g) =>
+const updateTexts = (w, d, size, get, gen, attr, elById, num, idxx) => (g) =>
 {
+
     while (g.firstChild)
     {
         g.removeChild(g.firstChild)
@@ -137,7 +138,6 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num) => (g) =>
     }
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-
         const createEl = get(w, d, size, gen, attr, i)
         const [text, box, group, animate] = [
             createEl("dataText", "text"),
@@ -148,7 +148,16 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num) => (g) =>
 
         text.textContent = value
         box.setAttribute('id', value)
-        text.setAttribute('id', value+'text')
+        text.setAttribute('id', value + 'text')
+        if (value > num)
+        {
+            box.setAttribute('fill', '#034f84')
+        }
+        if (value === num)
+        {
+            box.setAttribute('fill', 'purple')
+
+        }
 
         group.appendChild(box)
         group.appendChild(text)
@@ -210,57 +219,39 @@ const onChangeInput = (vars, copy) => (e) =>
 
 }
 
+
+
+
+
 /**
  * !TODO: 배열을 이어붙여, 정렬이 되는 과정을 기록한다 -> 에니메이션으로 구현
  */
 const startSimulation = (vars, copy) => (e) =>
 {
-    console.log(e)
 
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
-    // const attr = 
-    const updateTexts = ({ curIdx, idx, num,delay }) => new Promise(res => 
+
+    const updateTexts = ({ i, num, arr }) => new Promise(res => 
     {
-        // console.log(arr, delay)
-        setTimeout(() =>
-        {
-            // console.log(i, min,delay*i)
-            // _.elById(`${min}`).setAttribute('style', 'color:red')
-            // console.log(_.elById(`${min}`))
 
-    
-        const to = d[curIdx]
-        const to2 = d.indexOf(num)
-        const current = _.elById(`${num}`)
-        const current1 = _.elById(`${to}`)
-        const current2 = _.elById(`${num}text`)
-        const current3 = _.elById(`${to}text`)
-        // const attr = _.genAttr(w, _.genSize(w, d),curIdx)
-        const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr, curIdx)
-        const animate = createEl('animateBox', 'animate')
-        console.log(d,num,to)
-        current.appendChild(animate)
-        current.setAttribute('fill', 'red')
-               
-        // current1.setAttribute('x', `${_.genAttr(w, _.genSize(w, d),to2).dataBox.x}`)
-
-        // current3.setAttribute('x', `${_.genAttr(w, _.genSize(w, d), to2).dataText.x}`)
-        
-        current.setAttribute('x', `${_.genAttr(w, _.genSize(w, d), curIdx).dataBox.x}`)
-        current2.setAttribute('x', `${_.genAttr(w, _.genSize(w, d),curIdx).dataText.x}`)        
-        // current1.setAttribute('fill', 'blue')
-        res({ curIdx, num: min ,delay})
- 
-        }, delay * curIdx)
+        _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, num, i)(_.g)
+        return res({ num, arr })
     })
-    const u = ({curIdx,num,delay}) => _.elById(`${num}`).setAttribute('fill', 'blue')
-        
+
+    const updateLast = ({ num, arr }) =>
+    {
+        if (arr.indexOf(num) === arr.length - 1)
+        {
+            _.elById(`${num}`).setAttribute('fill', 'black')
+        }
+    }
+
     let _d = [...d]
     let _d_remain = [...d]
     let _d_counts = {}
-    let temp_d = []
+    let temp_d = [...d]
     const _d_sorted = []
     for (const num of d)
     {
@@ -271,52 +262,47 @@ const startSimulation = (vars, copy) => (e) =>
     /**
      * !TODO : 일정시간을 간격으로 정렬 과정이 보이도록 해야함
      */
-    const promiseFunc = (min, i, delay) => new Promise(res => 
+    const updateTargetToSort = (min, i, delay, arr) => new Promise(res => 
     {
-        // console.log(arr, delay)
-        setTimeout(() =>
+        return setTimeout(() =>
         {
-            console.log(i, min,delay*i)
-            _.elById(`${min}`).setAttribute('style', 'color:red')
-            console.log(_.elById(`${min}`))
-            res({ curIdx: i, num: min,delay })
-
-        }, delay * i)
+            _.elById(`${min}`).setAttribute('fill', 'purple')
+            res({ curIdx: i, num: arr[i], delay, arr })
+        }, delay * ((i + 1)))
     })
-    const toDelayUpdate = async (delay, idx, min) =>
+
+    const toDelayUpdate = async (delay, idx, min, arr) =>
     {
-        await promiseFunc(min, idx, delay).then(updateTexts).then(u)
+        await updateTargetToSort(min, idx, delay, arr).then(updateTexts).then(updateLast)
     }
-    let idxx = -1
-    while (_d_remain.length)
+    const sort = () =>
     {
-        const min = Math.min.apply(null, _d_remain)
-        for (let i = 0; i < _d_counts[min]; i++)
+        let idxx = -1
+        while (_d_remain.length)
         {
-            idxx += 1
+            const min = Math.min.apply(null, _d_remain)
+            for (let i = 0; i < _d_counts[min]; i++)
+            {
 
-            const idx = _d.indexOf(min)
-            const _idx = _d_remain.indexOf(min)
-            delete (_d[idx])
-            delete (_d_remain[_idx])
-            _d = _d.flat()
-            _d_remain = _d_remain.flat()
-            _d_sorted.push(min)
-            temp_d = (_d_sorted.concat(_d_remain))
+                const idx = _d.indexOf(min)
+                const _idx = _d_remain.indexOf(min)
+                delete (_d[idx])
+                delete (_d_remain[_idx])
+                _d = _d.flat()
+                _d_remain = _d_remain.flat()
+                _d_sorted.push(min)
+                toDelayUpdate(500, idxx, min, temp_d)
+                temp_d = (_d_sorted.concat(_d_remain))
+                idxx += 1
+                toDelayUpdate(500, idxx, min, temp_d)
 
-            toDelayUpdate(1000, idxx, min)
-            // console.log(_d)
-            // console.log(temp_d)
+            }
+
         }
-        console.log(_d_remain.length)
-
     }
-    clearTimeout()
+    sort()
     const _d_s = _d_remain
     console.log(_d_s, _d_remain)
-
-
-
 
 }
 const initParams = [
