@@ -221,7 +221,7 @@ const onChangeInput = (vars, copy) => (e) =>
             d = Array.from(new Set(d))
         }
         })
-    console.log(d)
+    _.elById("data-list").value = `${(d)}`
     _.svg.setAttribute('style', `width: ${w}`)
     _.rect.setAttribute('style', `width: ${w}`)
     const { width } = _.svg.getBoundingClientRect()
