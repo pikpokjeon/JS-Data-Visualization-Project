@@ -44,7 +44,7 @@ const genElement = (type, attr) =>
 const genAttr = (w, s, i) =>
 {
     const { width, height } = elById('main').getBoundingClientRect()
-    console.log(width,height)
+    // console.log(width,height)
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const dataBox = { width: s.box, height: s.box }
     const color = { bg: "black", default: "white", focus: "red", blue: "blue" }
@@ -56,7 +56,7 @@ const genAttr = (w, s, i) =>
         // viewBox: `${m} ${m} ${w} ${h}`,
     }
     const list = {
-        g: { width: w, height: h },
+        g: { width: w, height: h,style: 'overflow:visible' },
         gBox: {
             // transfrom: `translate(${s.unit}, ${h / 2})`,
 
@@ -211,8 +211,11 @@ const copyParams = (params) =>
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    const w = _.inputData(_.elById("width"))
+    const wth = _.elById("width")
+    const w = _.inputData(wth)
+    const main = _.elById("main")
     let d = _.inputData(_.elById("data-list"))
+
     const radioNodeList = document.getElementsByName('duplicated')
     radioNodeList.forEach(n =>
     {
@@ -222,12 +225,16 @@ const onChangeInput = (vars, copy) => (e) =>
         }
         })
     _.elById("data-list").value = `${(d)}`
-    _.svg.setAttribute('style', `width: ${w}`)
-    _.rect.setAttribute('style', `width: ${w}`)
-    const { width } = _.svg.getBoundingClientRect()
-    vars = [width, d, ...vars]
+    const { width } = main.getBoundingClientRect()
+    if (w > width)
+    {
+        wth.value = width - 250
+        w = width-250
+        }
+    console.log(width)
+    vars = [w, d, ...vars]
     _.updateDefault(vars, copy)
-    _.updateTexts(width, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 
 }
 
