@@ -1,0 +1,27 @@
+html {
+  background: black;
+}
+main {
+  margin: 0;
+}
+h4 {
+  border: 1px solid;
+  padding: 10px 20px;
+  margin: 0 20px 0 0;
+}
+section {
+  color: white;
+  display: flex;
+  align-items: baseline;
+  justify-content: stretch;
+}
+article {
+  width: 50vh;
+  display: flex;
+  align-items: flex-end;
+}
+#svg-area {
+  position: fixed;
+  padding: 0;
+  z-index: -990;
+}
