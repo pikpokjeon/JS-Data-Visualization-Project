@@ -5,7 +5,7 @@ const inputData = (el) =>
     return el.value.indexOf(",") > -1
         ? el.value
             .split(",")
-            .map(_ => Number(_)).filter(_ => _)
+            .map(_ =>   Number(_) ).filter( _ => typeof _ === "number")
         : Number(el.value)
 }
 
@@ -14,9 +14,7 @@ const genSize = (w, d) =>
     const unit = (w + 80 - 80 / d.length) / d.length
     const gap = unit / d.length
     const box = (((w - unit) / d.length) * d.length) + gap * d.length > w ? ((w - (unit * gap + d.length)) / d.length) : ((w - unit) / d.length) - gap
-    console.log('box> ', box)
-    console.log('box * d.length> ', box * d.length, width)
-    console.log('gap> ', gap)
+
     return {
         d: d.length,
         gap,
@@ -29,7 +27,7 @@ const genSize = (w, d) =>
         line: 3,
     }
 }
-
+3
 const genElement = (type, attr) =>
 {
     type = document.createElementNS("http://www.w3.org/2000/svg", type)
@@ -63,6 +61,16 @@ const genAttr = (w, s, i) =>
             // width: dataBox.width,
             // x:50,
             fill: color.blue,
+        },
+        animateBox: {
+            "attribute-Name": "x",
+            "attribute-Type": "XML",
+            from: ((s.unit * i) + s.gap / 2),
+            to: 0,
+            begin: "5s",
+            dur: "10s",
+            fill: "red",
+            "repeat-Count": "indefinite",
         },
         eventArea: {
             ...svg,
@@ -109,11 +117,14 @@ const getElement = (w, arr, size, gen, attr, i) => (target, type) =>
     gen(type, attr(w, size(w, arr), i)[target])
 
 const width = inputData(elById("width"))
+width.name = width
 const d = inputData(elById("data-list"))
+d.name = d
 // const createEl = getElement(width, d, genSize, genElement, genAttr)
 
 // const svg = createEl("svg", "svg")
 // const eventArea = createEl("eventArea", "rect")
+
 const textParams = [width, d, genSize, getElement, genElement, genAttr]
 // elById("svg-area").appendChild(svg)
 // svg.appendChild(eventArea)
@@ -124,18 +135,21 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
     while (g.firstChild)
     {
         g.removeChild(g.firstChild)
+         
     }
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const createEl = get(w, d, size, gen, attr, i)
-        const [text, box, group] = [
+        const [text, box, group, animate] = [
             createEl("dataText", "text"),
             createEl("dataBox", "rect"),
             createEl("gBox", "g"),
+            createEl("animateBox","animate")
         ]
         text.textContent = value
         group.appendChild(box)
         group.appendChild(text)
+        group.appendChild(animate)
         g.appendChild(group)
 
     }
@@ -143,24 +157,7 @@ const updateTexts = (w, d, size, get, gen, attr) => (g) =>
 const defaultParams = [getElement, genAttr, genElement, elById, inputData]
 const updateDefault = (vars, copy) =>
 {
-    const _ = copy(vars)
-    const w = _.inputData(_.elById("width"))
-    const d = _.inputData(_.elById("data-list"))
-    const svgArea = elById("svg-area")
-    const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
-    const svg = createEl("svg", "svg")
-    const eventArea = createEl("eventArea", "rect")
-    const line = createEl("indicatorLine", "line")
-    const group = createEl("g", "g")
-    // elById("svg-area").removeChild(svg)
-    // svgArea.setAttribute('style','width: 100vh;')
-
-    svgArea.removeChild(svg)
-
-    svgArea.appendChild(svg)
-    svg.appendChild(eventArea)
-    svg.appendChild(line)
-    svg.appendChild(group)
+   
 }
 
 const copyParams = (params) =>
@@ -168,10 +165,21 @@ const copyParams = (params) =>
     const copied = {}
     for (const variable of (params))
     {
-        if (variable.name === undefined)
+        if (typeof variable === "number")
+        {
+            if (!copied['width']) copied['width'] = -1
+            copied['width'] = variable
+        }
+        else if (Array.isArray(variable))
+        {
+            if (!copied['d']) copied['d'] = []
+            copied['d'] = variable
+        }
+        else if (variable.name === undefined)
         {
             copied[variable.tagName] = variable
-        } else if (typeof variable === "function")
+        }
+        else if (typeof variable === "function")
         {
             copied[variable.name] = variable
         }
@@ -183,13 +191,13 @@ const copyParams = (params) =>
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    console.log(_)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
+    _.svg.setAttribute('style',`width: ${w}`)
+    _.rect.setAttribute('style',`width: ${w}`)
     const { width } = _.svg.getBoundingClientRect()
-    console.log('width',width)
     vars = [width, d, ... vars]
-    // _.updateDefault(vars,copy)
+    _.updateDefault(vars,copy)
     _.updateTexts(width, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 
 }
@@ -222,9 +230,8 @@ const startSimulation = (vars, copy) => (e) =>
     const promiseFunc = (arr, delay) => new Promise(res => 
     {
         console.log(arr, delay)
-        return setTimeout(() => res(arr), delay)
+        return setTimeout(() => res(arr), delay + 1000)
     })
-    const getResolve = arr => updateTexts(arr)
 
 
     while (_d_remain.length)
@@ -242,7 +249,7 @@ const startSimulation = (vars, copy) => (e) =>
             temp_d = (_d_sorted.concat(_d_remain))
             const toDelayUpdate = async (delay, temp) =>
             {
-                await promiseFunc(temp, delay).then(getResolve)
+                await promiseFunc(temp, delay).then(updateTexts)
             }
             toDelayUpdate(1000, temp_d)
             // console.log(_d)
@@ -277,6 +284,7 @@ const init = (vars, copy) =>
 {
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
+    
     const d = _.inputData(_.elById("data-list"))
     const svgArea = _.elById('svg-area')
     const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
@@ -287,13 +295,12 @@ const init = (vars, copy) =>
     const group = createEl("g", "g")
 
     const svgEls = [svg,eventArea,line,group]
-    vars = [...vars, ...svgEls]
 
     svgArea.appendChild(svg)
     svg.appendChild(eventArea)
     svg.appendChild(line)
     svg.appendChild(group)
-
+    vars = [...svgEls, ...vars]
     // _.updateDefault(vars,copy)
     
     const onChangeInput = _.onChangeInput(vars, copy)
@@ -301,7 +308,7 @@ const init = (vars, copy) =>
     _.elById("width").addEventListener("input", onChangeInput)
     _.elById("data-list").addEventListener("input", onChangeInput)
     _.elById("start").addEventListener("click", startSimulation)
-    // _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(group)
+    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(group)
 }
 init(initParams, copyParams)
 // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
