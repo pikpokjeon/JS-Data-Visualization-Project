@@ -5,7 +5,7 @@ const inputData = (el) =>
     return el.value.indexOf(",") > -1
         ? el.value
             .split(",")
-            .map(_ =>   Number(_) ).filter( _ => typeof _ === "number")
+            .map(_ => Number(_)).filter(_ => typeof _ === "number")
         : Number(el.value)
 }
 
@@ -84,7 +84,7 @@ const genAttr = (w, s, i) =>
             style: style.line,
         },
         dataText: {
-            x: ((s.unit * i) - s.gap +s.unit/2 ),
+            x: ((s.unit * i) - s.gap + s.unit / 2),
             y: (h / 2) - s.gap,
             fill: color.default,
             "dominant-baseline": "start",
@@ -95,7 +95,7 @@ const genAttr = (w, s, i) =>
             width: s.box,
             // width: dataBox.width /2 ,
             height: s.box,
-            x: ((s.unit * i) + s.gap/2),
+            x: ((s.unit * i) + s.gap / 2),
             y: (h / 2) - s.unit / 2,
             stroke: color.default,
             "stroke-width": s.line,
@@ -117,9 +117,7 @@ const getElement = (w, arr, size, gen, attr, i) => (target, type) =>
     gen(type, attr(w, size(w, arr), i)[target])
 
 const width = inputData(elById("width"))
-width.name = width
 const d = inputData(elById("data-list"))
-d.name = d
 // const createEl = getElement(width, d, genSize, genElement, genAttr)
 
 // const svg = createEl("svg", "svg")
@@ -130,34 +128,44 @@ const textParams = [width, d, genSize, getElement, genElement, genAttr]
 // svg.appendChild(eventArea)
 
 
-const updateTexts = (w, d, size, get, gen, attr) => (g) =>
+const updateTexts = (w, d, size, get, gen, attr, elById, num) => (g) =>
 {
     while (g.firstChild)
     {
         g.removeChild(g.firstChild)
-         
+
     }
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
+
         const createEl = get(w, d, size, gen, attr, i)
         const [text, box, group, animate] = [
             createEl("dataText", "text"),
             createEl("dataBox", "rect"),
             createEl("gBox", "g"),
-            createEl("animateBox","animate")
+            createEl("animateBox", "animate")
         ]
+
         text.textContent = value
+        box.setAttribute('id', value)
+        text.setAttribute('id', value+'text')
+
         group.appendChild(box)
         group.appendChild(text)
-        group.appendChild(animate)
+        // group.appendChild(animate)
+        // group.setAttribute('id', value)
+
+
         g.appendChild(group)
 
     }
+
+
 }
 const defaultParams = [getElement, genAttr, genElement, elById, inputData]
 const updateDefault = (vars, copy) =>
 {
-   
+
 }
 
 const copyParams = (params) =>
@@ -193,11 +201,11 @@ const onChangeInput = (vars, copy) => (e) =>
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
-    _.svg.setAttribute('style',`width: ${w}`)
-    _.rect.setAttribute('style',`width: ${w}`)
+    _.svg.setAttribute('style', `width: ${w}`)
+    _.rect.setAttribute('style', `width: ${w}`)
     const { width } = _.svg.getBoundingClientRect()
-    vars = [width, d, ... vars]
-    _.updateDefault(vars,copy)
+    vars = [width, d, ...vars]
+    _.updateDefault(vars, copy)
     _.updateTexts(width, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
 
 }
@@ -212,7 +220,43 @@ const startSimulation = (vars, copy) => (e) =>
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
     const d = _.inputData(_.elById("data-list"))
-    const updateTexts = (temp_d) => _.updateTexts(w, temp_d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+    // const attr = 
+    const updateTexts = ({ curIdx, idx, num,delay }) => new Promise(res => 
+    {
+        // console.log(arr, delay)
+        setTimeout(() =>
+        {
+            // console.log(i, min,delay*i)
+            // _.elById(`${min}`).setAttribute('style', 'color:red')
+            // console.log(_.elById(`${min}`))
+
+    
+        const to = d[curIdx]
+        const to2 = d.indexOf(num)
+        const current = _.elById(`${num}`)
+        const current1 = _.elById(`${to}`)
+        const current2 = _.elById(`${num}text`)
+        const current3 = _.elById(`${to}text`)
+        // const attr = _.genAttr(w, _.genSize(w, d),curIdx)
+        const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr, curIdx)
+        const animate = createEl('animateBox', 'animate')
+        console.log(d,num,to)
+        current.appendChild(animate)
+        current.setAttribute('fill', 'red')
+               
+        // current1.setAttribute('x', `${_.genAttr(w, _.genSize(w, d),to2).dataBox.x}`)
+
+        // current3.setAttribute('x', `${_.genAttr(w, _.genSize(w, d), to2).dataText.x}`)
+        
+        current.setAttribute('x', `${_.genAttr(w, _.genSize(w, d), curIdx).dataBox.x}`)
+        current2.setAttribute('x', `${_.genAttr(w, _.genSize(w, d),curIdx).dataText.x}`)        
+        // current1.setAttribute('fill', 'blue')
+        res({ curIdx, num: min ,delay})
+ 
+        }, delay * curIdx)
+    })
+    const u = ({curIdx,num,delay}) => _.elById(`${num}`).setAttribute('fill', 'blue')
+        
     let _d = [...d]
     let _d_remain = [...d]
     let _d_counts = {}
@@ -227,18 +271,30 @@ const startSimulation = (vars, copy) => (e) =>
     /**
      * !TODO : 일정시간을 간격으로 정렬 과정이 보이도록 해야함
      */
-    const promiseFunc = (arr, delay) => new Promise(res => 
+    const promiseFunc = (min, i, delay) => new Promise(res => 
     {
-        console.log(arr, delay)
-        return setTimeout(() => res(arr), delay + 1000)
+        // console.log(arr, delay)
+        setTimeout(() =>
+        {
+            console.log(i, min,delay*i)
+            _.elById(`${min}`).setAttribute('style', 'color:red')
+            console.log(_.elById(`${min}`))
+            res({ curIdx: i, num: min,delay })
+
+        }, delay * i)
     })
-
-
+    const toDelayUpdate = async (delay, idx, min) =>
+    {
+        await promiseFunc(min, idx, delay).then(updateTexts).then(u)
+    }
+    let idxx = -1
     while (_d_remain.length)
     {
         const min = Math.min.apply(null, _d_remain)
         for (let i = 0; i < _d_counts[min]; i++)
         {
+            idxx += 1
+
             const idx = _d.indexOf(min)
             const _idx = _d_remain.indexOf(min)
             delete (_d[idx])
@@ -247,11 +303,8 @@ const startSimulation = (vars, copy) => (e) =>
             _d_remain = _d_remain.flat()
             _d_sorted.push(min)
             temp_d = (_d_sorted.concat(_d_remain))
-            const toDelayUpdate = async (delay, temp) =>
-            {
-                await promiseFunc(temp, delay).then(updateTexts)
-            }
-            toDelayUpdate(1000, temp_d)
+
+            toDelayUpdate(1000, idxx, min)
             // console.log(_d)
             // console.log(temp_d)
         }
@@ -284,7 +337,7 @@ const init = (vars, copy) =>
 {
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
-    
+
     const d = _.inputData(_.elById("data-list"))
     const svgArea = _.elById('svg-area')
     const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
@@ -294,7 +347,7 @@ const init = (vars, copy) =>
     const line = createEl("indicatorLine", "line")
     const group = createEl("g", "g")
 
-    const svgEls = [svg,eventArea,line,group]
+    const svgEls = [svg, eventArea, line, group]
 
     svgArea.appendChild(svg)
     svg.appendChild(eventArea)
@@ -302,13 +355,13 @@ const init = (vars, copy) =>
     svg.appendChild(group)
     vars = [...svgEls, ...vars]
     // _.updateDefault(vars,copy)
-    
+
     const onChangeInput = _.onChangeInput(vars, copy)
     const startSimulation = _.startSimulation(vars, copy)
     _.elById("width").addEventListener("input", onChangeInput)
     _.elById("data-list").addEventListener("input", onChangeInput)
     _.elById("start").addEventListener("click", startSimulation)
-    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(group)
+    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById)(group)
 }
 init(initParams, copyParams)
 // 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
