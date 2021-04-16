@@ -43,6 +43,8 @@ const genElement = (type, attr) =>
  * */
 const genAttr = (w, s, i) =>
 {
+    const { width, height } = elById('main').getBoundingClientRect()
+    console.log(width,height)
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const dataBox = { width: s.box, height: s.box }
     const color = { bg: "black", default: "white", focus: "red", blue: "blue" }
@@ -78,9 +80,9 @@ const genAttr = (w, s, i) =>
         },
         indicatorLine: {
             x1: h + m,
-            y1: 0,
+            y1: -h,
             x2: h + m,
-            y2: h,
+            y2: h ,
             style: style.line,
         },
         dataText: {
@@ -182,6 +184,7 @@ const copyParams = (params) =>
     const copied = {}
     for (const variable of (params))
     {
+        console.log(variable)
         if (typeof variable === "number")
         {
             if (!copied['width']) copied['width'] = -1
@@ -209,7 +212,16 @@ const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
-    const d = _.inputData(_.elById("data-list"))
+    let d = _.inputData(_.elById("data-list"))
+    const radioNodeList = document.getElementsByName('duplicated')
+    radioNodeList.forEach(n =>
+    {
+        if (n.checked && n.value === "false")
+        {
+            d = Array.from(new Set(d))
+        }
+        })
+    console.log(d)
     _.svg.setAttribute('style', `width: ${w}`)
     _.rect.setAttribute('style', `width: ${w}`)
     const { width } = _.svg.getBoundingClientRect()
@@ -328,6 +340,7 @@ const init = (vars, copy) =>
     const svgArea = _.elById('svg-area')
     const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
 
+    const radio = document.getElementsByName('duplicated')
     const svg = createEl("svg", "svg")
     const eventArea = createEl("eventArea", "rect")
     const line = createEl("indicatorLine", "line")
@@ -339,7 +352,7 @@ const init = (vars, copy) =>
     svg.appendChild(eventArea)
     svg.appendChild(line)
     svg.appendChild(group)
-    vars = [...svgEls, ...vars]
+    vars = [...svgEls, ...vars,radio]
     // _.updateDefault(vars,copy)
 
     const onChangeInput = _.onChangeInput(vars, copy)
@@ -347,6 +360,8 @@ const init = (vars, copy) =>
     _.elById("width").addEventListener("input", onChangeInput)
     _.elById("data-list").addEventListener("input", onChangeInput)
     _.elById("start").addEventListener("click", startSimulation)
+    radio.forEach(r => r.addEventListener("click", onChangeInput))
+    console.log(radio)
     _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById)(group)
 }
 init(initParams, copyParams)

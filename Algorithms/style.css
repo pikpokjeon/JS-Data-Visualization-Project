@@ -20,6 +20,14 @@ article {
   display: flex;
   align-items: flex-end;
 }
+article div{
+display: inline-flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: start;
+    align-self: flex-end;
+    justify-self: self-start;
+}
 #svg-area {
   position: fixed;
   padding: 0;
