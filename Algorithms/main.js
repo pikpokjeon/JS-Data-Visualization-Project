@@ -80,6 +80,7 @@ const genAttr = (w, s, i) =>
             y2: h,
             style: style.line,
         },
+        
         dataText: {
             x: ((s.unit * i) - s.gap + s.unit / 2),
             y: (h / 2) - s.gap,
@@ -115,7 +116,7 @@ const d = inputData(elById("data-list"))
 const textParams = [width, d, genSize, getElement, genElement, genAttr]
 
 
-const updateTexts = (w, d, size, get, gen, attr, elById, num, idxx) => (g) =>
+const updateTexts = (w, d, size, get, gen, attr, elById, num, start,end,target) => (g) =>
 {
 
     while (g.firstChild)
@@ -137,15 +138,20 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num, idxx) => (g) =>
         box.setAttribute('id', value)
         text.setAttribute('id', value + 'text')
 
-        if (value > num)
-        {
-            box.setAttribute('fill', '#034f84')
-        }
+
         if (value === num)
         {
             box.setAttribute('fill', 'purple')
         }
-
+        else if (value === start || value === end)
+        {
+            box.setAttribute('fill', 'green')
+            
+        }
+        if (target !== 'bs' && value > num)
+        {
+            box.setAttribute('fill', '#034f84')
+        }
         group.appendChild(box)
         group.appendChild(text)
         g.appendChild(group)
@@ -318,38 +324,40 @@ const startSimulation = (vars, copy) => (e) =>
     /**
      * 2. 정렬이 된 배열에서 target 을 찾기 위해 재귀를 돈다
      */
-    const goBS = (i, arr, now) =>
+    const goBS = (i, arr, left,right) =>
     {
         setTimeout(() =>
         {
-            // toDelayUpdate(3000, i, now, arr)
-            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, now, i)(_.g)
+
             _.elById('search-count').innerHTML = `${i}`
-            const mid = Math.floor(arr.length / 2)
-            const last = arr[arr.length - 1]
-            now = arr[mid]
-            if (target === now || target === last)
+
+            let midIdx = Math.floor((left + right) / 2)
+            // midIdx = Math.floor(left + midIdx)
+                console.log(midIdx)
+            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[midIdx], arr[left],arr[right],'bs')(_.g)
+            
+            if (target === arr[left] || target === arr[right] || target === arr[midIdx])
             {
                 _.elById('search-answer').innerHTML = `[${target}] IS FOUND!!!`
                 return console.log('found', target)
             } 
-            if (now < target)
+            if (arr[midIdx] < target)
             {
-                arr = arr.slice(mid, arr.length)
+                // arr = arr.slice(midIdx, arr.length)
 
-                console.log(i, now, arr)
-                return goBS(i + 1, arr, now)
-            } else if (now > target)
+                console.log(i, arr[midIdx], left,right,midIdx)
+                return goBS(i + 1, arr, midIdx, right)
+            } else if (arr[midIdx] > target)
             {
-                arr = arr.slice(0, mid)
+                // arr = arr.slice(0, midIdx)
 
-                console.log(i, now, arr)
-                return goBS(i + 1, arr, now)
+                console.log(i, arr[midIdx], left,right,midIdx)
+                return goBS(i + 1, arr, left,midIdx)
             }
-        }, 4000)
+        }, 5000)
 
     }
-    goBS(0, temp_d, 0)
+    goBS(0, temp_d, 0,temp_d.length-1)
 
 }
 
