@@ -27,7 +27,8 @@ const genSize = (w, d) =>
         line: 3,
     }
 }
-3
+
+
 const genElement = (type, attr) =>
 {
     type = document.createElementNS("http://www.w3.org/2000/svg", type)
@@ -44,7 +45,6 @@ const genElement = (type, attr) =>
 const genAttr = (w, s, i) =>
 {
     const { width, height } = elById('main').getBoundingClientRect()
-    // console.log(width,height)
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const dataBox = { width: s.box, height: s.box }
     const color = { bg: "black", default: "white", focus: "red", blue: "blue" }
@@ -53,15 +53,10 @@ const genAttr = (w, s, i) =>
         width: w,
         height: h,
         style: 'overflow:visible'
-        // viewBox: `${m} ${m} ${w} ${h}`,
     }
     const list = {
         g: { width: w, height: h, style: 'overflow:visible' },
         gBox: {
-            // transfrom: `translate(${s.unit}, ${h / 2})`,
-
-            // width: dataBox.width,
-            // x:50,
             fill: color.bg,
         },
         animateBox: {
@@ -93,15 +88,12 @@ const genAttr = (w, s, i) =>
             "text-anchor": "middle",
         },
         dataBox: {
-            // transfrom: `translate(${50*i}, 0)`,
             width: s.box,
-            // width: dataBox.width /2 ,
             height: s.box,
             x: ((s.unit * i) + s.gap / 2),
             y: (h / 2) - s.unit / 2,
             stroke: color.default,
             "stroke-width": s.line,
-            // fill : color.focus
         },
         line: {
             x1: h + s.gap,
@@ -120,14 +112,7 @@ const getElement = (w, arr, size, gen, attr, i) => (target, type) =>
 
 const width = inputData(elById("width"))
 const d = inputData(elById("data-list"))
-// const createEl = getElement(width, d, genSize, genElement, genAttr)
-
-// const svg = createEl("svg", "svg")
-// const eventArea = createEl("eventArea", "rect")
-
 const textParams = [width, d, genSize, getElement, genElement, genAttr]
-// elById("svg-area").appendChild(svg)
-// svg.appendChild(eventArea)
 
 
 const updateTexts = (w, d, size, get, gen, attr, elById, num, idxx) => (g) =>
@@ -151,6 +136,7 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num, idxx) => (g) =>
         text.textContent = value
         box.setAttribute('id', value)
         text.setAttribute('id', value + 'text')
+
         if (value > num)
         {
             box.setAttribute('fill', '#034f84')
@@ -158,15 +144,10 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num, idxx) => (g) =>
         if (value === num)
         {
             box.setAttribute('fill', 'purple')
-
         }
 
         group.appendChild(box)
         group.appendChild(text)
-        // group.appendChild(animate)
-        // group.setAttribute('id', value)
-
-
         g.appendChild(group)
 
     }
@@ -207,7 +188,11 @@ const copyParams = (params) =>
     return copied
 }
 
-// 인풋 입력 업데이트 부
+
+
+/**
+ * 데이터 입력시 데이터 업데이트
+ */
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
@@ -240,10 +225,8 @@ const onChangeInput = (vars, copy) => (e) =>
 
 
 
-
-
 /**
- * !TODO: 배열을 이어붙여, 정렬이 되는 과정을 기록한다 -> 에니메이션으로 구현
+ * !TODO: 정렬 -> 이진탐색 동기처리 시각화 구현
  */
 const startSimulation = (vars, copy) => (e) =>
 {
@@ -299,6 +282,10 @@ const startSimulation = (vars, copy) => (e) =>
         await updateTargetToSort(min, idx, delay, arr).then(updateTexts).then(updateLast)
     }
 
+    /**
+     * 이진탐색 조건 1. 정렬이 가능한가? 정렬을 시작
+     * 정렬 -> 이진탐색으로 가기위해 동기처리 필요
+     */
     const sort = () =>
     {
         let idxx = -1
@@ -326,11 +313,17 @@ const startSimulation = (vars, copy) => (e) =>
         }
     }
     sort()
+    clearTimeout()
 
+    /**
+     * 2. 정렬이 된 배열에서 target 을 찾기 위해 재귀를 돈다
+     */
     const goBS = (i, arr, now) =>
     {
         setTimeout(() =>
         {
+            // toDelayUpdate(3000, i, now, arr)
+            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, now, i)(_.g)
             _.elById('search-count').innerHTML = `${i}`
             const mid = Math.floor(arr.length / 2)
             const last = arr[arr.length - 1]
@@ -353,12 +346,16 @@ const startSimulation = (vars, copy) => (e) =>
                 console.log(i, now, arr)
                 return goBS(i + 1, arr, now)
             }
-        }, 1000)
+        }, 4000)
 
     }
     goBS(0, temp_d, 0)
 
 }
+
+/**
+ * 초기 실행
+ */
 const initParams = [
     inputData,
     elById,
@@ -372,17 +369,16 @@ const initParams = [
     updateDefault,
 ]
 
-// 초기 시행 부
 const init = (vars, copy) =>
 {
     const _ = copy(vars)
     const w = _.inputData(_.elById("width"))
-
     const d = _.inputData(_.elById("data-list"))
+    const radio = document.getElementsByName('duplicated')
+
     const svgArea = _.elById('svg-area')
     const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
 
-    const radio = document.getElementsByName('duplicated')
     const svg = createEl("svg", "svg")
     const eventArea = createEl("eventArea", "rect")
     const line = createEl("indicatorLine", "line")
@@ -395,21 +391,15 @@ const init = (vars, copy) =>
     svg.appendChild(line)
     svg.appendChild(group)
     vars = [...svgEls, ...vars, radio]
-    // _.updateDefault(vars,copy)
 
     const onChangeInput = _.onChangeInput(vars, copy)
     const startSimulation = _.startSimulation(vars, copy)
     _.elById("width").addEventListener("input", onChangeInput)
+
     _.elById("data-list").addEventListener("input", onChangeInput)
     _.elById("start").addEventListener("click", startSimulation)
-    radio.forEach(r => r.addEventListener("click", onChangeInput))
-    console.log(radio)
     _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById)(group)
+    radio.forEach(r => r.addEventListener("click", onChangeInput))
+
 }
 init(initParams, copyParams)
-// 제너레이터로 svg 지우고 -> 엘레먼트를 추가하는 과정들을 반복해준다.
-
-
-//시뮬레이션 함수
-
-//시뮬레이션 에니메이션
