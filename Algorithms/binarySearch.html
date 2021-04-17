@@ -1,60 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BinarySearch</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
 
-  <body>
-    <main id="main">
-            <section>
-        <article>
-          <h4>Data</h4>
-          <div>
-            <label for="duplicated">keep duplicated value?</label>
-            <input type="radio" name="radio" value="false">false
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BinarySearch</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <main id="main">
+    <section>
+      <article>
+        <h4>Data</h4>
+        <div>
+          <label for="duplicated">Allow duplicated value?</label>
+          <div><input type="radio" name="radio" value="false">false
             <input type="radio" name="radio" value="true">true
           </div>
+        </div>
 
-          <div>
-            <label for="width">width</label>
-            <input type="text" id="width" name="width" value="1500" />
-          </div>
-          <div>
-            <label for="data-list">array of numbers</label>
-            <input
-              type="text"
-              id="data-list"
-              name="data-list"
-              value="55,21,64,1,6,7,12,1,2,88,0,-22,-1,91,-30,54"
-            />
-          </div>
-          <div>
-            <label for="target">target number to find</label>
-            <input type="text" id="target" name="target" value="12" />
-          </div>
-          <div>
-            <button id="start" name="start">
-              start simulation
-            </button>
-          </div>
-        </article>
-      </section>
-      <section>
-        <h4>Status</h4>
-        <p>search-Round : <span id="search-count">0</span></p>
-        <p> <span id="search-answer">waiting...</span></p>
-      
-      </section>
-      <section id="svg-area">
-        <h4>SVG</h4>
-      </section>
 
-    </main>
-    <script src="./main.js"></script>
+        <div>
+          <label for="data-list">array of numbers</label>
+          <div><input type="text" id="data-list" name="data-list" value="55,21,64,1,6,7,12,1,2,88,0,-22,-1,91,-30,54" />
+          </div>
+        </div>
+        <div>
+          <label for="target">target</label>
+          <div><input type="text" id="target" name="target" value="12" /></div>
+        </div>
+        <div>
+          <label for="width">width</label>
+          <div><input type="text" id="width" name="width" value="1500" /></div>
+        </div>
 
-  </body>
+        <div>
+          <button id="start" name="start">
+            start
+          </button>
+        </div>
+      </article>
+    </section>
+    <section>
+      <article>
+
+      <h4>Status</h4>
+        <div>
+        <label>Round : <span id="search-count">0</span></label>
+        </div>
+
+        <div>
+        <label> <span id="search-answer">waiting...</span></label>
+        </div>
+
+      </article>
+
+    </section>
+    <section id="svg-area">
+      <h4>SVG</h4>
+    </section>
+
+  </main>
+  <script src="./main.js"></script>
+
+</body>
+
 </html>

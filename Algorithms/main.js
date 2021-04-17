@@ -63,7 +63,7 @@ const genAttr = (id) => (w, s, i) =>
     const { width, height } = elById('main').getBoundingClientRect()
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
-    const style = { line: `stroke: ${id === 'mid' ? color.focus : color.default}; stroke-width: ${s.line};` }
+    const style = { line: `stroke: ${id === 'mid' ? color.default : '#737373'}; stroke-width: ${s.line};` }
     const svg = {
         width: w,
         height: h,
@@ -77,7 +77,7 @@ const genAttr = (id) => (w, s, i) =>
         focusLine: {
             'attributeName': 'stroke-width',
             'attributeType': 'XML',
-            'values': '6;1;6;1',
+            'values': '3;1;3;1',
             'dur': '2s',
             'repeatCount': '5',
         },
@@ -98,9 +98,9 @@ const genAttr = (id) => (w, s, i) =>
         },
         line: {
             x1: ((s.unit * i) - s.gap + s.unit / 2),
-            y1: -h,
+            y1: id === 'mid' ? 0 : -h,
             x2: ((s.unit * i) - s.gap + s.unit / 2),
-            y2: h,
+            y2: id === 'mid' ? h : h*2,
             style: style.line,
         },
 
@@ -116,7 +116,7 @@ const genAttr = (id) => (w, s, i) =>
             height: s.box,
             x: ((s.unit * i) + s.gap / 2),
             y: (h / 2) - s.unit / 2,
-            stroke: color.default,
+            stroke: '#737373',
             'stroke-width': s.line,
         },
 
@@ -204,9 +204,9 @@ const updateTexts = (vars, copy) => (d) => (num, start, end, target) =>
         box.setAttribute('id', boxId)
         text.setAttribute('id', textId)
 
-        if (value === num) box.setAttribute('fill', 'purple')
-        else if (value === start || value === end) box.setAttribute('fill', 'green')
-        if (target !== 'bs' && value > num) box.setAttribute('fill', '#034f84')
+        if (value === num) box.setAttribute('fill', 'lemonchiffon') , text.setAttribute('fill', 'black')
+        else if (value === start || value === end) box.setAttribute('fill', '#292a38f2')
+        if (target !== 'bs' && value > num) box.setAttribute('stroke', 'lightseagreen')
 
         group.appendChild(box)
         group.appendChild(text)
@@ -341,6 +341,8 @@ const startSimulation = (vars, copy) => (e) =>
 
         let round = -1
         const start = new Date().getTime()
+        _.elById('search-answer').innerHTML = `Sorting...`
+
         while (_d_remain.length)
         {
             const min = Math.min.apply(null, _d_remain)
@@ -370,6 +372,7 @@ const startSimulation = (vars, copy) => (e) =>
      */
     const goBS = async (time, i, arr, left, right) =>
     {
+        _.elById('search-answer').innerHTML = `Searching...`
 
         return setTimeout(() =>
         {
@@ -381,7 +384,7 @@ const startSimulation = (vars, copy) => (e) =>
 
 
             _.elById('mid').appendChild(focus)
-            _.elById('search-count').innerHTML = `${i}`
+            _.elById('search-count').innerHTML = `${i+1}`
 
             for (const [id, value] of Object.entries(dirData))
             {
@@ -392,7 +395,7 @@ const startSimulation = (vars, copy) => (e) =>
 
             if (target === arr[left] || target === arr[right] || target === arr[mid])
             {
-                _.elById('search-answer').innerHTML = `[${target}] IS FOUND!!!`
+                _.elById('search-answer').innerHTML = `Target ${target}' Index is ${mid} !`
                 return console.log('found', target)
             }
             if (arr[mid] < target) return goBS(time, i + 1, arr, mid, right)

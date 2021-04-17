@@ -5,9 +5,11 @@ main {
   margin: 0;
 }
 h4 {
-  border: 1px solid;
-  padding: 10px 20px;
-  margin: 0 20px 0 0;
+    border: 1px solid;
+    padding: 10px 13px;
+    width: 8vh;
+    text-align: center;
+    margin: 2vh 2vh;
 }
 section {
   color: white;
@@ -15,24 +17,56 @@ section {
   align-items: baseline;
   justify-content: stretch;
 }
+section div{
+      /* width: 10vh;
+    margin: 0 10px; */
+}
 article {
-  width: 50vh;
-  display: flex;
-  align-items: flex-end;
+    display: flex;
+    align-items: center;
 }
 article div{
-display: inline-flex;
+    display: inline-flex;
     flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: start;
-    align-self: flex-end;
-    justify-self: self-start;
+    align-items: inherit;
+    margin: 0 10px 0 10px;
+}
+label {
+      font-weight: 600;
+    font-size: 17px;
+}
+input[type="text"], textarea {
+
+      background-color: black;
+    color: white;
+    border: 0;
+    border-bottom: 1px solid;
+    padding: 10px;
+    font-size: 16px;
+    letter-spacing: 1px;
+
+}
+#width, #target {
+  width: 6vh
+}
+#data-list {
+  width: 50vh;
 }
 #svg-area {
-  position: fixed;
-  padding: 0;
-  z-index: -990;
+    position: fixed;
+    padding: 0;
+    z-index: -990;
+    margin-top: 8vh;
 }
 #search-answer{
     font-size: 20px;
+}
+button {
+      background: black;
+    color: white;
+    padding: 10px 20px;
+    font-size: 17px;
+    border-radius: 3px;
+    border: 1px solid;
+        cursor: pointer;
 }
