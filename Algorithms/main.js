@@ -248,7 +248,7 @@ const onChangeInput = (vars, copy) => (e) =>
     }
     vars = [w, d, ...vars]
     _.updateDefault(vars, copy)
-    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
+    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.svgElInitList['group'])
 
 }
 
@@ -271,7 +271,7 @@ const startSimulation = (vars, copy) => (e) =>
 
     const updateTexts = ({ i, num, arr }) => new Promise(res => 
     {
-        _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, num, i)(_.g)
+        _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, num, i)(_.svgElInitList['group'])
         return res({ num, arr })
     })
 
@@ -366,7 +366,7 @@ const startSimulation = (vars, copy) => (e) =>
             _.elById('mid').appendChild(focus)
             _.elById('search-count').innerHTML = `${i}`
             Object.entries(dirData).forEach((v) => moveLine(w, d)(v))
-            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[mid], arr[left], arr[right], 'bs')(_.g)
+            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[mid], arr[left], arr[right], 'bs')(_.svgElInitList['group'])
 
             if (target === arr[left] || target === arr[right] || target === arr[mid])
             {
