@@ -42,7 +42,7 @@ const genElement = (type, attr) =>
 }
 const setAttr = (el, attr) =>
 {
-    
+
     for (const [t, v] of Object.entries(attr))
     {
         el.setAttribute(t, v)
@@ -73,7 +73,7 @@ const genAttr = (w, s, i) =>
         focusLine: {
             "attributeName": "stroke-width",
             "attributeType": "XML",
-            "values":"6;1;6;1",
+            "values": "6;1;6;1",
             "dur": "2s",
             "repeatCount": "5",
         },
@@ -124,12 +124,12 @@ const genAttr = (w, s, i) =>
 const getElement = (w, arr, size, gen, attr, i) => (target, type) =>
     gen(type, attr(w, size(w, arr), i)[target])
 
-const getAttrByIdx = (w,d,i) => genAttr(w, genSize(w, d), Number(i))
+const getAttrByIdx = (w, d, i) => genAttr(w, genSize(w, d), Number(i))
 
 
-const width = inputData(elById("width"))
+const w = inputData(elById("width"))
 const d = inputData(elById("data-list"))
-const textParams = [width, d, genSize, getElement, genElement, genAttr]
+const textParams = [w, d, genSize, getElement, genElement, genAttr]
 
 
 const updateTexts = (w, d, size, get, gen, attr, elById, num, start, end, target) => (g) =>
@@ -186,7 +186,6 @@ const copyParams = (params) =>
     const copied = {}
     for (const variable of (params))
     {
-        // console.log(variable)
         if (typeof variable === "number")
         {
             if (!copied['width']) copied['width'] = -1
@@ -197,9 +196,15 @@ const copyParams = (params) =>
             if (!copied['d']) copied['d'] = []
             copied['d'] = variable
         }
+        else if (variable[Symbol.toStringTag])
+        {
+            copied[variable[Symbol.toStringTag]] = variable
+            
+        }
         else if (variable.name === undefined)
         {
             copied[variable.tagName] = variable
+
         }
         else if (typeof variable === "function")
         {
@@ -353,18 +358,14 @@ const startSimulation = (vars, copy) => (e) =>
         {
             console.log(_)
             const mid = Math.floor((left + right) / 2)
-            const dirData = {'mid': mid, 'left': left, 'right':right}
+            const dirData = { 'mid': mid, 'left': left, 'right': right }
             const focus = _.genElement('animate', _.genAttr(w, d).focusLine)
             const moveLine = (w, d) => target => _.setAttr(_.elById(target[0]), _.getAttrByIdx(w, d, target[1]).moveX)
+
+
             _.elById('mid').appendChild(focus)
-            Object.entries(dirData).forEach((v) => moveLine(w,d)(v) )
-            // _.setAttr(_.elById('mid'), _.getAttrByIdx(w,d,mid).moveX)
-            // _.setAttr(_.elById('right'), _.getAttrByIdx(w,d,right).moveX)
-            // _.setAttr(_.elById('left'), _.getAttrByIdx(w, d, left).moveX)
-            
-
-
             _.elById('search-count').innerHTML = `${i}`
+            Object.entries(dirData).forEach((v) => moveLine(w, d)(v))
             _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[mid], arr[left], arr[right], 'bs')(_.g)
 
             if (target === arr[left] || target === arr[right] || target === arr[mid])
@@ -393,6 +394,99 @@ const startSimulation = (vars, copy) => (e) =>
 /**
  * 초기 실행
  */
+
+
+
+const svgList = (id) =>
+{
+    const definition =
+    {
+        svg:
+        {
+            type: "svg",
+            attr: "svg",
+            id: id.svg
+        },
+        eventArea:
+        {
+            type: "rect",
+            attr: "eventArea",
+            id: id.eventArea
+        },
+        line:
+        {
+            type: "line",
+            attr: "line",
+            id: id.lines,
+        },
+        g:
+        {
+            type: "g",
+            attr: "g",
+            id: id.g,
+        }
+    }
+    return definition
+}
+
+const idList =
+{
+    svg: 'svg',
+    eventArea: 'event',
+    lines: ['left', 'mid', 'right'],
+    g: ['g', 'group']
+}
+
+const list = Object.entries(svgList(idList))
+const createEl = (w, d) => getElement(w, d, genSize, genElement, genAttr)
+const genSvgEls = (list) =>
+{
+    const svgL = {}
+    list.forEach(e =>
+    {
+        const name = e[0]
+        const info = e[1]
+        let temp = undefined
+
+        if (info.id)
+        {
+            if (Array.isArray(info.id))
+            {
+                console.log(e)
+                for (const id of info.id)
+                {
+                    temp = createEl(w, d)(info.attr, info.type)
+                    setAttr(temp, { id: id })
+                    const isIdNameSame = name === id
+                    const isFirstTwoCharsSame = (name + id)[0] === (name + id)[1]
+                    const _name  = isIdNameSame ? id : isFirstTwoCharsSame ? id : name + (id[0].toUpperCase() + id.slice(1))
+                    if (temp !== undefined && !svgL[_name]) svgL[_name] = temp
+                }
+            }
+            else
+            {
+                temp = createEl(w, d)(info.attr, info.type)
+                setAttr(temp, { id: info.id })
+            }
+        }
+        else
+        {
+            temp = createEl(w, d)(info.attr, info.type)
+        }
+        if (temp !== undefined && !svgL[name] && !Array.isArray(info.id)) svgL[name] = temp
+
+    })
+    svgL[Symbol.toStringTag] = "svgElInitList"
+    return svgL
+}
+
+const createdSvgEls = genSvgEls(list)
+console.log(createdSvgEls)
+
+/**
+ * 
+ *  !!TODO :하드코딩 되어 있는부분 개선 필요
+ */
 const initParams = [
     inputData,
     elById,
@@ -406,8 +500,8 @@ const initParams = [
     updateDefault,
     setAttr,
     getAttrByIdx,
+    createdSvgEls
 ]
-
 const init = (vars, copy) =>
 {
     const _ = copy(vars)
@@ -416,28 +510,27 @@ const init = (vars, copy) =>
     const radio = document.getElementsByName('duplicated')
 
     const svgArea = _.elById('svg-area')
-    const createEl = _.getElement(w, d, _.genSize, _.genElement, _.genAttr)
+    const createEl = _.getElement(w, d, genSize, genElement, genAttr)
 
     const svg = createEl("svg", "svg")
-    const eventArea = createEl("eventArea", "rect")
-    const lineMid = createEl("line", "line")
-    const lineLeft = _.getElement(w, d, _.genSize, _.genElement, _.genAttr, 0)("line", "line")
-    const lineRight = _.getElement(w, d, _.genSize, _.genElement, _.genAttr, d.length - 1)("line", "line")
-    const group = createEl("g", "g")
+    const svgEls = []
+    console.log(_.svgElInitList)
 
-    const svgEls = [svg, eventArea, lineMid, group, lineLeft, lineRight]
 
-    lineLeft.setAttribute('id', 'left')
-    lineRight.setAttribute('id', 'right')
-    lineMid.setAttribute('id', 'mid')
-    eventArea.setAttribute('id', 'event')
     svgArea.appendChild(svg)
-    svg.appendChild(eventArea)
-    svg.appendChild(lineMid)
-    svg.appendChild(lineLeft)
-    svg.appendChild(lineRight)
-    svg.appendChild(group)
+
+    const appendToSvg = (svg, list) =>
+    {
+        for (const [key,el] of Object.entries(list))
+        {
+            svg.appendChild(el)    
+            svgEls.push(el)
+        }
+    }
+
+    appendToSvg(svg,_.svgElInitList)
     vars = [...svgEls, ...vars, radio]
+
 
     const onChangeInput = _.onChangeInput(vars, copy)
     const startSimulation = _.startSimulation(vars, copy)
@@ -445,7 +538,7 @@ const init = (vars, copy) =>
 
     _.elById("data-list").addEventListener("input", onChangeInput)
     _.elById("start").addEventListener("click", startSimulation)
-    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById)(group)
+    _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById)(_.svgElInitList['group'])
     radio.forEach(r => r.addEventListener("click", onChangeInput))
 
 }
