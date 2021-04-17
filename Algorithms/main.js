@@ -59,11 +59,11 @@ const setAttr = (el, attr) =>
  * */
 const genAttr = (id) => (w, s, i) =>
 {
-    console.log(id)
+    // console.log(id)
     const { width, height } = elById('main').getBoundingClientRect()
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
-    const style = { line: `stroke: ${color.default}; stroke-width: ${s.line};` }
+    const style = { line: `stroke: ${id === 'mid' ? color.focus : color.default}; stroke-width: ${s.line};` }
     const svg = {
         width: w,
         height: h,
@@ -377,12 +377,17 @@ const startSimulation = (vars, copy) => (e) =>
             const mid = Math.floor((left + right) / 2)
             const dirData = { 'mid': mid, 'left': left, 'right': right }
             const focus = _.genElement('animate', _.genAttr('focus')(w, d).focusLine)
-            const moveLine = (w, d, id) => target => _.setAttr(_.elById(target[0]), _.getAttrByIdx(w, d, target[1]).moveX,id)
+            const moveLine = (id, value) => _.setAttr(_.elById(id), _.getAttrByIdx(w, d, value).moveX)
 
 
             _.elById('mid').appendChild(focus)
             _.elById('search-count').innerHTML = `${i}`
-            Object.entries(dirData).forEach((v) => moveLine(w, d,v)(v))
+
+            for (const [id, value] of Object.entries(dirData))
+            {
+                moveLine(id,value)
+            }
+
             _.updateTexts(vars, copy)(arr)(arr[mid], arr[left], arr[right], 'bs')
 
             if (target === arr[left] || target === arr[right] || target === arr[mid])
@@ -424,7 +429,7 @@ const genSvgFromList = (list) =>
             {
                 for (const id of info.id)
                 {
-                    temp = getElement(w, d)(info.attr, info.type, info.id)
+                    temp = getElement(w, d)(info.attr, info.type, id)
                     setAttr(temp, { id: id })
                     const isIdNameSame = name === id
                     const isFirstTwoCharsSame = (name + id)[0] === (name + id)[1]
@@ -434,7 +439,7 @@ const genSvgFromList = (list) =>
                 continue
             }
         }
-        temp = getElement(w, d)(info.attr, info.type, info.id)
+        temp = getElement(w, d)(info.attr, info.type)
         setAttr(temp, { id: info.id })
         createdSVG[name] = temp
     }
