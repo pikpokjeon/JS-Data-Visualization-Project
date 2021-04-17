@@ -1,11 +1,11 @@
 const elById = (target) => document.getElementById(target)
-
+const elsByName = (name) => document.getElementsByName(name)
 const inputData = (el) =>
 {
-    return el.value.indexOf(",") > -1
+    return el.value.indexOf(',') > -1
         ? el.value
-            .split(",")
-            .map(_ => Number(_)).filter(_ => typeof _ === "number")
+            .split(',')
+            .map(_ => Number(_)).filter(_ => typeof _ === 'number')
         : Number(el.value)
 }
 
@@ -32,7 +32,7 @@ const genSize = (w, d) =>
 const genElement = (type, attr) =>
 {
     console.log(type,attr)
-    type = document.createElementNS("http://www.w3.org/2000/svg", type)
+    type = document.createElementNS('http://www.w3.org/2000/svg', type)
     for (const [t, v] of Object.entries(attr))
     {
         type.setAttributeNS(null, t, v)
@@ -58,7 +58,7 @@ const genAttr = (w, s, i) =>
     const { width, height } = elById('main').getBoundingClientRect()
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const dataBox = { width: s.box, height: s.box }
-    const color = { bg: "black", default: "white", focus: "red", blue: "blue" }
+    const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
     const style = { line: `stroke: ${color.default}; stroke-width: ${s.line}` }
     const svg = {
         width: w,
@@ -71,11 +71,11 @@ const genAttr = (w, s, i) =>
             fill: color.bg,
         },
         focusLine: {
-            "attributeName": "stroke-width",
-            "attributeType": "XML",
-            "values": "6;1;6;1",
-            "dur": "2s",
-            "repeatCount": "5",
+            'attributeName': 'stroke-width',
+            'attributeType': 'XML',
+            'values': '6;1;6;1',
+            'dur': '2s',
+            'repeatCount': '5',
         },
         moveX: {
             x1: ((s.unit * i) - s.gap + s.unit / 2),
@@ -104,8 +104,8 @@ const genAttr = (w, s, i) =>
             x: ((s.unit * i) - s.gap + s.unit / 2),
             y: (h / 2) - s.gap,
             fill: color.default,
-            "dominant-baseline": "start",
-            "text-anchor": "middle",
+            'dominant-baseline': 'start',
+            'text-anchor': 'middle',
         },
         dataBox: {
             width: s.box,
@@ -113,7 +113,7 @@ const genAttr = (w, s, i) =>
             x: ((s.unit * i) + s.gap / 2),
             y: (h / 2) - s.unit / 2,
             stroke: color.default,
-            "stroke-width": s.line,
+            'stroke-width': s.line,
         },
 
     }
@@ -126,8 +126,8 @@ const getElement = (w, arr, i) =>(target, type)  => genElement(type, genAttr(w, 
 const getAttrByIdx = (w, d, i) => genAttr(w, genSize(w, d), Number(i))
 
 
-const w = inputData(elById("width"))
-const d = inputData(elById("data-list"))
+const w = inputData(elById('width'))
+const d = inputData(elById('data-list'))
 const textParams = [w, d, genSize, getElement, genElement, genAttr]
 
 
@@ -149,9 +149,9 @@ const updateTexts = (vars,copy)=> (d) => ( num, start, end, target) =>
 
         const [text, box, group] =
         [
-            createEl("dataText", "text"),
-            createEl("dataBox", "rect"),
-            createEl("gBox", "g"),
+            createEl('dataText', 'text'),
+            createEl('dataBox', 'rect'),
+            createEl('gBox', 'g'),
         ]
 
         text.textContent = value
@@ -181,7 +181,7 @@ const copyParams = (params) =>
     const copied = {}
     for (const variable of (params))
     {
-        if (typeof variable === "number")
+        if (typeof variable === 'number')
         {
             if (!copied['width']) copied['width'] = -1
             copied['width'] = variable
@@ -201,7 +201,7 @@ const copyParams = (params) =>
             copied[variable.tagName] = variable
 
         }
-        else if (typeof variable === "function")
+        else if (typeof variable === 'function')
         {
             copied[variable.name] = variable
         }
@@ -221,20 +221,20 @@ const updateLines = (elById) => (i, target) =>
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    const wth = _.elById("width")
+    const wth = _.elById('width')
     const w = _.inputData(wth)
-    const main = _.elById("main")
-    let d = _.inputData(_.elById("data-list"))
+    const main = _.elById('main')
+    let d = _.inputData(_.elById('data-list'))
 
     const radioNodeList = document.getElementsByName('duplicated')
     radioNodeList.forEach(n =>
     {
-        if (n.checked && n.value === "false")
+        if (n.checked && n.value === 'false')
         {
             d = Array.from(new Set(d))
         }
     })
-    _.elById("data-list").value = `${(d)}`
+    _.elById('data-list').value = `${(d)}`
     const { width } = main.getBoundingClientRect()
     if (w > width)
     {
@@ -257,9 +257,9 @@ const startSimulation = (vars, copy) => (e) =>
 
 
     const _ = copy(vars)
-    const w = _.inputData(_.elById("width"))
-    const d = _.inputData(_.elById("data-list"))
-    const target = _.inputData(_.elById("target"))
+    const w = _.inputData(_.elById('width'))
+    const d = _.inputData(_.elById('data-list'))
+    const target = _.inputData(_.elById('target'))
 
     _.elById('search-answer').innerHTML = `waiting...`
     _.elById('search-count').innerHTML = `0`
@@ -399,26 +399,26 @@ const svgDefinition = (id) =>
     {
         svg:
         {
-            type: "svg",
-            attr: "svg",
+            type: 'svg',
+            attr: 'svg',
             id: id.svg
         },
         eventArea:
         {
-            type: "rect",
-            attr: "eventArea",
+            type: 'rect',
+            attr: 'eventArea',
             id: id.eventArea
         },
         line:
         {
-            type: "line",
-            attr: "line",
+            type: 'line',
+            attr: 'line',
             id: id.lines,
         },
         g:
         {
-            type: "g",
-            attr: "g",
+            type: 'g',
+            attr: 'g',
             id: id.g,
         }
     }
@@ -472,7 +472,7 @@ const genSvgFromList = (list) =>
         if (temp !== undefined && !svgL[name] && !Array.isArray(info.id)) svgL[name] = temp
 
     })
-    svgL[Symbol.toStringTag] = "initSVG"
+    svgL[Symbol.toStringTag] = 'initSVG'
     return svgL
 }
 
@@ -486,6 +486,7 @@ console.log(initCreatedSvgList)
 const initParams = [
     inputData,
     elById,
+    elsByName,
     genSize,
     genElement,
     getElement,
@@ -500,12 +501,19 @@ const initParams = [
 ]
 
 
+const DOMEventAttr =
+{
+    'width': 'input',
+    'data-list': 'input',
+    'start': 'click',
+    'radio': 'click'
+}
 
 const init = (vars, copy) =>
 {
     const _ = copy(vars)
-    const d = _.inputData(_.elById("data-list"))
-    const radio = document.getElementsByName('duplicated')
+    const d = _.inputData(_.elById('data-list'))
+    const radio = _.elsByName('duplicated')
     const svgArea = _.elById('svg-area')
     const svg = _.initSVG['svg']
 
@@ -515,7 +523,7 @@ const init = (vars, copy) =>
 
         for (const [key,el] of Object.entries(list))
         {
-            if (key === "svg") svgArea.appendChild(el)
+            if (key === 'svg') svgArea.appendChild(el)
             else svg.appendChild(el)    
             addedSVG.push(el)
         }
@@ -529,12 +537,23 @@ const init = (vars, copy) =>
     const onChangeInput = _.onChangeInput(vars, copy)
     const startSimulation = _.startSimulation(vars, copy)
 
-
-    _.elById("width").addEventListener("input", onChangeInput)
-    _.elById("data-list").addEventListener("input", onChangeInput)
-    _.elById("start").addEventListener("click", startSimulation)
+    const addEventsToDOM = (list) =>
+    {
+        let eventFunc = undefined
+        for (const [target, event] of Object.entries(list))
+        {
+            if (target === 'start') eventFunc = startSimulation
+            else if (target === 'radio')
+            {
+                _.elsByName(target).forEach(r => r.addEventListener(event, onChangeInput))
+                continue
+            }
+            else eventFunc = onChangeInput
+            _.elById(target).addEventListener(event, eventFunc)
+        }
+    }
+    addEventsToDOM(DOMEventAttr)
     _.updateTexts(vars,copy)(d)()
-    radio.forEach(r => r.addEventListener("click", onChangeInput))
 
 }
 init(initParams, copyParams)
