@@ -534,24 +534,23 @@ const init = (vars, copy) =>
     vars = [...appendedSVG(svg,_.initSVG), ...vars, radio]
 
 
-    const onChangeInput = _.onChangeInput(vars, copy)
-    const startSimulation = _.startSimulation(vars, copy)
-
     const addEventsToDOM = (list) =>
     {
         let eventFunc = undefined
+
         for (const [target, event] of Object.entries(list))
         {
-            if (target === 'start') eventFunc = startSimulation
+            if (target === 'start') eventFunc = _.startSimulation(vars, copy)
             else if (target === 'radio')
             {
-                _.elsByName(target).forEach(r => r.addEventListener(event, onChangeInput))
+                _.elsByName(target).forEach(r => r.addEventListener(event,_.onChangeInput(vars, copy)))
                 continue
             }
-            else eventFunc = onChangeInput
+            else eventFunc = _.onChangeInput(vars, copy)
             _.elById(target).addEventListener(event, eventFunc)
         }
     }
+    
     addEventsToDOM(DOMEventAttr)
     _.updateTexts(vars,copy)(d)()
 
