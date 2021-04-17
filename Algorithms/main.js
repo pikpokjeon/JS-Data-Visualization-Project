@@ -352,24 +352,28 @@ const startSimulation = (vars, copy) => (e) =>
         return setTimeout(() =>
         {
             console.log(_)
-            const midIdx = Math.floor((left + right) / 2)
+            const mid = Math.floor((left + right) / 2)
+            const dirData = {'mid': mid, 'left': left, 'right':right}
             const focus = _.genElement('animate', _.genAttr(w, d).focusLine)
+            const moveLine = (w, d) => target => _.setAttr(_.elById(target[0]), _.getAttrByIdx(w, d, target[1]).moveX)
             _.elById('mid').appendChild(focus)
-
-            _.setAttr(_.elById('mid'), _.getAttrByIdx(w,d,midIdx).moveX)
-            _.setAttr(_.elById('right'), _.getAttrByIdx(w,d,right).moveX)
-            _.setAttr(_.elById('left'), _.getAttrByIdx(w, d, left).moveX)
+            Object.entries(dirData).forEach((v) => moveLine(w,d)(v) )
+            // _.setAttr(_.elById('mid'), _.getAttrByIdx(w,d,mid).moveX)
+            // _.setAttr(_.elById('right'), _.getAttrByIdx(w,d,right).moveX)
+            // _.setAttr(_.elById('left'), _.getAttrByIdx(w, d, left).moveX)
             
-            _.elById('search-count').innerHTML = `${i}`
-            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[midIdx], arr[left], arr[right], 'bs')(_.g)
 
-            if (target === arr[left] || target === arr[right] || target === arr[midIdx])
+
+            _.elById('search-count').innerHTML = `${i}`
+            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[mid], arr[left], arr[right], 'bs')(_.g)
+
+            if (target === arr[left] || target === arr[right] || target === arr[mid])
             {
                 _.elById('search-answer').innerHTML = `[${target}] IS FOUND!!!`
                 return console.log('found', target)
             }
-            if (arr[midIdx] < target) return goBS(i + 1, arr, midIdx, right)
-            else if (arr[midIdx] > target) return goBS(i + 1, arr, left, midIdx)
+            if (arr[mid] < target) return goBS(i + 1, arr, mid, right)
+            else if (arr[mid] > target) return goBS(i + 1, arr, left, mid)
 
         }, 3000)
 
