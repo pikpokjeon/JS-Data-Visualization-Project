@@ -260,22 +260,31 @@ const startSimulation = (vars, copy) => (e) =>
     const w = _.inputData(_.elById('width'))
     const d = _.inputData(_.elById('data-list'))
     const target = _.inputData(_.elById('target'))
-
+    let sortRound = -1
     _.elById('search-answer').innerHTML = `waiting...`
     _.elById('search-count').innerHTML = `0`
 
-    const updateBox = ({ i, num, arr }) => new Promise(res => 
+    const updateBox = ({ i, num, arr, time }) => new Promise(res => 
     {
         _.updateTexts(vars, copy)(arr)(num, i)
-        return res({ num, arr })
+        return res({ num, arr, time })
     })
 
-    const updateLast = ({ num, arr }) =>
+    const updateLast = ({ num, arr, time }) =>
     {
+        sortRound+=1
         if (arr.indexOf(num) === arr.length - 1)
         {
             _.elById(`${num}`).setAttribute('fill', 'black')
         }
+        if (sortRound === d.length-1)
+        {
+            const end = new Date().getTime()
+            const dur = (end - time) / 600 * 1000
+            goBS(dur,0, temp_d, 0, temp_d.length - 1)
+        }
+
+
     }
 
     let _d = [...d]
@@ -283,6 +292,7 @@ const startSimulation = (vars, copy) => (e) =>
     let _d_counts = {}
     let temp_d = [...d]
     const _d_sorted = []
+
     for (const num of d)
     {
         if (!_d_counts[num]) _d_counts[num] = 0
@@ -292,18 +302,18 @@ const startSimulation = (vars, copy) => (e) =>
     /**
      * !TODO : 일정시간을 간격으로 정렬 과정이 보이도록 해야함
      */
-    const updateTargetToSort = (min, i, delay, arr) => new Promise(res => 
+    const updateTargetToSort = (time, min, i, delay, arr) => new Promise(res => 
     {
         return setTimeout(() =>
         {
             _.elById(`${min}`).setAttribute('fill', 'purple')
-            res({ curIdx: i, num: arr[i], delay, arr })
+            res({ curIdx: i, num: arr[i], delay, arr, time })
         }, delay * ((i + 1)))
     })
 
-    const toDelayUpdate = async (delay, idx, min, arr) =>
+    const toDelayUpdate = async (time, delay, idx, min, arr) =>
     {
-        await updateTargetToSort(min, idx, delay, arr).then(updateBox).then(updateLast)
+        await updateTargetToSort(time, min, idx, delay, arr).then(updateBox).then(updateLast)
     }
 
     /**
@@ -328,19 +338,14 @@ const startSimulation = (vars, copy) => (e) =>
                 _d = _d.flat()
                 _d_remain = _d_remain.flat()
                 _d_sorted.push(min)
-                toDelayUpdate(100, idxx, min, temp_d)
+                toDelayUpdate(start, 100, idxx, min, temp_d)
                 temp_d = (_d_sorted.concat(_d_remain))
                 idxx += 1
-                // toDelayUpdate(500, idxx, min, temp_d)
                 console.log(temp_d)
 
             }
 
         }
-        const end = new Date().getTime()
-
-        console.log(end - start, start, end)
-        // return setTimeout(()=> res(0, temp_d,0,temp_d.length-1 ),3000)
 
     })
 
@@ -348,8 +353,9 @@ const startSimulation = (vars, copy) => (e) =>
     /**
      * 2. 정렬이 된 배열에서 target 을 찾기 위해 재귀를 돈다
      */
-    const goBS = async (i, arr, left, right) =>
+    const goBS = async (time, i, arr, left, right) =>
     {
+        
         return setTimeout(() =>
         {
             console.log(_)
@@ -369,21 +375,14 @@ const startSimulation = (vars, copy) => (e) =>
                 _.elById('search-answer').innerHTML = `[${target}] IS FOUND!!!`
                 return console.log('found', target)
             }
-            if (arr[mid] < target) return goBS(i + 1, arr, mid, right)
-            else if (arr[mid] > target) return goBS(i + 1, arr, left, mid)
+            if (arr[mid] < target) return goBS(time,i + 1, arr, mid, right)
+            else if (arr[mid] > target) return goBS(time,i + 1, arr, left, mid)
 
-        }, 3000)
+        }, time)
 
     }
 
-    // sort()
-    // clearTimeout()
-    const simulation = async () => [
-        sort(),
-        goBS(0, temp_d, 0, temp_d.length - 1),
-    ]
-    // goBS(0, temp_d, 0,temp_d.length-1)
-    simulation()
+    sort()
 
 }
 
@@ -470,9 +469,9 @@ const genSvgFromList = (list) =>
         setAttr(temp, { id: info.id })
         createdSVG[name] = temp
     }
-    
+
     createdSVG[Symbol.toStringTag] = 'initSVG'
-    
+
     return createdSVG
 }
 
