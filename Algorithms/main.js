@@ -401,7 +401,7 @@ const startSimulation = (vars, copy) => (e) =>
             if (arr[mid] < target) return goBS(time, i + 1, arr, mid, right)
             else if (arr[mid] > target) return goBS(time, i + 1, arr, left, mid)
 
-        }, time)
+        }, 1000)
 
     }
 

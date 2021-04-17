@@ -9,7 +9,4 @@
 - HOW TO RUN : It's static project, just drag n drop the html file over your choice of browser!
 ##### Last update : using input data to show sorting then binary searching 
 
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs-def.png)
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs-size.png)
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs-sort.png)
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.png)
+![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs-gif.gif)
