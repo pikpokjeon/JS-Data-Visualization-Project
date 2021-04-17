@@ -24,26 +24,37 @@ const genSize = (w, d) =>
         height: 500,
         margin: 50,
         data: { text: { width: 30, height: 20 }, box },
-        line: 3,
+        line: 2,
     }
 }
 
 
 const genElement = (type, attr) =>
 {
+    // console.log(type,attr)
     type = document.createElementNS("http://www.w3.org/2000/svg", type)
     for (const [t, v] of Object.entries(attr))
     {
-        type.setAttributeNS(null, t.toLowerCase(), v)
+        type.setAttributeNS(null, t, v)
     }
     return type
 
+}
+const setAttr = (el, attr) =>
+{
+    
+    for (const [t, v] of Object.entries(attr))
+    {
+        el.setAttribute(t, v)
+    }
+    return el
 }
 /**
  *   요소의 x거리를 알아야 하는 경우에는 i를 인자로 받음
  * */
 const genAttr = (w, s, i) =>
 {
+    // console.log(i)
     const { width, height } = elById('main').getBoundingClientRect()
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const dataBox = { width: s.box, height: s.box }
@@ -59,15 +70,16 @@ const genAttr = (w, s, i) =>
         gBox: {
             fill: color.bg,
         },
-        animateBox: {
-            "attribute-Name": "x",
-            "attribute-Type": "XML",
-            from: ((s.unit * i) + s.gap / 2),
-            to: 0,
-            begin: "5s",
-            dur: "10s",
-            fill: "red",
-            "repeat-Count": "indefinite",
+        focusLine: {
+            "attributeName": "stroke-width",
+            "attributeType": "XML",
+            "values":"6;1;6;1",
+            "dur": "2s",
+            "repeatCount": "5",
+        },
+        moveX: {
+            x1: ((s.unit * i) - s.gap + s.unit / 2),
+            x2: ((s.unit * i) - s.gap + s.unit / 2),
         },
         eventArea: {
             ...svg,
@@ -80,7 +92,14 @@ const genAttr = (w, s, i) =>
             y2: h,
             style: style.line,
         },
-        
+        line: {
+            x1: ((s.unit * i) - s.gap + s.unit / 2),
+            y1: -h,
+            x2: ((s.unit * i) - s.gap + s.unit / 2),
+            y2: h,
+            style: style.line,
+        },
+
         dataText: {
             x: ((s.unit * i) - s.gap + s.unit / 2),
             y: (h / 2) - s.gap,
@@ -96,13 +115,7 @@ const genAttr = (w, s, i) =>
             stroke: color.default,
             "stroke-width": s.line,
         },
-        line: {
-            x1: h + s.gap,
-            y1: 0,
-            x2: h + s.gap,
-            y2: h,
-            style: style.line,
-        },
+
     }
     return { svg, ...list }
 }
@@ -111,12 +124,15 @@ const genAttr = (w, s, i) =>
 const getElement = (w, arr, size, gen, attr, i) => (target, type) =>
     gen(type, attr(w, size(w, arr), i)[target])
 
+const getAttrByIdx = (w,d,i) => genAttr(w, genSize(w, d), Number(i))
+
+
 const width = inputData(elById("width"))
 const d = inputData(elById("data-list"))
 const textParams = [width, d, genSize, getElement, genElement, genAttr]
 
 
-const updateTexts = (w, d, size, get, gen, attr, elById, num, start,end,target) => (g) =>
+const updateTexts = (w, d, size, get, gen, attr, elById, num, start, end, target) => (g) =>
 {
 
     while (g.firstChild)
@@ -131,7 +147,6 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num, start,end,target) 
             createEl("dataText", "text"),
             createEl("dataBox", "rect"),
             createEl("gBox", "g"),
-            createEl("animateBox", "animate")
         ]
 
         text.textContent = value
@@ -146,7 +161,7 @@ const updateTexts = (w, d, size, get, gen, attr, elById, num, start,end,target) 
         else if (value === start || value === end)
         {
             box.setAttribute('fill', 'green')
-            
+
         }
         if (target !== 'bs' && value > num)
         {
@@ -171,7 +186,7 @@ const copyParams = (params) =>
     const copied = {}
     for (const variable of (params))
     {
-        console.log(variable)
+        // console.log(variable)
         if (typeof variable === "number")
         {
             if (!copied['width']) copied['width'] = -1
@@ -194,6 +209,10 @@ const copyParams = (params) =>
     return copied
 }
 
+const updateLines = (elById) => (i, target) =>
+{
+
+}
 
 
 /**
@@ -222,7 +241,6 @@ const onChangeInput = (vars, copy) => (e) =>
         wth.value = width - 250
         w = width - 250
     }
-    console.log(width)
     vars = [w, d, ...vars]
     _.updateDefault(vars, copy)
     _.updateTexts(w, d, _.genSize, _.getElement, _.genElement, _.genAttr)(_.g)
@@ -292,10 +310,11 @@ const startSimulation = (vars, copy) => (e) =>
      * 이진탐색 조건 1. 정렬이 가능한가? 정렬을 시작
      * 정렬 -> 이진탐색으로 가기위해 동기처리 필요
      */
-    const sort = () =>
+    const sort = () => new Promise(res =>
     {
-        let idxx = -1
 
+        let idxx = -1
+        const start = new Date().getTime()
         while (_d_remain.length)
         {
             const min = Math.min.apply(null, _d_remain)
@@ -309,55 +328,61 @@ const startSimulation = (vars, copy) => (e) =>
                 _d = _d.flat()
                 _d_remain = _d_remain.flat()
                 _d_sorted.push(min)
-                toDelayUpdate(500, idxx, min, temp_d)
+                toDelayUpdate(100, idxx, min, temp_d)
                 temp_d = (_d_sorted.concat(_d_remain))
                 idxx += 1
-                toDelayUpdate(500, idxx, min, temp_d)
+                // toDelayUpdate(500, idxx, min, temp_d)
 
             }
 
         }
-    }
-    sort()
-    clearTimeout()
+        const end = new Date().getTime()
+
+        console.log(end - start, start, end)
+        // return setTimeout(()=> res(0, temp_d,0,temp_d.length-1 ),3000)
+
+    })
+
 
     /**
      * 2. 정렬이 된 배열에서 target 을 찾기 위해 재귀를 돈다
      */
-    const goBS = (i, arr, left,right) =>
+    const goBS = async (i, arr, left, right) =>
     {
-        setTimeout(() =>
+        return setTimeout(() =>
         {
+            console.log(_)
+            const midIdx = Math.floor((left + right) / 2)
+            const focus = _.genElement('animate', _.genAttr(w, d).focusLine)
+            _.elById('mid').appendChild(focus)
 
-            _.elById('search-count').innerHTML = `${i}`
-
-            let midIdx = Math.floor((left + right) / 2)
-            // midIdx = Math.floor(left + midIdx)
-                console.log(midIdx)
-            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[midIdx], arr[left],arr[right],'bs')(_.g)
+            _.setAttr(_.elById('mid'), _.getAttrByIdx(w,d,midIdx).moveX)
+            _.setAttr(_.elById('right'), _.getAttrByIdx(w,d,right).moveX)
+            _.setAttr(_.elById('left'), _.getAttrByIdx(w, d, left).moveX)
             
+            _.elById('search-count').innerHTML = `${i}`
+            _.updateTexts(w, arr, _.genSize, _.getElement, _.genElement, _.genAttr, _.elById, arr[midIdx], arr[left], arr[right], 'bs')(_.g)
+
             if (target === arr[left] || target === arr[right] || target === arr[midIdx])
             {
                 _.elById('search-answer').innerHTML = `[${target}] IS FOUND!!!`
                 return console.log('found', target)
-            } 
-            if (arr[midIdx] < target)
-            {
-                // arr = arr.slice(midIdx, arr.length)
-
-                console.log(i, arr[midIdx], left,right,midIdx)
-                return goBS(i + 1, arr, midIdx, right)
-            } else if (arr[midIdx] > target)
-            {
-                // arr = arr.slice(0, midIdx)
-
-                console.log(i, arr[midIdx], left,right,midIdx)
-                return goBS(i + 1, arr, left,midIdx)
             }
-        }, 5000)
+            if (arr[midIdx] < target) return goBS(i + 1, arr, midIdx, right)
+            else if (arr[midIdx] > target) return goBS(i + 1, arr, left, midIdx)
+
+        }, 3000)
 
     }
-    goBS(0, temp_d, 0,temp_d.length-1)
+
+    // sort()
+    // clearTimeout()
+    const simulation = async () => [
+        sort(),
+        goBS(0, temp_d, 0, temp_d.length - 1),
+    ]
+    // goBS(0, temp_d, 0,temp_d.length-1)
+    simulation()
 
 }
 
@@ -375,6 +400,8 @@ const initParams = [
     startSimulation,
     updateTexts,
     updateDefault,
+    setAttr,
+    getAttrByIdx,
 ]
 
 const init = (vars, copy) =>
@@ -389,14 +416,22 @@ const init = (vars, copy) =>
 
     const svg = createEl("svg", "svg")
     const eventArea = createEl("eventArea", "rect")
-    const line = createEl("indicatorLine", "line")
+    const lineMid = createEl("line", "line")
+    const lineLeft = _.getElement(w, d, _.genSize, _.genElement, _.genAttr, 0)("line", "line")
+    const lineRight = _.getElement(w, d, _.genSize, _.genElement, _.genAttr, d.length - 1)("line", "line")
     const group = createEl("g", "g")
 
-    const svgEls = [svg, eventArea, line, group]
+    const svgEls = [svg, eventArea, lineMid, group, lineLeft, lineRight]
 
+    lineLeft.setAttribute('id', 'left')
+    lineRight.setAttribute('id', 'right')
+    lineMid.setAttribute('id', 'mid')
+    eventArea.setAttribute('id', 'event')
     svgArea.appendChild(svg)
     svg.appendChild(eventArea)
-    svg.appendChild(line)
+    svg.appendChild(lineMid)
+    svg.appendChild(lineLeft)
+    svg.appendChild(lineRight)
     svg.appendChild(group)
     vars = [...svgEls, ...vars, radio]
 
