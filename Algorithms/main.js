@@ -57,13 +57,13 @@ const setAttr = (el, attr) =>
 /**
  *   요소의 x거리를 알아야 하는 경우에는 i를 인자로 받음
  * */
-const genAttr = (w, s, i) =>
+const genAttr = (id) => (w, s, i) =>
 {
-    // console.log(i)
+    console.log(id)
     const { width, height } = elById('main').getBoundingClientRect()
     const [m, h, data, d] = [s.margin, s.height, s.data, s.d]
     const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
-    const style = { line: `stroke: ${color.default}; stroke-width: ${s.line}` }
+    const style = { line: `stroke: ${color.default}; stroke-width: ${s.line};` }
     const svg = {
         width: w,
         height: h,
@@ -173,8 +173,8 @@ const DOMEventAttr = {
 }
  DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
-const getElement = (w, arr, i) => (target, type) => genElement(type, genAttr(w, genSize(w, arr), i)[target])
-const getAttrByIdx = (w, d, i) => genAttr(w, genSize(w, d), Number(i))
+const getElement = (w, arr, i ) => (target, type, id) => genElement(type, genAttr(id)(w, genSize(w, arr), i)[target])
+const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
 
 
@@ -192,17 +192,17 @@ const updateTexts = (vars, copy) => (d) => (num, start, end, target) =>
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const createEl = getElement(w, d, i)
-
+        const [textId, boxId] = [`text-${value}`, `box-${value}`]
         const [text, box, group] =
             [
-                createEl('dataText', 'text'),
-                createEl('dataBox', 'rect'),
+                createEl('dataText', 'text',textId),
+                createEl('dataBox', 'rect',boxId),
                 createEl('gBox', 'g'),
             ]
 
         text.textContent = value
-        box.setAttribute('id', value)
-        text.setAttribute('id', value + 'text')
+        box.setAttribute('id', boxId)
+        text.setAttribute('id', textId)
 
         if (value === num) box.setAttribute('fill', 'purple')
         else if (value === start || value === end) box.setAttribute('fill', 'green')
@@ -291,7 +291,7 @@ const startSimulation = (vars, copy) => (e) =>
         sortRound += 1
         if (arr.indexOf(num) === arr.length - 1)
         {
-            _.elById(`${num}`).setAttribute('fill', 'black')
+            _.elById(`box-${num}`).setAttribute('fill', 'black')
         }
         if (sortRound === d.length - 1)
         {
@@ -322,7 +322,7 @@ const startSimulation = (vars, copy) => (e) =>
     {
         return setTimeout(() =>
         {
-            _.elById(`${min}`).setAttribute('fill', 'purple')
+            _.elById(`box-${min}`).setAttribute('fill', 'purple')
             res({ curIdx: i, num: arr[i], delay, arr, time })
         }, delay * ((i + 1)))
     })
@@ -376,13 +376,13 @@ const startSimulation = (vars, copy) => (e) =>
             console.log(_)
             const mid = Math.floor((left + right) / 2)
             const dirData = { 'mid': mid, 'left': left, 'right': right }
-            const focus = _.genElement('animate', _.genAttr(w, d).focusLine)
-            const moveLine = (w, d) => target => _.setAttr(_.elById(target[0]), _.getAttrByIdx(w, d, target[1]).moveX)
+            const focus = _.genElement('animate', _.genAttr('focus')(w, d).focusLine)
+            const moveLine = (w, d, id) => target => _.setAttr(_.elById(target[0]), _.getAttrByIdx(w, d, target[1]).moveX,id)
 
 
             _.elById('mid').appendChild(focus)
             _.elById('search-count').innerHTML = `${i}`
-            Object.entries(dirData).forEach((v) => moveLine(w, d)(v))
+            Object.entries(dirData).forEach((v) => moveLine(w, d,v)(v))
             _.updateTexts(vars, copy)(arr)(arr[mid], arr[left], arr[right], 'bs')
 
             if (target === arr[left] || target === arr[right] || target === arr[mid])
@@ -424,7 +424,7 @@ const genSvgFromList = (list) =>
             {
                 for (const id of info.id)
                 {
-                    temp = getElement(w, d)(info.attr, info.type)
+                    temp = getElement(w, d)(info.attr, info.type, info.id)
                     setAttr(temp, { id: id })
                     const isIdNameSame = name === id
                     const isFirstTwoCharsSame = (name + id)[0] === (name + id)[1]
@@ -434,7 +434,7 @@ const genSvgFromList = (list) =>
                 continue
             }
         }
-        temp = getElement(w, d)(info.attr, info.type)
+        temp = getElement(w, d)(info.attr, info.type, info.id)
         setAttr(temp, { id: info.id })
         createdSVG[name] = temp
     }
