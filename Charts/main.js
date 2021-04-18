@@ -1,5 +1,5 @@
-const elById = (target) => document.getElementById(target)
-const elsByName = (name) => document.getElementsByName(name)
+const _id = (target) => document.getElementById(target)
+const _name = (name) => document.getElementsByName(name)
 
 const inputData = (el) =>
 {
@@ -10,8 +10,8 @@ const inputData = (el) =>
         : Number(el.value)
 }
 
-// const w = inputData(elById('width'))
-// const d = inputData(elById('data-list'))
+// const w = inputData(_id('width'))
+// const d = inputData(_id('data-list'))
 
 const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
@@ -47,10 +47,12 @@ const genSize = (w, d) =>
         idx: x => Math.floor((x - unit * 4 - 80) / (unit)) - 1
     }
 }
+
+
 // const size = genSize(w, d)
 const genAttr = (id) => (w, s, i, v) =>
 {
-    const d = inputData(elById('data-list'))
+    const d = inputData(_id('data-list'))
 
     const unit = w / d.length
     const gap = unit / d.length
@@ -252,6 +254,10 @@ const svgDefinition = (id) =>
 }
 
 
+/**
+ * 동적으로 id를 생성해 줘야하는 경우, 
+ * 원본 객체를 건드리지 않고 id 정보를 추가
+ */
 const svgIdList =
 {
     svg: 'svg',
@@ -268,7 +274,9 @@ const setSvgId = (list) => (el, id) => ({ ...list, el: id })
 console.log(setSvgId(svgIdList)('b', `text-${5}`))
 
 
-
+/**
+ * 사용할 이벤트리스너 정의
+ */
 const DOMEventAttr = {
     'width': 'input',
     'data-list': 'input',
@@ -292,6 +300,11 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
         g.removeChild(g.firstChild)
     }
 
+    /**
+     * 하단의 genSvgFromList 함수를 사용하여, 
+     * 복수사용 svg 리스트에 있는 요소들을 생성해준다.
+     * setSvgId를 사용하여 우선 svgDefinition 정보를 갱신해줘야 한다.
+     */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const createEl = getElement(w, d, i, value)
@@ -320,7 +333,9 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
 
 }
 
-
+/**
+ * @param {*} 여러 함수에서 공통적으로 사용할 함수, 요소, 변수들의 변경사항을 복사
+ */
 const copyParams = (params) =>
 {
     const copied = {}
@@ -340,10 +355,9 @@ const copyParams = (params) =>
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    const wth = _.elById('width')
+    const [wth, main] = [_._id('width'),_._id('main')]
     const w = _.inputData(wth)
-    const main = _.elById('main')
-    let d = _.inputData(_.elById('data-list'))
+    let d = _.inputData(_._id('data-list'))
     const radioNodeList = document.getElementsByName('radio')
 
     radioNodeList.forEach(n =>
@@ -354,7 +368,7 @@ const onChangeInput = (vars, copy) => (e) =>
         }
     })
 
-    _.elById('data-list').value = `${(d)}`
+    _._id('data-list').value = `${(d)}`
 
     const { width } = main.getBoundingClientRect()
 
@@ -380,12 +394,12 @@ const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 // {
 
 //     const _ = copy(vars)
-//     const w = _.inputData(_.elById('width'))
-//     const d = _.inputData(_.elById('data-list'))
-//     const target = _.inputData(_.elById('target'))
+//     const w = _.inputData(_._id('width'))
+//     const d = _.inputData(_._id('data-list'))
+//     const target = _.inputData(_._id('target'))
 //     let sortRound = -1
-//     _.elById('search-answer').innerHTML = `waiting...`
-//     _.elById('search-count').innerHTML = `0`
+//     _._id('search-answer').innerHTML = `waiting...`
+//     _._id('search-count').innerHTML = `0`
 
 // }
 
@@ -394,8 +408,8 @@ const initSVGList = Object.entries(svgDefinition(svgIdList).singleSVG)
 
 const genSvgFromList = (list, purpose,) =>
 {
-    const w = inputData(elById('width'))
-    const d = inputData(elById('data-list'))
+    const w = inputData(_id('width'))
+    const d = inputData(_id('data-list'))
     const createdSVG = {}
     let temp = undefined
 
@@ -438,17 +452,18 @@ const appendToSVG = (svg, svgArea, list) =>
     }
 }
 
+
 const addEventsToDOM = (vars, copy, list) =>
 {
     for (const [target, event] of Object.entries(list))
     {
-        if (target === 'start') elById(target).addEventListener(event, startSimulation(vars, copy))
+        if (target === 'start') _id(target).addEventListener(event, startSimulation(vars, copy))
         else if (target === 'radio')
         {
-            elsByName(target).forEach(r => r.addEventListener(event, onChangeInput(vars, copy)))
+            _name(target).forEach(r => r.addEventListener(event, onChangeInput(vars, copy)))
             continue
         }
-        else elById(target).addEventListener(event, onChangeInput(vars, copy))
+        else _id(target).addEventListener(event, onChangeInput(vars, copy))
 
     }
 }
@@ -492,8 +507,8 @@ const onMove = (e, idx) =>
         // idx = e.clientX
         if (value !== undefined)
         {
-            elById(`box-${value}`).setAttribute('fill', 'white')
-            elById(`text-${value}`).setAttribute('fill', 'white')
+            _id(`box-${value}`).setAttribute('fill', 'white')
+            _id(`text-${value}`).setAttribute('fill', 'white')
         }
         console.log(e.clientX)
         idx = size.idx(e.clientX)
@@ -514,8 +529,8 @@ const onMove = (e, idx) =>
 
 const initParams = [
     inputData,
-    elById,
-    elsByName,
+    _id,
+    _name,
     genSize,
     genElement,
     getElement,
@@ -537,10 +552,10 @@ const init = (vars, copy) =>
 {
 
     const _ = copy(vars)
-    const d = _.inputData(_.elById('data-list'))
-    const w = _.inputData(_.elById('width'))
+    const d = _.inputData(_._id('data-list'))
+    const w = _.inputData(_._id('width'))
     const initData = [3, 25, -58, 5, -48, 967, 456, -33, 24, -6, 90, 6, 25, 4, 5, 345, -75, 36, -89, 4, 32, 2, -452, 7, 98, 61, 12, 45, 776, 4, -32, 2, -86, -56, 356, -34, 2, 455, 6, -300, 467, 4]
-    _.elById('data-list').value = initData.join(',')
+    _._id('data-list').value = initData.join(',')
     const size = genSize(w, initData)
     const svg = genElement('svg', genAttr('svg')(w, size).svg)
     const path = genElement('path', {
@@ -552,11 +567,11 @@ const init = (vars, copy) =>
     const line2 = genElement('line',
         genAttr('line')(w, size).line
     )
-    const svgArea = elById('svg-area')
+    const svgArea = _id('svg-area')
 
     console.log(initData.length)
 
-    // 이벤트 리스너 달아주는 함수에서 처리해야함
+    // 이벤트리스너 달아주는 함수에서 처리해야함
     const mouseOn = () => svg.addEventListener('mousemove', onMove)
     const mouseOut = () => svg.removeEventListener('mousemove', onMove)
     svg.addEventListener('mouseenter', mouseOn)
