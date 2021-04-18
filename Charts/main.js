@@ -132,13 +132,14 @@ const genPath = (s) => (data) =>
         const [maxY, minY] = [Math.max.apply(null, data), Math.min.apply(null, data)]
         const sum = (Math.abs(maxY) + Math.abs(minY))
         const [height,margin] =[1500, 300]
-        const yUnit = sum / d.length
-        const a = margin - ( Math.floor((height/yUnit)*i)/d.length) > height ?  ( Math.floor((height/yUnit)*(i*0.3))/d.length): ( Math.floor((height/yUnit)*i)/d.length)
+        const yUnit = Math.floor(sum / d.length)
+        const [maxUnit,minUnit] = [sum/yUnit/100,sum/yUnit/50]
+        const a = ( Math.floor(((sum)/yUnit)*(i*minUnit))/yUnit)
         const obj =
         {
             x: Math.floor(s.unit * i),
-            y: sum> height ? margin -  a
-                :margin- (Math.floor(( margin/(d.length))/d.length )  * i)
+            y: sum> height ? margin +200 -  a
+                :margin + 200 - ( Math.floor(((sum)/yUnit)*(i*minUnit))/d.length)
         }
         return obj
     }
