@@ -178,7 +178,7 @@ const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
 
 
-const updateTexts = (vars, copy) => (d) => (num, start, end, target) => 
+const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) => 
 {
     const _ = copy(vars)
     const g = _.initSVG['g']
@@ -259,7 +259,7 @@ const onChangeInput = (vars, copy) => (e) =>
     }
     vars = [w, d, ...vars]
     // _.updateDefault(vars, copy)
-    _.updateTexts(vars, copy)(d)()
+    _.updateTexts(vars, copy)(d,w)()
 
 }
 
@@ -282,7 +282,7 @@ const startSimulation = (vars, copy) => (e) =>
 
     const updateBox = ({ i, num, arr, time }) => new Promise(res => 
     {
-        _.updateTexts(vars, copy)(arr)(num, i)
+        _.updateTexts(vars, copy)(arr,w)(num, i)
         return res({ num, arr, time })
     })
 
@@ -391,7 +391,7 @@ const startSimulation = (vars, copy) => (e) =>
                 moveLine(id,value)
             }
 
-            _.updateTexts(vars, copy)(arr)(arr[mid], arr[left], arr[right], 'bs')
+            _.updateTexts(vars, copy)(arr,w)(arr[mid], arr[left], arr[right], 'bs')
 
             if (target === arr[left] || target === arr[right] || target === arr[mid])
             {
@@ -509,11 +509,12 @@ const init = (vars, copy) =>
 {
     const _ = copy(vars)
     const d = _.inputData(_.elById('data-list'))
+    const w = _.inputData(_.elById('width'))
 
     console.log(_)
     _.appendToSVG(_.initSVG['svg'], _.elById('svg-area'), _.initSVG)
     _.addEventsToDOM(vars, copy, _.DOMEventAttr)
-    _.updateTexts(vars, copy)(d)()
+    _.updateTexts(vars, copy)(d,w)()
 
 }
 
