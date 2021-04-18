@@ -241,8 +241,8 @@ const onChangeInput = (vars, copy) => (e) =>
     const w = _.inputData(wth)
     const main = _.elById('main')
     let d = _.inputData(_.elById('data-list'))
-
-    const radioNodeList = document.getElementsByName('duplicated')
+    console.log(d)
+    const radioNodeList = document.getElementsByName('radio')
     radioNodeList.forEach(n =>
     {
         if (n.checked && n.value === 'false')
@@ -258,8 +258,8 @@ const onChangeInput = (vars, copy) => (e) =>
         w = width - 250
     }
     vars = [w, d, ...vars]
-    _.updateDefault(vars, copy)
-    _.updateTexts(vars, copy)
+    // _.updateDefault(vars, copy)
+    _.updateTexts(vars, copy)(d)()
 
 }
 
@@ -468,14 +468,15 @@ const addEventsToDOM = (vars, copy, list) =>
 
     for (const [target, event] of Object.entries(list))
     {
-        if (target === 'start') eventFunc = startSimulation(vars, copy)
+        console.log(target,event)
+        if (target === 'start') eventFunc =  elById(target).addEventListener(event, startSimulation(vars, copy))
         else if (target === 'radio')
         {
             elsByName(target).forEach(r => r.addEventListener(event, onChangeInput(vars, copy)))
             continue
         }
-        else eventFunc = onChangeInput(vars, copy)
-        elById(target).addEventListener(event, eventFunc)
+        else elById(target).addEventListener(event, onChangeInput(vars, copy))
+       
     }
 }
 /**
