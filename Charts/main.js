@@ -10,8 +10,8 @@ const inputData = (el) =>
         : Number(el.value)
 }
 
-const w = inputData(elById('width'))
-const d = inputData(elById('data-list'))
+// const w = inputData(elById('width'))
+// const d = inputData(elById('data-list'))
 
 const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
@@ -22,6 +22,7 @@ const genSize = (w, d) =>
     const [maxY, minY] = [Math.max.apply(null, d), Math.min.apply(null, d)]
     const sum = (Math.abs(maxY) + Math.abs(minY))
     const [height, mar] = [1500, 300]
+    const aa = sum > height ? height / sum * 100 : sum / height * 100
     const yUnit = Math.floor(sum / d.length)
     const [maxUnit, minUnit] = [sum / yUnit / 100, sum / yUnit / 50]
     const box = (((w - unit) / d.length) * d.length) + gap * d.length > w ? ((w - (unit * gap + d.length)) / d.length) : ((w - unit) / d.length) - gap
@@ -39,14 +40,14 @@ const genSize = (w, d) =>
         y: v =>
         {
             const a = (Math.floor(((sum) / yUnit) * (v * minUnit)) / yUnit)
-            const axis = sum > height ? mar + 200 - a
-                : mar + 200 - (Math.floor((sum) / yUnit) * (v * minUnit) / d.length)
-            return axis
+            const axis = sum > height ? mar + 200 - a + 30
+                : mar + 200 - (Math.floor((sum) / yUnit) * (v) / d.length) + 30
+            return Math.floor(axis)
         },
         idx: x => Math.floor((x - unit * 4 - 80) / (unit)) - 1
     }
 }
-const size = genSize(w, d)
+// const size = genSize(w, d)
 const genAttr = (id) => (w, s, i, v) =>
 {
     const d = inputData(elById('data-list'))
@@ -141,23 +142,19 @@ const setAttr = (el, attr) =>
 
 
 
-const genPath = (s) => (data) => 
+const genPath = (s) => (data) => data.reduce((acc, cur, i) =>
 {
-    let first = ''
-    let last = ''
-    let path = data.reduce((acc, cur, i) =>
-    {
-        const [a, b] = [s.x(i), s.y(cur)]
-        if (i === 0) first = [a, b]
-        if (i === data.length - 1) last = a
-        acc += ` ${a} ${b}`
-        return acc
-    }, 'M')
-    // console.log(first, last)
-    // path += (' '+last+' '+ 800 +' '+ first[0]+' '+ 800 + ' '+first.join(' '))
+    const [a, b] = [s.x(i), s.y(cur)]
+    if (i === 0) first = [a, b]
+    if (i === data.length - 1) last = a
+    acc += ` ${a} ${b}`
+    return acc
 
-    return path
-}
+}, 'M')
+
+
+// console.log(first, last)
+// path += (' '+last+' '+ 800 +' '+ first[0]+' '+ 800 + ' '+first.join(' '))
 
 
 
@@ -165,10 +162,12 @@ const genElement = (type, attr, animate) =>
 {
 
     type = document.createElementNS('http://www.w3.org/2000/svg', type)
+
     for (const [t, v] of Object.entries(attr))
     {
         type.setAttributeNS(null, t, v)
     }
+
     return type
 
 }
@@ -176,7 +175,7 @@ const genElement = (type, attr, animate) =>
 
 const svgDefinition = (id) =>
 {
-    const definition =
+    const singleSVG =
     {
         svg:
         {
@@ -186,8 +185,6 @@ const svgDefinition = (id) =>
         },
         indicatorLine:
         {
-
-
             type: 'line',
             attr: 'indicatorLine',
             id: id.indicatorLine
@@ -211,7 +208,47 @@ const svgDefinition = (id) =>
             id: 'path'
         }
     }
-    return definition
+
+    const multipleSVG =
+    {
+        dataText:
+        {
+            type: 'text',
+            attr: 'dataText',
+            id: id.svg
+        },
+        plot:
+        {
+            type: 'line',
+            attr: 'indicatorLine',
+            id: id.indicatorLine
+        },
+        gBox:
+        {
+            type: 'line',
+            attr: 'line',
+            id: id.lines,
+        },
+        g:
+        {
+            type: 'g',
+            attr: 'g',
+            id: id.g,
+        },
+        path:
+        {
+            type: 'path',
+            attr: 'path',
+            id: 'path'
+        }
+    }
+
+    const svgDefs =
+    {
+        singleSVG, multipleSVG
+    }
+    console.log(svgDefs)
+    return svgDefs
 }
 
 
@@ -224,6 +261,11 @@ const svgIdList =
     path: 'path'
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
+
+
+const setSvgId = (list) => (el, id) => ({ ...list, el: id })
+
+console.log(setSvgId(svgIdList)('b', `text-${5}`))
 
 
 
@@ -347,11 +389,10 @@ const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
 // }
 
+const initSVGList = Object.entries(svgDefinition(svgIdList).singleSVG)
 
-const svgList = Object.entries(svgDefinition(svgIdList))
 
-
-const genSvgFromList = (list) =>
+const genSvgFromList = (list, purpose,) =>
 {
     const w = inputData(elById('width'))
     const d = inputData(elById('data-list'))
@@ -484,7 +525,7 @@ const initParams = [
     updateTexts,
     setAttr,
     getAttrByIdx,
-    genSvgFromList(svgList),
+    genSvgFromList(initSVGList),
     DOMEventAttr,
     svgIdList,
     appendToSVG,
@@ -498,10 +539,12 @@ const init = (vars, copy) =>
     const _ = copy(vars)
     const d = _.inputData(_.elById('data-list'))
     const w = _.inputData(_.elById('width'))
-    const size = genSize(w, d)
+    const initData = [3, 25, -58, 5, -48, 967, 456, -33, 24, -6, 90, 6, 25, 4, 5, 345, -75, 36, -89, 4, 32, 2, -452, 7, 98, 61, 12, 45, 776, 4, -32, 2, -86, -56, 356, -34, 2, 455, 6, -300, 467, 4]
+    _.elById('data-list').value = initData.join(',')
+    const size = genSize(w, initData)
     const svg = genElement('svg', genAttr('svg')(w, size).svg)
     const path = genElement('path', {
-        d: genPath(size)(d), ...genAttr('path')(w, size).path
+        d: genPath(size)(initData), ...genAttr('path')(w, size).path
     })
     const line = genElement('line',
         genAttr('line')(w, size).indicatorLine
@@ -511,7 +554,7 @@ const init = (vars, copy) =>
     )
     const svgArea = elById('svg-area')
 
-    console.log(d.length)
+    console.log(initData.length)
 
     // 이벤트 리스너 달아주는 함수에서 처리해야함
     const mouseOn = () => svg.addEventListener('mousemove', onMove)
@@ -526,7 +569,7 @@ const init = (vars, copy) =>
     _.appendToSVG(_.initSVG['svg'], svgArea, _.initSVG)
     _.addEventsToDOM(vars, copy, _.DOMEventAttr)
     // _.updateTooltipTexts(vars, copy)(d, w)()
-    updateTooltip(w, d, _.initSVG['g'])
+    updateTooltip(w, initData, _.initSVG['g'])
 
 }
 init(initParams, copyParams)
