@@ -21,10 +21,8 @@ const genSize = (w, d) =>
     const gap = unit / d.length
     const [maxY, minY] = [Math.max.apply(null, d), Math.min.apply(null, d)]
     const sum = (Math.abs(maxY) + Math.abs(minY))
-    const [height, mar] = [1500, 300]
-    const aa = sum > height ? height / sum * 100 : sum / height * 100
-    const yUnit = Math.floor(sum / d.length)
-    const [maxUnit, minUnit] = [sum / yUnit / 100, sum / yUnit / 50]
+    const [height, topMargin] = [1500, 500]
+    const yUnit = height > sum ? Math.floor(height/sum)*100 : Math.floor(sum/height)*100
     const box = (((w - unit) / d.length) * d.length) + gap * d.length > w ? ((w - (unit * gap + d.length)) / d.length) : ((w - unit) / d.length) - gap
     return {
         d: d.length,
@@ -33,15 +31,15 @@ const genSize = (w, d) =>
         unit,
         width: w,
         height: 400,
-        margin: 50,
+        topMargin,
         data: { text: { width: 30, height: 20 }, box },
         line: 1,
         x: i => Math.floor(unit * i),
         y: v =>
         {
-            const a = (Math.floor(((sum) / yUnit) * (v * minUnit)) / yUnit)
-            const axis = sum > height ? mar + 200 - a + 30
-                : mar + 200 - (Math.floor((sum) / yUnit) * (v) / d.length) + 30
+            const unit = (Math.floor((sum) / yUnit) * (v))
+            const axis = sum > height ?  topMargin  - unit /yUnit + 30
+                :  topMargin  - unit / d.length + 30
             return Math.floor(axis)
         },
         idx: x => Math.floor((x - unit * 4 - 80) / (unit)) - 1
