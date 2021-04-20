@@ -260,7 +260,7 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
     {
         g.removeChild(g.firstChild)
     }
-
+    console.log('ssssssss')
     /**
      * 하단의 genSvgFromListList 함수를 사용하여, 
      * 복수사용 svg 리스트에 있는 요소들을 생성해준다.
@@ -268,26 +268,26 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const createEl = getElement(w, d, i, value)
-        const [textId, boxId] = [`text-${value}`, `box-${value}`]
-        const [text, box, group] =
-            [
-                createEl('dataText', 'text', textId),
-                createEl('plot', 'circle', boxId),
-                createEl('gBox', 'g'),
-            ]
+        // const createEl = getElement(w, d, i, value)
+        // const [textId, boxId] = [`text-${value}`, `box-${value}`]
+        // const [text, box, group] =
+        //     [
+        //         createEl('dataText', 'text', textId),
+        //         createEl('plot', 'circle', boxId),
+        //         createEl('gBox', 'g'),
+        //     ]
 
-        text.textContent = value
-        box.setAttribute('id', boxId)
-        text.setAttribute('id', textId)
+        // text.textContent = value
+        // box.setAttribute('id', boxId)
+        // text.setAttribute('id', textId)
 
         // if (value === num) box.setAttribute('fill', 'lemonchiffon'), text.setAttribute('fill', 'black')
         // else if (value === start || value === end) box.setAttribute('fill', '#292a38f2')
         // if (target !== 'bs' && value > num) box.setAttribute('stroke', 'lightseagreen')
 
-        group.appendChild(box)
-        group.appendChild(text)
-        g.appendChild(group)
+        // group.appendChild(box)
+        // group.appendChild(text)
+        // g.appendChild(group)
 
     }
 
@@ -349,7 +349,7 @@ const onChangeInput = (vars, copy) => (e) =>
 
     vars = [w, d, ...vars]
     updatePath(_.initSVG['path'], newPath)
-    _.updateTexts(vars, copy)(d, w)()
+    _.updateTooltip(vars, copy)(w, d)
 
 }
 
@@ -481,7 +481,6 @@ DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 const setEvents = (vars, copy) =>
 {
     const _ = copy(vars)
-
     return {
 
         addAll: list =>
@@ -489,7 +488,6 @@ const setEvents = (vars, copy) =>
             for (const [target, events] of Object.entries(list))
             {
                 const targetNodes = _._name(target)
-
                 for (const node of targetNodes)
                 {
                     for (const data of (events))
@@ -512,7 +510,7 @@ const setEvents = (vars, copy) =>
 const genSvgList = (target) =>
 {
     return {
-        setID: ids => Object.entries(svgDefinition(ids)[target])
+        setID: ids => Object.entries( svgDefinition(ids)[target] )
     }
 }
 
@@ -520,7 +518,17 @@ const genSvgList = (target) =>
 const updateTooltip = (vars, copy) => (w, d) =>
 {
     const _ = copy(vars)
+    const g = _.initSVG['g']
 
+    while (g.firstChild)
+    {
+        g.removeChild(g.firstChild)
+    }
+
+    /**
+     * genSvgFromList 함수를 사용하여, 
+     * svg 리스트에 있는 요소들을 생성해준다.
+     */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const [textId, boxId] = [`text-${i}${value}`, `box-${i}${value}`]
@@ -532,7 +540,7 @@ const updateTooltip = (vars, copy) => (w, d) =>
         label.textContent = value
 
         appendAll({ plot, label }).to(gBox)
-        _.initSVG['g'].appendChild(gBox)
+        g.appendChild(gBox)
 
     }
 }
