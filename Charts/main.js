@@ -433,15 +433,34 @@ const genSvgFromList = (list, purpose,) =>
 }
 
 
-const appendToSVG = (svg, svgArea, list) =>
+// const append = (svg, svgArea, list) =>
+// {
+//     for (const [key, el] of Object.entries(list))
+//     {
+//         if (key === 'svg') svgArea.appendChild(el)
+//         else svg.appendChild(el)
+//     }
+// }
+
+/**
+ * @param {*} list 추가할 svg 요소들
+ * @param {*} to 타겟이 되는 요소
+ */
+const append = (list) =>
 {
-    for (const [key, el] of Object.entries(list))
+    const exec =
     {
-        if (key === 'svg') svgArea.appendChild(el)
-        else svg.appendChild(el)
+        to: to =>
+        {
+            for (const [key, el] of Object.entries(list))
+            {
+               to.appendChild(el)
+            }
+        }
     }
+    return exec
 }
-// const 
+
 
 const addEventsToDOM = (vars, copy, list) =>
 {
@@ -547,7 +566,7 @@ const initParams = [
     genSvgFromList(initSVGList),
     DOMEventAttr,
     svgIdList,
-    appendToSVG,
+    append,
     addEventsToDOM
 ]
 
@@ -570,7 +589,7 @@ const init = (vars, copy) =>
     _.updateAttr(_.initSVG['path'], {d: genPath(size)(initData)})
     // vars = [path, ...vars]
 
-    _.appendToSVG(_.initSVG['svg'], svgArea, _.initSVG)
+    _.append(_.initSVG['svg'], svgArea, _.initSVG)
     _.addEventsToDOM(vars, copy, _.DOMEventAttr)
 
     // 이벤트리스너 달아주는 함수에서 처리해야함
