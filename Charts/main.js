@@ -428,7 +428,13 @@ const genSvgFromList = (list, purpose,) =>
         createdSVG[name] = temp
     }
 
+    // const category =
+    // {
+    //     svg: createdSVG[svg]
+    // }
+
     createdSVG[Symbol.toStringTag] = 'initSVG'
+    // createdSVG[Symbol.toStringTag] = 'initSVG'
     return createdSVG
 }
 
@@ -443,22 +449,20 @@ const genSvgFromList = (list, purpose,) =>
 // }
 
 /**
- * @param {*} list 추가할 svg 요소들
+ * @param {*} list 추가할 복수의 svg 요소
  * @param {*} to 타겟이 되는 요소
  */
-const append = (list) =>
+const appendAll = (list) =>
 {
-    const exec =
-    {
-        to: to =>
+    return {
+        to: target =>
         {
             for (const [key, el] of Object.entries(list))
             {
-               to.appendChild(el)
+                target.appendChild(el)
             }
         }
     }
-    return exec
 }
 
 
@@ -566,7 +570,7 @@ const initParams = [
     genSvgFromList(initSVGList),
     DOMEventAttr,
     svgIdList,
-    append,
+    appendAll,
     addEventsToDOM
 ]
 
@@ -582,21 +586,23 @@ const init = (vars, copy) =>
     _._id('data-list').value = initData.join(',')
     const size = genSize(w, initData)
     const svgArea = _id('svg-area')
-
+    const svg = _.initSVG['svg']
     // const eventParams = [_.]
 
     // 초기 생성한 SVG 요소 업데이트 (path)
     _.updateAttr(_.initSVG['path'], {d: genPath(size)(initData)})
     // vars = [path, ...vars]
+    svgArea.appendChild(svg)
+    delete(_.initSVG['svg'])
+    _.appendAll(_.initSVG).to(svg)
 
-    _.append(_.initSVG['svg'], svgArea, _.initSVG)
     _.addEventsToDOM(vars, copy, _.DOMEventAttr)
 
     // 이벤트리스너 달아주는 함수에서 처리해야함
     const mouseOn = () => { alert('on!');_.initSVG['svg'].addEventListener('mousemove', _.onMove) }
     const mouseOut = () => { alert('out!');_.initSVG['svg'].removeEventListener('mousemove', _.onMove) }
-    _.initSVG['svg'].addEventListener('mouseenter', mouseOn)
-    _.initSVG['svg'].addEventListener('mouseleave', mouseOut)
+    // _.initSVG['svg'].addEventListener('mouseenter', mouseOn)
+    // _.initSVG['svg'].addEventListener('mouseleave', mouseOut)
     _.updateTooltip(w, initData, _.initSVG['g'])
 
 }
