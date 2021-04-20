@@ -1,7 +1,7 @@
 const _id = (target) => document.getElementById(target)
 const _name = (name) => document.getElementsByName(name)
 
-const inputData = (el) =>
+let inputData = (el) =>
 {
     return el.value.indexOf(',') > -1
         ? el.value
@@ -15,6 +15,7 @@ const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
 const genSize = (w, d) =>
 {
+
     const unitX = w / d.length
     const gap = unitX / d.length
     const [height, margin] = [400, -50]
@@ -132,11 +133,11 @@ const updateAttr = (el, attr) =>
 
 
 
-const genPath = (s) => (data) => data.reduce((acc, cur, i) =>
+const genPath = (d) => (size) => d.reduce((acc, cur, i) =>
 {
-    const [a, b] = [s.x(i), s.y(cur)]
+    const [a, b] = [size.x(i), size.y(cur)]
     if (i === 0) first = [a, b]
-    if (i === data.length - 1) last = a
+    if (i === d.length - 1) last = a
     acc += ` ${a} ${b}`
     return acc
 
@@ -246,16 +247,16 @@ const svgDefinition = (id) =>
 
 
 /**
- * 동적으로 id를 생성해 줘야하는 경우, 
- * 원본 객체를 건드리지 않고 id 정보를 추가
+ * 하나의 요소에는 고유한 id값 하나를 가지기에,
+ * 해당 요소를 여러개 만들어야 한다면, 복수로 나열해준다.
  */
 const svgIdList =
 {
-    svg: 'svg',
-    indicatorLine: 'indicatorLine',
+    svg: ['svg'],
+    indicatorLine: ['indicatorLine'],
     lines: ['v', 'h',],
     g: ['g', 'group'],
-    path: 'path'
+    path: ['path']
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
 
@@ -313,7 +314,7 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
 }
 
 /**
- * @param {*} 여러 함수에서 공통적으로 사용할 함수, 요소, 변수들의 변경사항을 복사
+ * @param {*} params 여러 함수에서 공통적으로 사용할 함수, 요소, 변수들의 변경사항을 복사
  */
 const copyParams = (params) =>
 {
@@ -339,6 +340,12 @@ const onChangeInput = (vars, copy) => (e) =>
     let d = _.inputData(_._id('data-list'))
     const radioNodeList = document.getElementsByName('radio')
 
+    // const _data =
+    // {
+    //     d: inputData(_id('data-list')),
+    //     w: inputData(_id('width')),
+    // }
+
     radioNodeList.forEach(n =>
     {
         if (n.checked && n.value === 'false')
@@ -357,7 +364,7 @@ const onChangeInput = (vars, copy) => (e) =>
         w = width - 250
     }
 
-    const newPath = genPath(genSize(w, d))(d)
+    const newPath = genPath(d)(genSize(w, d))
 
     vars = [w, d, ...vars]
     updatePath(_.initSVG['path'], newPath)
@@ -394,6 +401,7 @@ const genSvgFromList = (list, purpose,) =>
 
     for (const [name, info] of (Object.values(list)))
     {
+        ;
         if (info.id)
         {
             if (Array.isArray(info.id))
@@ -554,8 +562,8 @@ const updateIdx = (vars, copy) => (x) =>
 const onMove = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    console.log('onMove', _)
-    console.log('onMove', e.clientX)
+    // console.log('onMove', _)
+    // console.log('onMove', e.clientX)
     // let idx = undefined
     // let value = undefined
     // if (idx !== size.idx(e.clientX))
@@ -614,6 +622,7 @@ const init = (vars, copy) =>
     const [d, w] = [_.inputData(_._id('data-list')), _.inputData(_._id('width'))]
     const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
     _._id('data-list').value = initData.join(',')
+    console.log(_id('data-list').value)
     const size = genSize(w, initData)
     const [svgArea, svg]  = [_id('svg-area'), _.initSVG['svg']]
 
@@ -622,7 +631,7 @@ const init = (vars, copy) =>
     
     svgArea.appendChild(svg)
 
-    _.updateAttr(_.initSVG['path'], { d: genPath(size)(initData) })
+    _.updateAttr(_.initSVG['path'], { d: genPath(initData)(size) })
     _.DOMEventAttr['svg'] = _.DOMEventAttr['svg'].map(e =>
     {
         if (e.event === 'mouseenter') e.func = mouseOn
@@ -636,6 +645,8 @@ const init = (vars, copy) =>
 
     _.appendAll(_.initSVG).to(svg)
     _.updateTooltip(w, initData, _.initSVG['g'])
+
+    // console.log(_data)
 
 }
 init(initParams, copyParams)
