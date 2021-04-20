@@ -171,13 +171,15 @@ const svgDefinition = (id) =>
         {
             type: 'svg',
             attr: 'svg',
-            id: id.svg
+            id: id.svg,
+            name: id.svg,
         },
         indicatorLine:
         {
             type: 'line',
             attr: 'indicatorLine',
-            id: id.indicatorLine
+            id: id.indicatorLine,
+            name: id.indicatorLine,
         },
         line:
         {
@@ -195,7 +197,8 @@ const svgDefinition = (id) =>
         {
             type: 'path',
             attr: 'path',
-            id: 'path'
+            id: id.path,
+            name: 'path'
         }
     }
 
@@ -225,12 +228,12 @@ const svgDefinition = (id) =>
             attr: 'g',
             id: id.g,
         },
-        path:
-        {
-            type: 'path',
-            attr: 'path',
-            id: 'path'
-        }
+        // path:
+        // {
+        //     type: 'path',
+        //     attr: 'path',
+        //     id: 'path'
+        // }
     }
 
     const svgDefs =
@@ -266,12 +269,12 @@ console.log(setSvgId(svgIdList)('b', `text-${5}`))
  * 사용할 이벤트리스너 정의
  */
 const DOMEventAttr = {
-    'svg': 'mouseenter',
+    'svg': ['mouseenter','mouseleave'],
     'svg': 'mouseleave',
     'width': 'input',
     'data-list': 'input',
     // 'start': 'click',
-    'radio': 'click'
+    'type': 'click'
 }
 DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
@@ -411,9 +414,9 @@ const genSvgFromList = (list, purpose,) =>
             {
                 for (const id of info.id)
                 {
-                    console.log(info, list)
+                    console.log(name,info, list)
                     temp = getElement(w, d)(info.attr, info.type, id)
-                    updateAttr(temp, { id: id })
+                    updateAttr(temp, { id: id, name: info.name })
                     const isIdNameSame = name === id
                     const isFirstTwoCharsSame = (name + id)[0] === (name + id)[1]
                     const _name = isIdNameSame ? id : isFirstTwoCharsSame ? id : name + (id[0].toUpperCase() + id.slice(1))
@@ -422,9 +425,8 @@ const genSvgFromList = (list, purpose,) =>
                 continue
             }
         }
-
         temp = getElement(w, d)(info.attr, info.type)
-        updateAttr(temp, { id: info.id })
+        updateAttr(temp, { id: info.id, name: info.name })
         createdSVG[name] = temp
     }
 
@@ -439,14 +441,6 @@ const genSvgFromList = (list, purpose,) =>
 }
 
 
-// const append = (svg, svgArea, list) =>
-// {
-//     for (const [key, el] of Object.entries(list))
-//     {
-//         if (key === 'svg') svgArea.appendChild(el)
-//         else svg.appendChild(el)
-//     }
-// }
 
 /**
  * @param {*} list 추가할 복수의 svg 요소
@@ -469,15 +463,26 @@ const appendAll = (list) =>
 const addEventsToDOM = (vars, copy, list) =>
 {
     console.log(list)
-    for (const [target, event] of Object.entries(list))
+    const _ = copy(vars)
+    for (const [target, events] of Object.entries(list))
     {
-        if (target === 'start') _id(target).addEventListener(event, startSimulation(vars, copy))
-        else if (target === 'radio')
+
+        if (Array.isArray(events))
         {
-            _name(target).forEach(r => r.addEventListener(event, onChangeInput(vars, copy)))
-            continue
+            for (const event of events)
+            {
+
+            }
         }
-        else _id(target).addEventListener(event, onChangeInput(vars, copy))
+
+        console.log(_name(target),_id(target),)
+        // if (target === 'start') _id(target).addEventListener(event, startSimulation(vars, copy))
+        // else if (target === 'radio')
+        // {
+        //     _name(target).forEach(r => r.addEventListener(event, onChangeInput(vars, copy)))
+        //     continue
+        // }
+        // else _id(target).addEventListener(event, onChangeInput(vars, copy))
 
     }
 }
