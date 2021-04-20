@@ -28,11 +28,11 @@ const genSize = (w, d) =>
         unitX,
         unitY,
         width: w,
-        eventArea: {width: w, height: SUM},
+        eventArea: { width: w, height: SUM },
         data: { text: { width: 30, height: 20 } },
         line: 1,
         x: i => Math.floor(unitX * i),
-        y: v =>  margin + ((MAX - v ))  *  (unitY),
+        y: v => margin + ((MAX - v)) * (unitY),
         idx: x => Math.floor((x - unit * 4 - 80) / (unit)) - 1
     }
 }
@@ -42,7 +42,7 @@ const genSize = (w, d) =>
 const genAttr = (id) => (w, s, i, v) =>
 {
     const d = inputData(_id('data-list'))
-    const h =  s.eventArea.height
+    const h = s.eventArea.height
     const unit = w / d.length
     const gap = unit / d.length
     const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
@@ -265,20 +265,6 @@ const setSvgId = (list) => (el, id) => ({ ...list, el: id })
 console.log(setSvgId(svgIdList)('b', `text-${5}`))
 
 
-/**
- * 사용할 이벤트리스너 정의
- */
-const DOMEventAttr = {
-    'svg': ['mouseenter','mouseleave'],
-    'svg': 'mouseleave',
-    'width': 'input',
-    'data-list': 'input',
-    // 'start': 'click',
-    'type': 'click'
-}
-DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
-
-
 
 const getElement = (w, arr, i, v) => (target, type, id) => genElement(type, genAttr(id)(w, genSize(w, arr), i, v)[target])
 
@@ -349,7 +335,7 @@ const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
     const [wth, main] = [_._id('width'), _._id('main')]
-    const w = _.inputData(wth)
+    let w = _.inputData(wth)
     let d = _.inputData(_._id('data-list'))
     const radioNodeList = document.getElementsByName('radio')
 
@@ -374,7 +360,7 @@ const onChangeInput = (vars, copy) => (e) =>
     const newPath = genPath(genSize(w, d))(d)
 
     vars = [w, d, ...vars]
-    updatePath(_.SVGPathElement, newPath)
+    updatePath(_.initSVG['path'], newPath)
     _.updateTexts(vars, copy)(d, w)()
 
 }
@@ -414,7 +400,6 @@ const genSvgFromList = (list, purpose,) =>
             {
                 for (const id of info.id)
                 {
-                    console.log(name,info, list)
                     temp = getElement(w, d)(info.attr, info.type, id)
                     updateAttr(temp, { id: id, name: info.name })
                     const isIdNameSame = name === id
@@ -430,13 +415,7 @@ const genSvgFromList = (list, purpose,) =>
         createdSVG[name] = temp
     }
 
-    // const category =
-    // {
-    //     svg: createdSVG[svg]
-    // }
-
     createdSVG[Symbol.toStringTag] = 'initSVG'
-    // createdSVG[Symbol.toStringTag] = 'initSVG'
     return createdSVG
 }
 
@@ -460,29 +439,77 @@ const appendAll = (list) =>
 }
 
 
-const addEventsToDOM = (vars, copy, list) =>
-{
-    console.log(list)
-    const _ = copy(vars)
-    for (const [target, events] of Object.entries(list))
-    {
 
-        if (Array.isArray(events))
-        {
-            for (const event of events)
+/**
+ * 사용할 이벤트리스너 정의
+ */
+const DOMEventAttr = {
+    'svg':
+        [
             {
-
+                event: 'mouseenter',
+                func: undefined
+            },
+            {
+                event: 'mouseleave',
+                func: undefined
             }
-        }
+        ],
+    'width':
+        [
+            {
+                event: 'input',
+                func: onChangeInput
+            },
+        ],
+    'data-list':
+        [
+            {
+                event: 'input',
+                func: onChangeInput
+            },
+        ],
+    'type':
+        [
+            {
+                event: 'click',
+                func: onChangeInput
+            }
+        ],
+}
+DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
-        console.log(_name(target),_id(target),)
-        // if (target === 'start') _id(target).addEventListener(event, startSimulation(vars, copy))
-        // else if (target === 'radio')
-        // {
-        //     _name(target).forEach(r => r.addEventListener(event, onChangeInput(vars, copy)))
-        //     continue
-        // }
-        // else _id(target).addEventListener(event, onChangeInput(vars, copy))
+/**
+ * 
+ * @param {*} list DOM에 적용할 DOMEventAttr 리스트
+ */
+const setEvents = (vars, copy) =>
+{
+    const _ = copy(vars)
+
+    return {
+
+        addAll: list =>
+        {
+            for (const [target, events] of Object.entries(list))
+            {
+                const targetNodes = _._name(target)
+
+                for (const node of targetNodes)
+                {
+                    for (const data of (events))
+                    {
+                        if (data.func !== undefined) node.addEventListener(data.event, data.func(vars, copy))
+
+                    }
+                }
+            }
+        },
+        // !! TODO: 이벤트 삭제 부분 구현
+        remove: target =>
+        {
+
+        }
 
     }
 }
@@ -516,7 +543,7 @@ const updateTooltip = (w, d, g) =>
 /**
  * 함수로 분리 필요
  */
-const updateIdx = (vars,copy) => (x) =>
+const updateIdx = (vars, copy) => (x) =>
 {
     const _ = copy(vars)
     console.log('Idx', _)
@@ -524,10 +551,10 @@ const updateIdx = (vars,copy) => (x) =>
 }
 
 
-const onMove = (vars,copy) => (e) =>
+const onMove = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    console.log('onMove',_)
+    console.log('onMove', _)
     console.log('onMove', e.clientX)
     // let idx = undefined
     // let value = undefined
@@ -576,7 +603,7 @@ const initParams = [
     DOMEventAttr,
     svgIdList,
     appendAll,
-    addEventsToDOM
+    setEvents
 ]
 
 
@@ -584,30 +611,30 @@ const init = (vars, copy) =>
 {
 
     const _ = copy(vars)
-    console.log('init',_)
-    const d = _.inputData(_._id('data-list'))
-    const w = _.inputData(_._id('width'))
-    const initData = [0,230,120,-450,-200,1600,0,600,-1500,200,0,-1200,-800,800,0]
+    const [d, w] = [_.inputData(_._id('data-list')), _.inputData(_._id('width'))]
+    const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
     _._id('data-list').value = initData.join(',')
     const size = genSize(w, initData)
-    const svgArea = _id('svg-area')
-    const svg = _.initSVG['svg']
-    // const eventParams = [_.]
+    const [svgArea, svg]  = [_id('svg-area'), _.initSVG['svg']]
 
-    // 초기 생성한 SVG 요소 업데이트 (path)
-    _.updateAttr(_.initSVG['path'], {d: genPath(size)(initData)})
-    // vars = [path, ...vars]
+    const mouseOn = () => {  svg.addEventListener('mousemove', _.onMove(vars,copy)) }
+    const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(vars, copy)) }
+    
     svgArea.appendChild(svg)
-    delete(_.initSVG['svg'])
+
+    _.updateAttr(_.initSVG['path'], { d: genPath(size)(initData) })
+    _.DOMEventAttr['svg'] = _.DOMEventAttr['svg'].map(e =>
+    {
+        if (e.event === 'mouseenter') e.func = mouseOn
+        if (e.event === 'mouseleave') e.func = mouseOut
+        return e
+    })
+
+    _.setEvents(vars, copy).addAll({..._.DOMEventAttr['svg'], ..._.DOMEventAttr})
+
+    delete (_.initSVG['svg'])
+
     _.appendAll(_.initSVG).to(svg)
-
-    _.addEventsToDOM(vars, copy, _.DOMEventAttr)
-
-    // 이벤트리스너 달아주는 함수에서 처리해야함
-    const mouseOn = () => { alert('on!');_.initSVG['svg'].addEventListener('mousemove', _.onMove) }
-    const mouseOut = () => { alert('out!');_.initSVG['svg'].removeEventListener('mousemove', _.onMove) }
-    // _.initSVG['svg'].addEventListener('mouseenter', mouseOn)
-    // _.initSVG['svg'].addEventListener('mouseleave', mouseOut)
     _.updateTooltip(w, initData, _.initSVG['g'])
 
 }
