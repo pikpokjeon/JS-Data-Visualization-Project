@@ -28,7 +28,7 @@ const genSize = (w, d) =>
         unitX,
         unitY,
         width: w,
-        height,
+        eventArea: {width: w, height: SUM},
         data: { text: { width: 30, height: 20 } },
         line: 1,
         x: i => Math.floor(unitX * i),
@@ -42,10 +42,9 @@ const genSize = (w, d) =>
 const genAttr = (id) => (w, s, i, v) =>
 {
     const d = inputData(_id('data-list'))
-
+    const h =  s.eventArea.height
     const unit = w / d.length
     const gap = unit / d.length
-    const [m, h, data,] = [s.margin, s.height, s.data,]
     const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
     const style = { line: `stroke: ${id === 'mid' ? color.default : '#737373'}; stroke-width: ${s.line};` }
     const svg = {
@@ -122,7 +121,7 @@ const genAttr = (id) => (w, s, i, v) =>
 
 
 
-const setAttr = (el, attr) =>
+const updateAttr = (el, attr) =>
 {
     for (const [t, v] of Object.entries(attr))
     {
@@ -267,6 +266,8 @@ console.log(setSvgId(svgIdList)('b', `text-${5}`))
  * 사용할 이벤트리스너 정의
  */
 const DOMEventAttr = {
+    'svg': 'mouseenter',
+    'svg': 'mouseleave',
     'width': 'input',
     'data-list': 'input',
     // 'start': 'click',
@@ -412,7 +413,7 @@ const genSvgFromList = (list, purpose,) =>
                 {
                     console.log(info, list)
                     temp = getElement(w, d)(info.attr, info.type, id)
-                    setAttr(temp, { id: id })
+                    updateAttr(temp, { id: id })
                     const isIdNameSame = name === id
                     const isFirstTwoCharsSame = (name + id)[0] === (name + id)[1]
                     const _name = isIdNameSame ? id : isFirstTwoCharsSame ? id : name + (id[0].toUpperCase() + id.slice(1))
@@ -423,7 +424,7 @@ const genSvgFromList = (list, purpose,) =>
         }
 
         temp = getElement(w, d)(info.attr, info.type)
-        setAttr(temp, { id: info.id })
+        updateAttr(temp, { id: info.id })
         createdSVG[name] = temp
     }
 
@@ -440,10 +441,11 @@ const appendToSVG = (svg, svgArea, list) =>
         else svg.appendChild(el)
     }
 }
-
+// const 
 
 const addEventsToDOM = (vars, copy, list) =>
 {
+    console.log(list)
     for (const [target, event] of Object.entries(list))
     {
         if (target === 'start') _id(target).addEventListener(event, startSimulation(vars, copy))
@@ -486,27 +488,37 @@ const updateTooltip = (w, d, g) =>
 /**
  * 함수로 분리 필요
  */
-let idx = undefined
-let value = undefined
-
-const onMove = (e, idx) => 
+const updateIdx = (vars,copy) => (x) =>
 {
-    if (idx !== size.idx(e.clientX))
-    {
-        // idx = e.clientX
-        if (value !== undefined)
-        {
-            _id(`box-${value}`).setAttribute('fill', 'white')
-            _id(`text-${value}`).setAttribute('fill', 'white')
-        }
-        console.log(e.clientX)
-        idx = size.idx(e.clientX)
-        console.log(idx)
-        value = d[idx]
-        setAttr(line, getAttrByIdx(w, d, value).moveY)
-    }
-    line2.setAttribute('x1', e.clientX - 160)
-    line2.setAttribute('x2', e.clientX - 160)
+    const _ = copy(vars)
+    console.log('Idx', _)
+    console.log('Idx', x)
+}
+
+
+const onMove = (vars,copy) => (e) =>
+{
+    const _ = copy(vars)
+    console.log('onMove',_)
+    console.log('onMove', e.clientX)
+    // let idx = undefined
+    // let value = undefined
+    // if (idx !== size.idx(e.clientX))
+    // {
+    //     // idx = e.clientX
+    //     if (value !== undefined)
+    //     {
+    //         _id(`box-${value}`).setAttribute('fill', 'white')
+    //         _id(`text-${value}`).setAttribute('fill', 'white')
+    //     }
+    //     console.log(e.clientX)
+    //     idx = size.idx(e.clientX)
+    //     console.log(idx)
+    //     value = d[idx]
+    //     setAttr(line, getAttrByIdx(w, d, value).moveY)
+    // }
+    // line2.setAttribute('x1', e.clientX - 160)
+    // line2.setAttribute('x2', e.clientX - 160)
 
 }
 
@@ -524,10 +536,13 @@ const initParams = [
     genElement,
     getElement,
     genAttr,
+    updateAttr,
+    updateIdx,
+    onMove,
     onChangeInput,
     // startSimulation,
     updateTexts,
-    setAttr,
+    updateTooltip,
     getAttrByIdx,
     genSvgFromList(initSVGList),
     DOMEventAttr,
@@ -541,39 +556,29 @@ const init = (vars, copy) =>
 {
 
     const _ = copy(vars)
+    console.log('init',_)
     const d = _.inputData(_._id('data-list'))
     const w = _.inputData(_._id('width'))
     const initData = [0,230,120,-450,-200,1600,0,600,-1500,200,0,-1200,-800,800,0]
     _._id('data-list').value = initData.join(',')
     const size = genSize(w, initData)
-    const svg = genElement('svg', genAttr('svg')(w, size).svg)
-    const path = genElement('path', {
-        d: genPath(size)(initData), ...genAttr('path')(w, size).path
-    })
-    const line = genElement('line',
-        genAttr('line')(w, size).indicatorLine
-    )
-    const line2 = genElement('line',
-        genAttr('line')(w, size).line
-    )
     const svgArea = _id('svg-area')
 
-    console.log(initData.length)
+    // const eventParams = [_.]
 
-    // 이벤트리스너 달아주는 함수에서 처리해야함
-    const mouseOn = () => svg.addEventListener('mousemove', onMove)
-    const mouseOut = () => svg.removeEventListener('mousemove', onMove)
-    svg.addEventListener('mouseenter', mouseOn)
-    svg.addEventListener('mouseleave', mouseOut)
-
-
-    _.initSVG = { ..._.initSVG, path }
-    vars = [path, ...vars]
+    // 초기 생성한 SVG 요소 업데이트 (path)
+    _.updateAttr(_.initSVG['path'], {d: genPath(size)(initData)})
+    // vars = [path, ...vars]
 
     _.appendToSVG(_.initSVG['svg'], svgArea, _.initSVG)
     _.addEventsToDOM(vars, copy, _.DOMEventAttr)
-    // _.updateTooltipTexts(vars, copy)(d, w)()
-    updateTooltip(w, initData, _.initSVG['g'])
+
+    // 이벤트리스너 달아주는 함수에서 처리해야함
+    const mouseOn = () => { alert('on!');_.initSVG['svg'].addEventListener('mousemove', _.onMove) }
+    const mouseOut = () => { alert('out!');_.initSVG['svg'].removeEventListener('mousemove', _.onMove) }
+    _.initSVG['svg'].addEventListener('mouseenter', mouseOn)
+    _.initSVG['svg'].addEventListener('mouseleave', mouseOut)
+    _.updateTooltip(w, initData, _.initSVG['g'])
 
 }
 init(initParams, copyParams)
