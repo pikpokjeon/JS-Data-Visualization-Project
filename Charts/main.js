@@ -11,7 +11,6 @@ let inputData = (el) =>
 }
 
 
-const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
 const genSize = (w, d) =>
 {
@@ -193,6 +192,7 @@ const svgDefinition = (id) =>
             type: 'g',
             attr: 'g',
             id: id.g,
+            name: 'g'
         },
         path:
         {
@@ -203,46 +203,33 @@ const svgDefinition = (id) =>
         }
     }
 
-    const multipleSVG =
+    const tooltipGroup =
     {
-        dataText:
+        label:
         {
             type: 'text',
-            attr: 'dataText',
-            id: id.svg
+            attr: 'label',
+            id: id.label,
+            name: 'label'
         },
         plot:
         {
-            type: 'line',
-            attr: 'indicatorLine',
-            id: id.indicatorLine
+            type: 'circle',
+            attr: 'plot',
+            id: id.plot,
+            name: 'plot',
         },
         gBox:
         {
-            type: 'line',
-            attr: 'line',
-            id: id.lines,
-        },
-        g:
-        {
             type: 'g',
             attr: 'g',
-            id: id.g,
+            id: id.gBox,
+            name: 'gBox',
         },
-        // path:
-        // {
-        //     type: 'path',
-        //     attr: 'path',
-        //     id: 'path'
-        // }
+
     }
 
-    const svgDefs =
-    {
-        singleSVG, multipleSVG
-    }
-    console.log(svgDefs)
-    return svgDefs
+    return { singleSVG, tooltipGroup }
 }
 
 
@@ -261,12 +248,6 @@ const svgIdList =
 svgIdList[Symbol.toStringTag] = 'svgIdList'
 
 
-const setSvgId = (list) => (el, id) => ({ ...list, el: id })
-
-console.log(setSvgId(svgIdList)('b', `text-${5}`))
-
-
-
 const getElement = (w, arr, i, v) => (target, type, id) => genElement(type, genAttr(id)(w, genSize(w, arr), i, v)[target])
 
 
@@ -281,7 +262,7 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
     }
 
     /**
-     * 하단의 genSvgFromList 함수를 사용하여, 
+     * 하단의 genSvgFromListList 함수를 사용하여, 
      * 복수사용 svg 리스트에 있는 요소들을 생성해준다.
      * setSvgId를 사용하여 우선 svgDefinition 정보를 갱신해줘야 한다.
      */
@@ -392,7 +373,7 @@ const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 const initSVGList = Object.entries(svgDefinition(svgIdList).singleSVG)
 
 
-const genSvgFromList = (list, purpose,) =>
+const genSvgFromList = (list, i, v) =>
 {
     const w = inputData(_id('width'))
     const d = inputData(_id('data-list'))
@@ -401,14 +382,14 @@ const genSvgFromList = (list, purpose,) =>
 
     for (const [name, info] of (Object.values(list)))
     {
-        ;
+
         if (info.id)
         {
             if (Array.isArray(info.id))
             {
                 for (const id of info.id)
                 {
-                    temp = getElement(w, d)(info.attr, info.type, id)
+                    temp = getElement(w, d, i, v)(info.attr, info.type, id)
                     updateAttr(temp, { id: id, name: info.name })
                     const isIdNameSame = name === id
                     const isFirstTwoCharsSame = (name + id)[0] === (name + id)[1]
@@ -418,20 +399,27 @@ const genSvgFromList = (list, purpose,) =>
                 continue
             }
         }
-        temp = getElement(w, d)(info.attr, info.type)
+        temp = getElement(w, d, i, v)(info.attr, info.type)
         updateAttr(temp, { id: info.id, name: info.name })
         createdSVG[name] = temp
     }
 
-    createdSVG[Symbol.toStringTag] = 'initSVG'
-    return createdSVG
+    // createdSVG[Symbol.toStringTag] = name
+    // return createdSVG
+    return {
+        named: name =>
+        {
+            createdSVG[Symbol.toStringTag] = name
+            return createdSVG
+        }
+    }
 }
 
 
 
 /**
  * @param {*} list 추가할 복수의 svg 요소
- * @param {*} to 타겟이 되는 요소
+ * @param {*} target 타겟이 되는 요소
  */
 const appendAll = (list) =>
 {
@@ -449,7 +437,7 @@ const appendAll = (list) =>
 
 
 /**
- * 사용할 이벤트리스너 정의
+ * 추가할 이벤트리스너 정의
  */
 const DOMEventAttr = {
     'svg':
@@ -488,7 +476,6 @@ const DOMEventAttr = {
 DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
 /**
- * 
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
  */
 const setEvents = (vars, copy) =>
@@ -522,27 +509,30 @@ const setEvents = (vars, copy) =>
     }
 }
 
-
-
-const updateTooltip = (w, d, g) =>
+const genSvgList = (target) =>
 {
+    return {
+        setID: ids => Object.entries(svgDefinition(ids)[target])
+    }
+}
+
+
+const updateTooltip = (vars, copy) => (w, d) =>
+{
+    const _ = copy(vars)
+
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const createEl = getElement(w, d, i, value)
-        const [textId, boxId] = [`text-${value}`, `box-${value}`]
-        const [text, box, group] =
-            [
-                createEl('label', 'text', textId),
-                createEl('plot', 'circle', boxId),
-                createEl('gBox', 'g'),
-            ]
+        const [textId, boxId] = [`text-${i}${value}`, `box-${i}${value}`]
 
-        text.textContent = value
-        box.setAttribute('id', boxId)
-        text.setAttribute('id', textId)
-        group.appendChild(box)
-        group.appendChild(text)
-        g.appendChild(group)
+        const list = _.genSvgList('tooltipGroup').setID({ gBox: boxId, label: textId })
+
+        const { plot, label, gBox } = _.genSvgFromList(list, i, value).named('tooltipSVG')
+
+        label.textContent = value
+
+        appendAll({ plot, label }).to(gBox)
+        _.initSVG['g'].appendChild(gBox)
 
     }
 }
@@ -606,10 +596,11 @@ const initParams = [
     // startSimulation,
     updateTexts,
     updateTooltip,
-    getAttrByIdx,
-    genSvgFromList(initSVGList),
+    genSvgList,
+    genSvgFromList(initSVGList).named('initSVG'),
+    genSvgFromList,
     DOMEventAttr,
-    svgIdList,
+    svgDefinition,
     appendAll,
     setEvents
 ]
@@ -624,14 +615,16 @@ const init = (vars, copy) =>
     _._id('data-list').value = initData.join(',')
     console.log(_id('data-list').value)
     const size = genSize(w, initData)
-    const [svgArea, svg]  = [_id('svg-area'), _.initSVG['svg']]
+    const [svgArea, svg] = [_id('svg-area'), _.initSVG['svg']]
 
-    const mouseOn = () => {  svg.addEventListener('mousemove', _.onMove(vars,copy)) }
+    const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(vars, copy)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(vars, copy)) }
-    
+
     svgArea.appendChild(svg)
 
     _.updateAttr(_.initSVG['path'], { d: genPath(initData)(size) })
+
+
     _.DOMEventAttr['svg'] = _.DOMEventAttr['svg'].map(e =>
     {
         if (e.event === 'mouseenter') e.func = mouseOn
@@ -639,12 +632,13 @@ const init = (vars, copy) =>
         return e
     })
 
-    _.setEvents(vars, copy).addAll({..._.DOMEventAttr['svg'], ..._.DOMEventAttr})
+    console.log(_.DOMEventAttr)
+    _.setEvents(vars, copy).addAll(_.DOMEventAttr)
 
     delete (_.initSVG['svg'])
 
     _.appendAll(_.initSVG).to(svg)
-    _.updateTooltip(w, initData, _.initSVG['g'])
+    _.updateTooltip(vars, copy)(w, initData)
 
     // console.log(_data)
 
