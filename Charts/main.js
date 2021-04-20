@@ -10,38 +10,29 @@ const inputData = (el) =>
         : Number(el.value)
 }
 
-// const w = inputData(_id('width'))
-// const d = inputData(_id('data-list'))
 
 const getAttrByIdx = (w, d, i, id) => genAttr(id)(w, genSize(w, d), Number(i))
 
 const genSize = (w, d) =>
 {
-    const unit = w / d.length
-    const gap = unit / d.length
-    const [maxY, minY] = [Math.max.apply(null, d), Math.min.apply(null, d)]
-    const sum = (Math.abs(maxY) + Math.abs(minY))
-    const [height, topMargin] = [1500, 500]
-    const yUnit = height > sum ? Math.floor(height/sum)*100 : Math.floor(sum/height)*100
-    const box = (((w - unit) / d.length) * d.length) + gap * d.length > w ? ((w - (unit * gap + d.length)) / d.length) : ((w - unit) / d.length) - gap
+    const unitX = w / d.length
+    const gap = unitX / d.length
+    const [height, margin] = [400, -50]
+    const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
+    const MAX = Math.max(maxData, Math.abs(minData))
+    const SUM = (maxData + Math.abs(minData))
+    const unitY = (height) / MAX
     return {
         d: d.length,
         gap,
-        box,
-        unit,
+        unitX,
+        unitY,
         width: w,
-        height: 400,
-        topMargin,
-        data: { text: { width: 30, height: 20 }, box },
+        height,
+        data: { text: { width: 30, height: 20 } },
         line: 1,
-        x: i => Math.floor(unit * i),
-        y: v =>
-        {
-            const unit = (Math.floor((sum) / yUnit) * (v))
-            const axis = sum > height ?  topMargin  - unit /yUnit + 30
-                :  topMargin  - unit / d.length + 30
-            return Math.floor(axis)
-        },
+        x: i => Math.floor(unitX * i),
+        y: v =>  margin + ((MAX - v ))  *  (unitY),
         idx: x => Math.floor((x - unit * 4 - 80) / (unit)) - 1
     }
 }
@@ -353,7 +344,7 @@ const copyParams = (params) =>
 const onChangeInput = (vars, copy) => (e) =>
 {
     const _ = copy(vars)
-    const [wth, main] = [_._id('width'),_._id('main')]
+    const [wth, main] = [_._id('width'), _._id('main')]
     const w = _.inputData(wth)
     let d = _.inputData(_._id('data-list'))
     const radioNodeList = document.getElementsByName('radio')
@@ -552,7 +543,7 @@ const init = (vars, copy) =>
     const _ = copy(vars)
     const d = _.inputData(_._id('data-list'))
     const w = _.inputData(_._id('width'))
-    const initData = [3, 25, -58, 5, -48, 967, 456, -33, 24, -6, 90, 6, 25, 4, 5, 345, -75, 36, -89, 4, 32, 2, -452, 7, 98, 61, 12, 45, 776, 4, -32, 2, -86, -56, 356, -34, 2, 455, 6, -300, 467, 4]
+    const initData = [0,230,120,-450,-200,1600,0,600,-1500,200,0,-1200,-800,800,0]
     _._id('data-list').value = initData.join(',')
     const size = genSize(w, initData)
     const svg = genElement('svg', genAttr('svg')(w, size).svg)
