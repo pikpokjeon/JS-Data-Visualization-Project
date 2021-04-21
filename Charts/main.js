@@ -143,9 +143,9 @@ const genPath = (d, type) => (size) =>
     {
         const [a, b] = [size.x(i), size.y(cur)]
         const midX = (prev[0] + a)/2
-        if (type === "step" && i > 0)
+        if (i > 0 && type !== 'default')
         {
-            acc += ` ${midX} ${prev[1]}`
+            acc +=  type === "step" ? ` ${midX} ${prev[1]}` :  i === 1 ? `C ${midX} ${prev[1]}` : 'S'
             acc += ` ${midX} ${b}`
         }
         acc += ` ${a} ${b}`
@@ -329,21 +329,12 @@ const onChangeInput = (vars, copy) => (e) =>
     //     w: inputData(_id('width')),
     // }
     let lineType = 'default'
-    typeNodeList.forEach( n =>
-    {   console.log(n)
-        if (n.checked && n.value === 'curve')
-        {
-            lineType = 'curve'
-            
-        }
-        else if (n.checked && n.value === 'step')
-        {   alert('ssss')
-            lineType = 'step'
 
-        } else if (n.checked)
-        {
-            lineType = 'default'
-        }
+    typeNodeList.forEach( n =>
+    {  
+        if (n.checked && n.value === 'curve') lineType = 'curve'
+        else if (n.checked && n.value === 'step') lineType = 'step'
+        else if (n.checked) lineType = 'default'
     })
 
     _._id('data-list').value = `${(d)}`
