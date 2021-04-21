@@ -17,7 +17,7 @@ const genSize = (w, d) =>
 
     const unitX = w / d.length
     const gap = unitX / d.length
-    const [height, margin] = [400, -50]
+    const [height, margin] = [350, -50]
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
     const SUM = (maxData + Math.abs(minData))
@@ -28,7 +28,7 @@ const genSize = (w, d) =>
         unitX,
         unitY,
         width: w,
-        eventArea: { width: w, height: SUM },
+        eventArea: { width: w, height: 700 },
         data: { text: { width: 30, height: 20 } },
         line: 1,
         x: i => Math.floor(unitX * i),
@@ -87,21 +87,20 @@ const genAttr = (id) => (w, s, i, v) =>
         },
         lineV: {
             x1: s.x(i),
-            y1: id === 'mid' ? 0 : -h,
+            y1:  -h,
             x2: s.x(i),
-            y2: id === 'mid' ? h : h * 2,
+            y2:  h * 2,
             style: style.line,
         },
 
-        dataText: {
-            x: 0,
-            // ((s.unit * i) - s.gap + s.unit / 2)
-            y: s.y(v),
+        label: {
+            x: s.x(i),
+            y: h ,
             fill: color.default,
             'dominant-baseline': 'start',
             'text-anchor': 'middle',
         },
-        label: {
+        dataText: {
             x: 0,
             y: s.y(v),
             fill: color.default,
@@ -226,6 +225,13 @@ const svgDefinition = (id) =>
             attr: 'label',
             id: id.label,
             name: 'label'
+        },
+        dataText:
+        {
+            type: 'text',
+            attr: 'dataText',
+            id: id.dataText,
+            name: 'dataText'
         },
         plot:
         {
@@ -539,11 +545,12 @@ const updateTooltip = (vars, copy) => (w, d) =>
 
         const list = _.genSvgList('tooltipGroup').setID({ gBox: boxId, label: textId })
 
-        const { plot, label, gBox } = _.genSvgFromList(list, i, value).named('tooltipSVG')
+        const { plot, label, gBox, dataText } = _.genSvgFromList(list, i, value).named('tooltipSVG')
 
-        label.textContent = value
+        label.textContent =  2010 + Number(i)
+        dataText.textContent =value
 
-        appendAll({ plot, label }).to(gBox)
+        appendAll({ plot, label, dataText }).to(gBox)
         g.appendChild(gBox)
 
     }
@@ -567,12 +574,10 @@ const onMove = (vars, copy) => (e) =>
     const _ = copy(vars)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
-    console.log(_)
-    // const size = 
-    // console.log('onMove', _)
-    // console.log('onMove', e.clientX)
+
     let idx = undefined
     let value = undefined
+
     if (idx !== size.idx(e.clientX))
     {
         // idx = e.clientX
@@ -587,8 +592,7 @@ const onMove = (vars, copy) => (e) =>
         value = d[idx]
         // _.updateAttr(_.initSVG, getAttrByIdx(w, d, value).moveY)
     }
-    line2.setAttribute('x1', e.clientX - 160)
-    line2.setAttribute('x2', e.clientX - 160)
+    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 160, x2: e.clientX - 160})
 
 }
 
@@ -628,7 +632,11 @@ const init = (vars, copy) =>
 
     const _ = copy(vars)
     const [d, w] = [_.inputData(_._id('data-list')), _.inputData(_._id('width'))]
+
     const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
+    const testLabel = d.map((_, i) => 2010 + i)
+
+    console.log(testLabel)
     const size = genSize(w, initData)
     const [svgArea, svg] = [_id('svg-area'), _.initSVG['svg']]
 
