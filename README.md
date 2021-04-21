@@ -20,6 +20,7 @@
 
 ### 2. Chart 
 ### (1) Line chart
-##### Last update (20,Apr): TODO > add curve and other types of line 
+##### Last update (21,Apr): TODO > add curve and other types of line 
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/linechart.gif)
+![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/stepchart.png)
