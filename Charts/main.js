@@ -26,6 +26,10 @@ const genSize = (w, d) =>
         d: d.length,
         gap,
         unitX,
+        MAX,
+        SUM,
+        maxData,
+        minData,
         unitY,
         width: w,
         eventArea: { width: w, height: 700 },
@@ -87,15 +91,15 @@ const genAttr = (id) => (w, s, i, v) =>
         },
         lineV: {
             x1: s.x(i),
-            y1:  -h,
+            y1: -h,
             x2: s.x(i),
-            y2:  h * 2,
+            y2: h * 2,
             style: style.line,
         },
 
         label: {
             x: s.x(i),
-            y: h ,
+            y: h,
             fill: color.default,
             'dominant-baseline': 'start',
             'text-anchor': 'middle',
@@ -141,14 +145,14 @@ const genPath = (d, type) => (size) =>
     return d.reduce((acc, cur, i) =>
     {
         const [a, b] = [size.x(i), size.y(cur)]
-        const midX = (prev[0] + a)/2
+        const midX = (prev[0] + a) / 2
         if (i > 0 && type !== 'default')
         {
-            acc +=  type === "step" ? ` ${midX} ${prev[1]}` :  i === 1 ? `C ${midX} ${prev[1]}` : 'S'
+            acc += type === "step" ? ` ${midX} ${prev[1]}` : i === 1 ? `C ${midX} ${prev[1]}` : 'S'
             acc += ` ${midX} ${b}`
         }
         acc += ` ${a} ${b}`
-        prev = [a,b]
+        prev = [a, b]
         return acc
 
     }, 'M')
@@ -289,7 +293,7 @@ const updateTexts = (vars, copy) => (d, w) => (num, start, end, target) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-       
+
 
         // if (value === num) box.setAttribute('fill', 'lemonchiffon'), text.setAttribute('fill', 'black')
         // else if (value === start || value === end) box.setAttribute('fill', '#292a38f2')
@@ -320,28 +324,81 @@ const copyParams = (params) =>
 
 
 
-const onChangeInput = (vars, copy) => (e) =>
+const onChangeInput = (vars, copy, target) => (e) =>
 {
     const _ = copy(vars)
     const [wth, main] = [_._id('width'), _._id('main')]
     let w = _.inputData(wth)
     let d = _.inputData(_._id('data-list'))
-    const size = genSize(w, d)
+    let d_memo = d.map(e => 1)
     const typeNodeList = _name('radio')
 
-    // const _data =
-    // {
-    //     d: inputData(_id('data-list')),
-    //     w: inputData(_id('width')),
-    // }
+
+    let lastnum = -1
+    const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
+    const b = Math.floor(Math.random() * 1000)
+    const random = _.genSize(w, d).maxData + a + b
+
+
+
+    if (target === 'add')
+    {
+        d.push(random)
+        d_memo.push(0)
+
+    }
     let lineType = 'default'
 
-    typeNodeList.forEach( n =>
-    {  
+    typeNodeList.forEach(n =>
+    {
         if (n.checked && n.value === 'curve') lineType = 'curve'
         else if (n.checked && n.value === 'step') lineType = 'step'
         else if (n.checked) lineType = 'default'
     })
+    const size = genSize(w, d)
+
+    const first = size.x(0)
+    let second = -1
+    let count = 1
+    let gap = -1
+
+    for (let i = 0; i < d.length; i++)
+    {
+
+        if (size.unitX < 40)
+        {
+            if (i > 0 && i % 2 === 1)
+            {
+                d_memo[i] = 0
+            }
+            // if (d_memo[i] === 1 && i % 2 === 1)
+            // {
+            //     d_memo[i] = 0
+            // }
+        }
+    }
+
+    for (let i = 0; i < d.length; i++)
+    {
+        if (i > 0 && d_memo[i] === 1)
+        {
+
+            second = size.x(i)
+            gap = second - first
+            break
+        }
+    }
+
+    for (let i = 0; i < d.length; i++)
+    {
+        if ((second - first) > 40) count += 1
+        break;
+            // count -= 1
+    }
+    console.log(size.unitX,gap, first, second, count)
+    console.log(d_memo)
+
+
 
     _._id('data-list').value = `${(d)}`
 
@@ -353,11 +410,11 @@ const onChangeInput = (vars, copy) => (e) =>
         w = width - 250
     }
 
-    const newPath = genPath(d,lineType)(size)
+    const newPath = genPath(d, lineType)(size)
 
     vars = [w, d, ...vars]
     _.updatePath(_.initSVG['path'], newPath)
-    _.updateTooltip(vars, copy)(w, d)
+    _.updateTooltip(vars, copy)(w, d, d_memo)
 
 }
 
@@ -401,9 +458,9 @@ const genSvgFromList = (list, i, v) =>
                     updateAttr(temp, { id: id, name: info.name })
                     const name_Id = name + id
                     const isIdNameSame = name === id
-                    const isFirstTwoSame = name_Id[0] === name_Id[1] 
-                    const isLastTwoSame =  name_Id[name_Id.length-2] === name_Id[name_Id.length-1]
-                    const _name = isIdNameSame ? id : isFirstTwoSame ? id : isLastTwoSame? name + (id[0].toUpperCase() + id.slice(1)) : name
+                    const isFirstTwoSame = name_Id[0] === name_Id[1]
+                    const isLastTwoSame = name_Id[name_Id.length - 2] === name_Id[name_Id.length - 1]
+                    const _name = isIdNameSame ? id : isFirstTwoSame ? id : isLastTwoSame ? name + (id[0].toUpperCase() + id.slice(1)) : name
                     createdSVG[_name] = temp
                 }
                 continue
@@ -482,6 +539,13 @@ const DOMEventAttr = {
                 func: onChangeInput
             }
         ],
+    'add':
+        [
+            {
+                event: 'click',
+                func: onChangeInput
+            }
+        ],
 }
 DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
@@ -502,7 +566,10 @@ const setEvents = (vars, copy) =>
                 {
                     for (const data of (events))
                     {
-                        if (data.func !== undefined) node.addEventListener(data.event, data.func(vars, copy))
+                        if (data.func !== undefined)
+                        {
+                            node.addEventListener(data.event, data.func(vars, copy, target))
+                        }
 
                     }
                 }
@@ -520,12 +587,12 @@ const setEvents = (vars, copy) =>
 const genSvgList = (target) =>
 {
     return {
-        setID: ids => Object.entries( svgDefinition(ids)[target] )
+        setID: ids => Object.entries(svgDefinition(ids)[target])
     }
 }
 
 
-const updateTooltip = (vars, copy) => (w, d) =>
+const updateTooltip = (vars, copy) => (w, d, memo) =>
 {
     const _ = copy(vars)
     const g = _.initSVG['g']
@@ -547,10 +614,14 @@ const updateTooltip = (vars, copy) => (w, d) =>
 
         const { plot, label, gBox, dataText } = _.genSvgFromList(list, i, value).named('tooltipSVG')
 
-        label.textContent =  2010 + Number(i)
-        dataText.textContent =value
+        label.textContent = 2010 + Number(i)
+        dataText.textContent = value
+        if (memo[i] === 1)
+        {
+            appendAll({ label, dataText }).to(gBox)
 
-        appendAll({ plot, label, dataText }).to(gBox)
+        }
+        gBox.appendChild(plot)
         g.appendChild(gBox)
 
     }
@@ -563,14 +634,14 @@ const updateTooltip = (vars, copy) => (w, d) =>
 const updateIdx = (vars, copy) => (x) =>
 {
     const _ = copy(vars)
-    console.log('Idx', _)
-    console.log('Idx', x)
+    // console.log('Idx', _)
+    // console.log('Idx', x)
 }
 
 
 const onMove = (vars, copy) => (e) =>
 {
-    console.log(vars)
+    // console.log(vars)
     const _ = copy(vars)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
@@ -586,13 +657,13 @@ const onMove = (vars, copy) => (e) =>
             _id(`box-${value}`).setAttribute('fill', 'white')
             _id(`text-${value}`).setAttribute('fill', 'white')
         }
-        console.log(e.clientX)
+        // console.log(e.clientX)
         idx = size.idx(e.clientX)
-        console.log(idx)
+        // console.log(idx)
         value = d[idx]
         // _.updateAttr(_.initSVG, getAttrByIdx(w, d, value).moveY)
     }
-    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 160, x2: e.clientX - 160})
+    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 160, x2: e.clientX - 160 })
 
 }
 
@@ -643,10 +714,10 @@ const init = (vars, copy) =>
     _._id('data-list').value = initData.join(',')
     svgArea.appendChild(svg)
     _.updatePath(_.initSVG['path'], genPath(initData)(size))
-    
+
     delete (_.initSVG['svg'])
 
-    const onMoveVars = [_.updateAttr,_.genSize,_._id,_.initSVG,_.inputData]
+    const onMoveVars = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData]
     const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(onMoveVars, copy)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(onMoveVars, copy)) }
 
