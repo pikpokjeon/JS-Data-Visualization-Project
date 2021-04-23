@@ -131,9 +131,9 @@ const genAttr = (id) => (w, s, i, v) =>
         },
         fillBG: {
             x: 0,
-            y: 800,
+            y: 600,
             width: w,
-            height: 350,
+            height: 600,
             fill:'url(#fill)'
         },
         clipPath: { // frame
@@ -346,7 +346,7 @@ const svgIdList =
     path: ['path'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
-    stop: ['stop1', 'stop2'],
+    stop: ['stop1', 'stop2','stop3','stop4'],
     fillPath: ['fillpath'],
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
@@ -916,15 +916,17 @@ const updatePathGroup = (vars, copy) => (w,d) =>
     const _ = copy(vars)
     const size = genSize(w, d)
     const lineType = onChangeLineType(vars,copy,'line')()
-    const { stop1, stop2, linearGradient, fillG, fillBG, frame, fillpath, defs ,path} = _.initPathSVG
-    _.updateAttr(stop1,{offset:'0%', style: 'stop-color: white; stop-opacity: 0.8'})
-    _.updateAttr(stop2, { offset: '100%', style: 'stop-color: white; stop-opacity: 0' })
-    appendAll({ stop1, stop2 }).to(linearGradient)
+    const { stop1, stop2,stop3,stop4, linearGradient, fillG, fillBG, frame, fillpath, defs ,path} = _.initPathSVG
+    _.updateAttr(stop1,{offset:'0%', style: 'stop-color: white; stop-opacity: 0.7'})
+    _.updateAttr(stop2, { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.4' })
+    _.updateAttr(stop3, { offset: '80%', style: 'stop-color: #4d00ff; stop-opacity: 0.3' })
+    _.updateAttr(stop4, { offset: '100%', style: 'stop-color: #0028ff; stop-opacity: 0' })
+    appendAll({ stop1, stop2, stop3,stop4 }).to(linearGradient)
     _.updatePath(fillpath, _.genPath(d, lineType)(size).fill)
     _.updatePath(path, _.genPath(d, lineType)(size).path)
     appendAll({ fillpath }).to(frame)
     appendAll({ linearGradient, frame }).to(defs)
-    _.updateAttr(fillBG, { width: w, y: 0 })
+    _.updateAttr(fillBG, { width: w, y: -100 })
 
     appendAll({ fillBG }).to(fillG)
     appendAll({defs, fillG, path}).to(_.initSVG['gGroup'])
