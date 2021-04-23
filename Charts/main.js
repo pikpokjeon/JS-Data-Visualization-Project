@@ -331,8 +331,10 @@ const onChangeInput = (vars, copy, target) => (e) =>
     let w = _.inputData(wth)
     let d = _.inputData(_._id('data-list'))
     let d_memo = d.map(e => 1)
-    const typeNodeList = _name('radio')
+    let _d_label = d.map((_,i) => Number(2010) + i)
 
+    const typeNodeList = _name('radio')
+    let time = _.inputData(_._id('time'))
 
     let lastnum = -1
     const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
@@ -347,6 +349,7 @@ const onChangeInput = (vars, copy, target) => (e) =>
         d_memo.push(0)
 
     }
+
     let lineType = 'default'
 
     typeNodeList.forEach(n =>
@@ -360,44 +363,77 @@ const onChangeInput = (vars, copy, target) => (e) =>
     const first = size.x(0)
     let second = -1
     let count = 1
-    let gap = -1
 
-    for (let i = 0; i < d.length; i++)
+
+    // const getUnitToShow = (d,memo,gap,unit) =>
+    // {
+    //     for (let i = 2; i < d.length; i++)
+    //     {
+    //         if (memo[i] !== undefined)
+    //         {
+    //             if (gap > 40) unit -= 1
+    //             unit += 1
+    //             break
+    //         }
+    //     }
+    //     return unit
+    // }
+
+
+    const labelArr = (d, memo, s) =>
     {
+        let gap = -1
+        let unitToshow = 2
+        let secountIdx = 1
+        let a = -1
+        const size = s(w, d)
 
-        if (size.unitX < 40)
+        // unit = unit(d,memo,gap,unitToshow)
+
+        for (let i = 1; i < d.length; i++)
         {
-            if (i > 0 && i % 2 === 1)
+            if (memo[i] > 0)
             {
-                d_memo[i] = 0
+
+                let [x, px] = [size.x(0), size.x(unitToshow)]
+                a = px
+                gap = Math.abs(x - px)
+                if (gap > 40) unitToshow -= 1
+                unitToshow += 1
+                secountIdx = i
+                break
             }
-            // if (d_memo[i] === 1 && i % 2 === 1)
-            // {
-            //     d_memo[i] = 0
-            // }
         }
-    }
+        // return unit
+        // console.log(gap, unitToshow, secountIdx, a)
 
-    for (let i = 0; i < d.length; i++)
-    {
-        if (i > 0 && d_memo[i] === 1)
+        // console.log(unitToshow, gap)
+
+        return d.map((e, i) =>
         {
-
-            second = size.x(i)
-            gap = second - first
-            break
-        }
+            if (size.unitX < 30)
+            {
+                if (i % unitToshow === 0)
+                {
+                    memo[i] = 1
+                    return e
+                }
+                else
+                {
+                    memo[i] = 0
+                    return undefined
+                }
+            }
+            else
+            {
+                return e
+            }
+        })
     }
 
-    for (let i = 0; i < d.length; i++)
-    {
-        if ((second - first) > 40) count += 1
-        break;
-            // count -= 1
-    }
-    console.log(size.unitX,gap, first, second, count)
-    console.log(d_memo)
+    // const arr = labelArr(d, d_memo, genSize)
 
+    // _.setEvents(vars, copy).off('click').from('add')
 
 
     _._id('data-list').value = `${(d)}`
@@ -409,39 +445,105 @@ const onChangeInput = (vars, copy, target) => (e) =>
         wth.value = width - 250
         w = width - 250
     }
-
+    console.log(lineType)
     const newPath = genPath(d, lineType)(size)
 
     vars = [w, d, ...vars]
     _.updatePath(_.initSVG['path'], newPath)
-    _.updateTooltip(vars, copy)(w, d, d_memo)
+    _.updateTooltip(vars, copy)(w, d,_d_label)
+    let n = undefined
+
+
+
+
+    const updateBox = ({ i, delay, round, random, don, d_memo,dd, newPath ,w,vars}) => new Promise(res => 
+    {
+        dd.push(_d_label[_d_label.length - 1] + 1)
+        dd.shift()
+            _.updateTooltip(vars, copy)(w, don,dd)
+
+        return res({ num, arr, time })
+    })
+
+    const updateTargetToSort = (i, delay, round, random, don, d_memo,dd, newPath,w,vars) => new Promise(res => 
+    {
+        return setTimeout(() =>
+        {
+            don.push(random)
+            d_memo.push(0)
+            console.log(don)
+            don.shift()
+            d_memo.shift()
+            const size = genSize(w, don )
+            const newPath = genPath(don , lineType)(size)
+            _.updatePath(_.initSVG['path'], newPath)
+
+            time -= 1
+            res({i, delay, round, random, don, d_memo,dd, newPath ,w ,vars})
+        }, delay * ((i + 1)))
+    })
+
+    const toDelayUpdate = async (i, delay, round, random, dom, d_memo,_d_label, newPath,w,vars) =>
+    {
+        await updateTargetToSort(i, delay, round, random, dom, d_memo,_d_label, newPath,w,vars).then(updateBox)
+    }
+
+    /**
+     * 이진탐색 조건 1. 정렬이 가능한가? 정렬을 시작
+     * 정렬 -> 이진탐색으로 가기위해 동기처리 필요
+     */
+    const stream = () => new Promise(res =>
+    {
+        let temp_d = [...d]
+        let round = -1
+        const start = new Date().getTime()
+
+        for (let i = 0; i < time; i++)
+        {
+            if (w > width)
+            {
+                wth.value = width - 250
+                w = width - 250
+            }
+
+            const a = _.genSize(w, temp_d ).minData - Math.floor(1000 - Math.random() * 1000)
+            const b = Math.floor(Math.random() * 1000)
+            const random = (_.genSize(w, temp_d ).maxData + a + b) * 1.5
+            vars = [w, temp_d , ...vars]
+            toDelayUpdate(i, 500, round, random, temp_d , d_memo,_d_label, newPath,w,vars)
+            round += 1
+
+        }
+
+    })
+
+    stream()
 
 }
 
-
-const updatePath = (el, d) => el.setAttribute('d', `${d}`)
-
-
-// const startSimulation = (vars, copy) => (e) =>
+// const streamChart = (vars, copy, target) => (e) =>
 // {
-
 //     const _ = copy(vars)
-//     const w = _.inputData(_._id('width'))
+//     let time = _.inputData(_._id('time'))
 //     const d = _.inputData(_._id('data-list'))
-//     const target = _.inputData(_._id('target'))
-//     let sortRound = -1
-//     _._id('search-answer').innerHTML = `waiting...`
-//     _._id('search-count').innerHTML = `0`
+//     let d_memo = d.map(e => 1)
+//     const [wth, main] = [_._id('width'), _._id('main')]
+//     let w = _.inputData(wth)
+//     lineType = 'curve'
+//     const { width } = main.getBoundingClientRect()
+
 
 // }
+const updatePath = (el, d) => el.setAttribute('d', `${d}`)
+
 
 const initSVGList = Object.entries(svgDefinition(svgIdList).singleSVG)
 
 
-const genSvgFromList = (list, i, v) =>
+const genSvgFromList = (list, d, w, i, v) =>
 {
-    const w = inputData(_id('width'))
-    const d = inputData(_id('data-list'))
+    // const w = inputData(_id('width'))
+    // const d = inputData(_id('data-list'))
     const createdSVG = {}
     let temp = undefined
 
@@ -511,39 +613,68 @@ const DOMEventAttr = {
         [
             {
                 event: 'mouseenter',
-                func: undefined
+                func: undefined,
+                isAdded: false,
             },
             {
                 event: 'mouseleave',
-                func: undefined
+                func: undefined,
+                isAdded: false,
+
             }
         ],
     'width':
         [
             {
                 event: 'input',
-                func: onChangeInput
+                func: onChangeInput,
+                isAdded: false,
+
             },
         ],
     'data-list':
         [
             {
                 event: 'input',
-                func: onChangeInput
+                func: onChangeInput,
+                isAdded: false,
+
             },
         ],
     'radio':
         [
             {
                 event: 'click',
-                func: onChangeInput
+                func: onChangeInput,
+                isAdded: false,
+
             }
         ],
     'add':
         [
             {
                 event: 'click',
-                func: onChangeInput
+                func: onChangeInput,
+                isAdded: false,
+
+            }
+        ],
+    'stream':
+        [
+            {
+                event: 'click',
+                func: onChangeInput,
+                isAdded: false,
+
+            }
+        ],
+    'stop':
+        [
+            {
+                event: 'click',
+                func: onChangeInput,
+                isAdded: false,
+
             }
         ],
 }
@@ -551,6 +682,8 @@ DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
+ * @param {*} event 삭제할 이벤트리스너 이름
+ * @param {*} target 삭제할 이벤트리스너 대상
  */
 const setEvents = (vars, copy) =>
 {
@@ -566,21 +699,62 @@ const setEvents = (vars, copy) =>
                 {
                     for (const data of (events))
                     {
-                        if (data.func !== undefined)
+                        if (data.func !== undefined && !data.isAdded)
                         {
                             node.addEventListener(data.event, data.func(vars, copy, target))
+                            data.isAdded = true
                         }
 
                     }
                 }
             }
+            // console.log(_.DOMEventAttr)
         },
         // !! TODO: 이벤트 삭제 부분 구현
-        remove: target =>
+        // 이벤트 이름
+        off: event =>
         {
+            return {
+                // 대상
+                from: target =>
+                {
+
+                    console.log(_.DOMEventAttr[target].filter(e => 
+                    {
+                        if (e[event] === event) return e[func]
+                    }))
+                    const targetNodes = _._name(target)
+
+                    for (const node of targetNodes)
+                    {
+                        const targets = _.DOMEventAttr[target].filter(e => e.event === event)
+                        for (const tg of (targets))
+                        {
+                            console.log(tg)
+                            // {
+                            if (tg.isAdded)
+                            {
+                                node.removeEventListener(event, tg.func)
+
+                                tg.isAdded = false
+                                _.DOMEventAttr = { tg, ..._.DOMEventAttr }
+                                console.log('added', node)
+                            }
+                            // }
+                            console.log(_.DOMEventAttr)
+
+                        }
+
+                    }
+
+
+
+
+
+                }
+            }
 
         }
-
     }
 }
 
@@ -592,7 +766,7 @@ const genSvgList = (target) =>
 }
 
 
-const updateTooltip = (vars, copy) => (w, d, memo) =>
+const updateTooltip = (vars, copy) => (w, d, dlabel) =>
 {
     const _ = copy(vars)
     const g = _.initSVG['g']
@@ -612,15 +786,15 @@ const updateTooltip = (vars, copy) => (w, d, memo) =>
 
         const list = _.genSvgList('tooltipGroup').setID({ gBox: boxId, label: textId })
 
-        const { plot, label, gBox, dataText } = _.genSvgFromList(list, i, value).named('tooltipSVG')
+        const { plot, label, gBox, dataText } = _.genSvgFromList(list, d, w, i, value).named('tooltipSVG')
 
-        label.textContent = 2010 + Number(i)
+        label.textContent = dlabel[i]
         dataText.textContent = value
-        if (memo[i] === 1)
-        {
-            appendAll({ label, dataText }).to(gBox)
+        // if (memo[i])
+        // {
+        appendAll({ label, dataText, plot }).to(gBox)
 
-        }
+        // }
         gBox.appendChild(plot)
         g.appendChild(gBox)
 
@@ -689,9 +863,10 @@ const initParams = [
     updateTexts,
     updateTooltip,
     genSvgList,
-    genSvgFromList(initSVGList).named('initSVG'),
+    genSvgFromList(initSVGList, _id('data-list')).named('initSVG'),
     genSvgFromList,
     DOMEventAttr,
+    streamChart,
     svgDefinition,
     appendAll,
     setEvents
@@ -717,7 +892,7 @@ const init = (vars, copy) =>
 
     delete (_.initSVG['svg'])
 
-    const onMoveVars = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData]
+    const onMoveVars = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents]
     const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(onMoveVars, copy)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(onMoveVars, copy)) }
 
@@ -732,7 +907,7 @@ const init = (vars, copy) =>
     _.setEvents(vars, copy).addAll(_.DOMEventAttr)
     _.appendAll(_.initSVG).to(svg)
     _.initSVG = { svg, ..._.initSVG }
-    _.updateTooltip(vars, copy)(w, initData)
+    _.updateTooltip(vars, copy)(w, initData, initData.map(e => 1))
 
 
 }
