@@ -866,7 +866,7 @@ const initParams = [
     genSvgFromList(initSVGList, _id('data-list')).named('initSVG'),
     genSvgFromList,
     DOMEventAttr,
-    streamChart,
+    // streamChart,
     svgDefinition,
     appendAll,
     setEvents
@@ -902,12 +902,11 @@ const init = (vars, copy) =>
         if (e.event === 'mouseleave') e.func = mouseOut
         return e
     })
-
-
+    _.updatePath(_.initSVG['path'],genPath(initData , 'default')(size))
     _.setEvents(vars, copy).addAll(_.DOMEventAttr)
     _.appendAll(_.initSVG).to(svg)
     _.initSVG = { svg, ..._.initSVG }
-    _.updateTooltip(vars, copy)(w, initData, initData.map(e => 1))
+    _.updateTooltip(vars, copy)(w, initData, initData.map((_,i) => 2010 + i))
 
 
 }
