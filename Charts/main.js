@@ -327,6 +327,7 @@ const onChangeLineType = (vars, copy, target) => (e) =>
     const _ = copy(vars)
     const typeNodeList = _name('radio')
     const [w, d] = [_.inputData(_._id('width')), _.inputData( _._id('data-list'))]
+    let _d_label = d.map((_,i) => Number(2010) + i)
     let lineType 
     typeNodeList.forEach(n =>
     {
@@ -334,6 +335,8 @@ const onChangeLineType = (vars, copy, target) => (e) =>
     })
     const newPath = genPath(d, lineType)(genSize(w,d))
     _.updatePath(_.initSVG['path'], newPath)
+    _.updateTooltip(vars, copy)(w, d,_d_label)
+
     return lineType
 }
 
@@ -468,7 +471,7 @@ const startStream = (vars, copy, target) => (e) =>
     let d = _.inputData(_._id('data-list'))
     let d_memo = d.map(e => 1)
     let _d_label = d.map((_,i) => Number(2010) + i)
-    const lineType = onChangeLineType(vars,copy,target)
+    const lineType = onChangeLineType(vars,copy,target)()
 
     const updateBox = ({  arr, arr_memo,arr_label,w,vars}) => new Promise(res => 
     {
@@ -488,7 +491,7 @@ const startStream = (vars, copy, target) => (e) =>
             arr.shift()
             d_memo.shift()
             const size = genSize(w, arr )
-            const newPath = genPath(arr , lineType)(size)
+            const newPath = genPath(arr, lineType)(size)
             _.updatePath(_.initSVG['path'], newPath)
 
             time -= 1
