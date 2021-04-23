@@ -322,7 +322,19 @@ const copyParams = (params) =>
     return copied
 }
 
+const onChangeLineType = (vars, copy, target) => (e) =>
+{
+    const typeNodeList = _name('radio')
+    let lineType = 'default'
 
+    typeNodeList.forEach(n =>
+    {
+        if (n.checked && n.value === 'curve') lineType = 'curve'
+        else if (n.checked && n.value === 'step') lineType = 'step'
+        else if (n.checked) lineType = 'default'
+    })
+    return lineType
+}
 
 const onChangeInput = (vars, copy, target) => (e) =>
 {
@@ -333,9 +345,8 @@ const onChangeInput = (vars, copy, target) => (e) =>
     let d_memo = d.map(e => 1)
     let _d_label = d.map((_,i) => Number(2010) + i)
 
-    const typeNodeList = _name('radio')
-    let time = _.inputData(_._id('time'))
-
+    // const typeNodeList = _name('radio')
+    
     let lastnum = -1
     const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
     const b = Math.floor(Math.random() * 1000)
@@ -455,49 +466,55 @@ const onChangeInput = (vars, copy, target) => (e) =>
 
 
 
+}
 
-    const updateBox = ({ i, delay, round, random, don, d_memo,dd, newPath ,w,vars}) => new Promise(res => 
+const startStream = (vars, copy, target) => (e) =>
+{
+    const _ = copy(vars)
+    const [wth, main] = [_._id('width'), _._id('main')]
+    let time = _.inputData(_._id('time'))
+
+    let w = _.inputData(wth)
+    let d = _.inputData(_._id('data-list'))
+    let d_memo = d.map(e => 1)
+    let _d_label = d.map((_,i) => Number(2010) + i)
+    const lineType = onChangeLineType(vars,copy,target)
+
+    const updateBox = ({  arr, arr_memo,arr_label,w,vars}) => new Promise(res => 
     {
-        dd.push(_d_label[_d_label.length - 1] + 1)
-        dd.shift()
-            _.updateTooltip(vars, copy)(w, don,dd)
+        arr_label.push(arr_label[arr_label.length - 1] + 1)
+        arr_label.shift()
+            _.updateTooltip(vars, copy)(w, arr,arr_label)
 
-        return res({ num, arr, time })
+        return res({ arr, arr_memo,arr_label,w,vars})
     })
 
-    const updateTargetToSort = (i, delay, round, random, don, d_memo,dd, newPath,w,vars) => new Promise(res => 
+    const updateTargetToSort = (i, delay, round, random, arr, arr_memo,arr_label,w,vars) => new Promise(res => 
     {
         return setTimeout(() =>
         {
-            don.push(random)
+            arr.push(random)
             d_memo.push(0)
-            console.log(don)
-            don.shift()
+            arr.shift()
             d_memo.shift()
-            const size = genSize(w, don )
-            const newPath = genPath(don , lineType)(size)
+            const size = genSize(w, arr )
+            const newPath = genPath(arr , lineType)(size)
             _.updatePath(_.initSVG['path'], newPath)
 
             time -= 1
-            res({i, delay, round, random, don, d_memo,dd, newPath ,w ,vars})
+            res({i, delay, round, random, arr, d_memo,arr_label ,w ,vars})
         }, delay * ((i + 1)))
     })
 
-    const toDelayUpdate = async (i, delay, round, random, dom, d_memo,_d_label, newPath,w,vars) =>
+    const toDelayUpdate = async (i, delay, round, random, arr, arr_memo,arr_label,w,vars) =>
     {
-        await updateTargetToSort(i, delay, round, random, dom, d_memo,_d_label, newPath,w,vars).then(updateBox)
+        await updateTargetToSort(i, delay, round, random, arr, arr_memo,arr_label,w,vars).then(updateBox)
     }
 
-    /**
-     * 이진탐색 조건 1. 정렬이 가능한가? 정렬을 시작
-     * 정렬 -> 이진탐색으로 가기위해 동기처리 필요
-     */
-    const stream = () => new Promise(res =>
+    const stream = () =>
     {
         let temp_d = [...d]
         let round = -1
-        const start = new Date().getTime()
-
         for (let i = 0; i < time; i++)
         {
             if (w > width)
@@ -510,30 +527,18 @@ const onChangeInput = (vars, copy, target) => (e) =>
             const b = Math.floor(Math.random() * 1000)
             const random = (_.genSize(w, temp_d ).maxData + a + b) * 1.5
             vars = [w, temp_d , ...vars]
-            toDelayUpdate(i, 500, round, random, temp_d , d_memo,_d_label, newPath,w,vars)
+            toDelayUpdate(i, 500, round, random, temp_d , d_memo,_d_label,w,vars)
             round += 1
+            console.log(round)
 
         }
 
-    })
+    }
 
     stream()
-
 }
 
-// const streamChart = (vars, copy, target) => (e) =>
-// {
-//     const _ = copy(vars)
-//     let time = _.inputData(_._id('time'))
-//     const d = _.inputData(_._id('data-list'))
-//     let d_memo = d.map(e => 1)
-//     const [wth, main] = [_._id('width'), _._id('main')]
-//     let w = _.inputData(wth)
-//     lineType = 'curve'
-//     const { width } = main.getBoundingClientRect()
 
-
-// }
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
 
@@ -645,7 +650,7 @@ const DOMEventAttr = {
         [
             {
                 event: 'click',
-                func: onChangeInput,
+                func: onChangeLineType,
                 isAdded: false,
 
             }
@@ -663,7 +668,7 @@ const DOMEventAttr = {
         [
             {
                 event: 'click',
-                func: onChangeInput,
+                func: startStream,
                 isAdded: false,
 
             }
@@ -888,7 +893,7 @@ const init = (vars, copy) =>
 
     _._id('data-list').value = initData.join(',')
     svgArea.appendChild(svg)
-    _.updatePath(_.initSVG['path'], genPath(initData)(size))
+    // _.updatePath(_.initSVG['path'], genPath(initData)(size))
 
     delete (_.initSVG['svg'])
 
