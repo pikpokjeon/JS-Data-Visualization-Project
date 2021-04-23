@@ -117,6 +117,29 @@ const genAttr = (id) => (w, s, i, v) =>
             r: 5,
             fill: "white"
         },
+        stop: {
+            style : 'stop-color: white'
+        },
+        linearGradient: {  //fill
+            x1: '0%',
+            x2: '0%',
+            y1: '0%',
+            y2: '100%',
+        },
+        fillG: {
+            'clip-path':'url(#frame)'
+        },
+        fillBG: {
+            x: 0,
+            y: s.y(s.MAX),
+            width: w,
+            height: 350,
+            fill:'url(#fill)'
+        },
+        clipPath: { // frame
+        },
+        fillPath: {
+        }
 
     }
     return { svg, ...list }
@@ -142,7 +165,7 @@ const updateAttr = (el, attr) =>
 const genPath = (d, type) => (size) =>
 {
     let prev = []
-    return d.reduce((acc, cur, i) =>
+    const path =  d.reduce((acc, cur, i) =>
     {
         const [a, b] = [size.x(i), size.y(cur)]
         const midX = (prev[0] + a) / 2
@@ -156,6 +179,10 @@ const genPath = (d, type) => (size) =>
         return acc
 
     }, 'M')
+    return {
+        path: path,
+        fill : path + ` V 800 H 0Z`
+    }
 }
 
 
@@ -253,8 +280,47 @@ const svgDefinition = (id) =>
         },
 
     }
+    const fillGroup = {
+        stop: {
+            type: 'stop',
+            attr: 'stop',
+            id: id.stop,
+            name: 'stop'
+        },
+        linearGradient: {
+            type: 'linearGradient',
+            attr: 'linearGradient',
+            id: id.linearGradient,
+            name: 'linearGradient',
+        },
+        fillG: {
+            type: 'g',
+            attr: 'fillG',
+            id: id.fillG,
+            name: 'fillG',
+        },
+        fillBG: {
+            type: 'rect',
+            attr: 'fillBG',
+            id: id.fillBG,
+            name: 'fillBG',
+        },
+        clipPath: {
+            type: 'clipPath',
+            attr: 'clipPath',
+            id: id.clipPath,
+            name: 'clipPath',
+        },
+        fillPath: {  //d
+            type: 'path',
+            attr: 'fillPath',
+            id: id.fillPath,
+            name: 'fillPath',
+        }
 
-    return { singleSVG, tooltipGroup }
+    }
+
+    return { singleSVG, tooltipGroup, fillGroup }
 }
 
 
@@ -268,7 +334,11 @@ const svgIdList =
     lineH: ['h'],
     lineV: ['v'],
     g: ['g', 'group'],
-    path: ['path']
+    path: ['path'],
+    linearGradient: ['fill'],
+    clipPath: ['frame'],
+    stop: ['stop1', 'stop2'],
+    fillPath: ['fill-path'],
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
 
@@ -333,7 +403,7 @@ const onChangeLineType = (vars, copy, target) => (e) =>
     {
         if (n.checked) lineType = n.value
     })
-    const newPath = genPath(d, lineType)(genSize(w,d))
+    const newPath = genPath(d, lineType)(genSize(w,d)).path
     _.updatePath(_.initSVG['path'], newPath)
     _.updateTooltip(vars, copy)(w, d,_d_label)
 
@@ -450,7 +520,7 @@ const onChangeInput = (vars, copy, target) => (e) =>
         wth.value = width - 250
         w = width - 250
     }
-    const newPath = genPath(d, lineType)(size)
+    const newPath = genPath(d, lineType)(size).path
 
     // vars = [w, d, ...vars]
     _.updatePath(_.initSVG['path'], newPath)
@@ -471,7 +541,6 @@ const startStream = (vars, copy, target) => (e) =>
     let d = _.inputData(_._id('data-list'))
     let d_memo = d.map(e => 1)
     let _d_label = d.map((_,i) => Number(2010) + i)
-    const lineType = onChangeLineType(vars,copy,target)()
 
     const updateBox = ({  arr, arr_memo,arr_label,w,vars}) => new Promise(res => 
     {
@@ -486,12 +555,13 @@ const startStream = (vars, copy, target) => (e) =>
     {
         return setTimeout(() =>
         {
+            const lineType = onChangeLineType(vars,copy,target)()
             arr.push(random)
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
             const size = genSize(w, arr )
-            const newPath = genPath(arr, lineType)(size)
+            const newPath = genPath(arr, lineType)(size).path
             _.updatePath(_.initSVG['path'], newPath)
 
             time -= 1
@@ -535,7 +605,6 @@ const startStream = (vars, copy, target) => (e) =>
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
 
-const initSVGList = Object.entries(svgDefinition(svgIdList).singleSVG)
 
 
 const genSvgFromList = (list, d, w, i, v) =>
@@ -558,9 +627,10 @@ const genSvgFromList = (list, d, w, i, v) =>
                     updateAttr(temp, { id: id, name: info.name })
                     const name_Id = name + id
                     const isIdNameSame = name === id
-                    const isFirstTwoSame = name_Id[0] === name_Id[1]
-                    const isLastTwoSame = name_Id[name_Id.length - 2] === name_Id[name_Id.length - 1]
-                    const _name = isIdNameSame ? id : isFirstTwoSame ? id : isLastTwoSame ? name + (id[0].toUpperCase() + id.slice(1)) : name
+                    const isFirstTwoSame = name_Id[0].toLowerCase() === name_Id[1].toLowerCase() 
+                    const isLastTwoSame = name_Id[name_Id.length - 2].toLowerCase()  === name_Id[name_Id.length - 1].toLowerCase() 
+                    const nameCombined = name + (id[0].toUpperCase() + id.slice(1)) 
+                    const _name = isIdNameSame ? id : isLastTwoSame ? name : isFirstTwoSame ? nameCombined :  id
                     createdSVG[_name] = temp
                 }
                 continue
@@ -666,15 +736,7 @@ const DOMEventAttr = {
 
             }
         ],
-    'stop':
-        [
-            {
-                event: 'click',
-                func: onChangeInput,
-                isAdded: false,
-
-            }
-        ],
+   
 }
 DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
@@ -839,6 +901,9 @@ const onMove = (vars, copy) => (e) =>
 
 }
 
+const initSVGList = Object.entries(svgDefinition(svgIdList).singleSVG)
+const initFillList = Object.entries(svgDefinition(svgIdList).fillGroup)
+
 
 /**
  *  !!TODO :하드코딩 되어 있는부분 개선 필요
@@ -862,6 +927,7 @@ const initParams = [
     updateTooltip,
     genSvgList,
     genSvgFromList(initSVGList, _id('data-list')).named('initSVG'),
+    genSvgFromList(initFillList, _id('data-list')).named('initFillSVG'),
     genSvgFromList,
     DOMEventAttr,
     // streamChart,
@@ -900,7 +966,11 @@ const init = (vars, copy) =>
         if (e.event === 'mouseleave') e.func = mouseOut
         return e
     })
-    _.updatePath(_.initSVG['path'],genPath(initData , 'default')(size))
+
+    console.log(_.initSVG)
+    console.log(_.initFillSVG)
+
+    _.updatePath(_.initSVG['path'],genPath(initData , 'default')(size).path)
     _.setEvents(vars, copy).addAll(_.DOMEventAttr)
     _.appendAll(_.initSVG).to(svg)
     _.initSVG = { svg, ..._.initSVG }
