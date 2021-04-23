@@ -120,6 +120,9 @@ const genAttr = (id) => (w, s, i, v) =>
         stop: {
             style : 'stop-color: white'
         },
+        stop1: {offset:'0%', style: 'stop-color: white; stop-opacity: 0.7'},
+        stop2: { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.4' },
+        stop3:{ offset: '100%', style: 'stop-color: #4d00ff; stop-opacity: 0' },
         linearGradient: {  //fill
             x1: '0%',
             x2: '0%',
@@ -280,7 +283,7 @@ const svgDefinition = (id) =>
     const fillGroup = {
         stop: {
             type: 'stop',
-            attr: 'stop',
+            attr: id.stop,
             id: id.stop,
             name: 'stop'
         },
@@ -340,14 +343,14 @@ const svgDefinition = (id) =>
 const svgIdList =
 {
     svg: ['svg'],
-    lineH: ['h'],
-    lineV: ['v'],
+    lineH: ['lineH'],
+    lineV: ['lineV'],
     g: ['g', 'group'],
     path: ['path'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
-    stop: ['stop1', 'stop2','stop3','stop4'],
-    fillPath: ['fillpath'],
+    stop: ['stop1', 'stop2','stop3'],
+    fillPath: ['fillPath'],
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
 
@@ -401,6 +404,7 @@ const copyParams = (params) =>
     return copied
 }
 
+
 const onChangeLineType = (vars, copy, target) => (e) =>
 {
     const _ = copy(vars)
@@ -412,8 +416,8 @@ const onChangeLineType = (vars, copy, target) => (e) =>
     {
         if (n.checked) lineType = n.value
     })
-    _.updatePath(_.initPathSVG['path'], genPath(d, lineType)(genSize(w,d)).path)
-    _.updatePath(_.initPathSVG['fillpath'], genPath(d, lineType)(genSize(w,d)).fill)
+    vars = [w,d,...vars]
+    _.updatePathGroup(vars,copy)(lineType)
     _.updateTooltip(vars, copy)(w, d,_d_label)
 
     return lineType
@@ -438,16 +442,10 @@ const onChangeInput = (vars, copy, target) => (e) =>
     {
         d.push(random)
         d_memo.push(0)
-
+        vars = [ ...vars,w, d,]
     }
+
     const lineType = onChangeLineType(vars,copy,target)()
-
-    const size = genSize(w, d)
-
-    const first = size.x(0)
-    let second = -1
-    let count = 1
-
 
     // const getUnitToShow = (d,memo,gap,unit) =>
     // {
@@ -515,10 +513,6 @@ const onChangeInput = (vars, copy, target) => (e) =>
         })
     }
 
-    // const arr = labelArr(d, d_memo, genSize)
-
-    // _.setEvents(vars, copy).off('click').from('add')
-
 
     _._id('data-list').value = `${(d)}`
 
@@ -529,13 +523,9 @@ const onChangeInput = (vars, copy, target) => (e) =>
         wth.value = width - 250
         w = width - 250
     }
-    const newPath = genPath(d, lineType)(size).path
 
-    // vars = [w, d, ...vars]
-    _.updatePath(_.initSVG['path'], newPath)
+    _.updatePathGroup(vars,copy)(lineType)
     _.updateTooltip(vars, copy)(w, d,_d_label)
-    let n = undefined
-
 
 
 }
@@ -555,7 +545,7 @@ const startStream = (vars, copy, target) => (e) =>
     {
         arr_label.push(arr_label[arr_label.length - 1] + 1)
         arr_label.shift()
-            _.updateTooltip(vars, copy)(w, arr,arr_label)
+        _.updateTooltip(vars, copy)(w, arr,arr_label)
 
         return res({ arr, arr_memo,arr_label,w,vars})
     })
@@ -569,10 +559,8 @@ const startStream = (vars, copy, target) => (e) =>
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
-            const size = genSize(w, arr )
-            _.updatePath(_.initPathSVG['path'], genPath(arr, lineType)(size).path)
-            _.updatePath(_.initPathSVG['fillpath'], genPath(arr, lineType)(size).fill)
-
+            vars = [arr, w, ...vars]
+            _.updatePathGroup(vars,copy)(lineType)
             time -= 1
             res({i, delay, round, random, arr, d_memo,arr_label ,w ,vars})
         }, delay * ((i + 1)))
@@ -601,7 +589,6 @@ const startStream = (vars, copy, target) => (e) =>
             vars = [w, temp_d , ...vars]
             toDelayUpdate(i, 500, round, random, temp_d , d_memo,_d_label,w,vars)
             round += 1
-            console.log(round)
 
         }
 
@@ -611,15 +598,22 @@ const startStream = (vars, copy, target) => (e) =>
 }
 
 
+
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
+
+const updatePathGroup = (vars, copy) => ( lineType) =>
+{
+    const _ = copy(vars)
+    const size = _.genSize(_.w,_.d)
+    _.updatePath(_.initPathSVG['path'], _.genPath(_.d, lineType)(size).path)
+    _.updatePath(_.initPathSVG['fillPath'], _.genPath(_.d, lineType)(size).fill)
+}
 
 
 
 const genSvgFromList = (list, d, w, i, v) =>
 {
-    // const w = inputData(_id('width'))
-    // const d = inputData(_id('data-list'))
     const createdSVG = {}
     let temp = undefined
 
@@ -632,15 +626,22 @@ const genSvgFromList = (list, d, w, i, v) =>
             {
                 for (const id of info.id)
                 {
-                    temp = getElement(w, d, i, v)(info.attr, info.type, id)
-                    updateAttr(temp, { id: id, name: info.name })
-                    const name_Id = name + id
-                    const isIdNameSame = name === id
-                    const isFirstTwoSame = name_Id[0].toLowerCase() === name_Id[1].toLowerCase() 
-                    const isLastTwoSame = name_Id[name_Id.length - 2].toLowerCase()  === name_Id[name_Id.length - 1].toLowerCase() 
-                    const nameCombined = name + (id[0].toUpperCase() + id.slice(1)) 
-                    const _name = isIdNameSame ? id : isLastTwoSame ? name : isFirstTwoSame ? nameCombined :  id
-                    createdSVG[_name] = temp
+                    if (Array.isArray(info.attr))
+                    {
+                        for (const attr of info.attr)
+                        {
+                            temp = getElement(w, d, i, v)(attr, info.type, id)
+                            updateAttr(temp, { id: id, name: info.name })
+                            createdSVG[attr] = temp
+                        }
+                    }
+                    else
+                    {
+                        temp = getElement(w, d, i, v)(info.attr, info.type, id)
+                        updateAttr(temp, { id: id, name: info.name })
+                        createdSVG[id] = temp
+                    }
+          
                 }
                 continue
             }
@@ -799,26 +800,16 @@ const setEvents = (vars, copy) =>
                         const targets = _.DOMEventAttr[target].filter(e => e.event === event)
                         for (const tg of (targets))
                         {
-                            console.log(tg)
-                            // {
                             if (tg.isAdded)
                             {
                                 node.removeEventListener(event, tg.func)
-
                                 tg.isAdded = false
                                 _.DOMEventAttr = { tg, ..._.DOMEventAttr }
-                                console.log('added', node)
                             }
-                            // }
-                            console.log(_.DOMEventAttr)
 
                         }
 
                     }
-
-
-
-
 
                 }
             }
@@ -859,11 +850,9 @@ const updateTooltip = (vars, copy) => (w, d, dlabel) =>
 
         label.textContent = dlabel[i]
         dataText.textContent = value
-        // if (memo[i])
-        // {
+
         appendAll({ label, dataText, plot }).to(gBox)
 
-        // }
         gBox.appendChild(plot)
         g.appendChild(gBox)
 
@@ -877,8 +866,6 @@ const updateTooltip = (vars, copy) => (w, d, dlabel) =>
 const updateIdx = (vars, copy) => (x) =>
 {
     const _ = copy(vars)
-    // console.log('Idx', _)
-    // console.log('Idx', x)
 }
 
 
@@ -900,36 +887,32 @@ const onMove = (vars, copy) => (e) =>
             _id(`box-${value}`).setAttribute('fill', 'white')
             _id(`text-${value}`).setAttribute('fill', 'white')
         }
-        // console.log(e.clientX)
         idx = size.idx(e.clientX)
-        // console.log(idx)
         value = d[idx]
-        // _.updateAttr(_.initSVG, getAttrByIdx(w, d, value).moveY)
     }
     _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 160, x2: e.clientX - 160 })
 
 }
 
 
-const updatePathGroup = (vars, copy) => (w,d) =>
+const initSetPathGroup = (vars, copy) => (w,d) =>
 {
     const _ = copy(vars)
     const size = genSize(w, d)
     const lineType = onChangeLineType(vars,copy,'line')()
-    const { stop1, stop2,stop3,stop4, linearGradient, fillG, fillBG, frame, fillpath, defs ,path} = _.initPathSVG
-    _.updateAttr(stop1,{offset:'0%', style: 'stop-color: white; stop-opacity: 0.7'})
-    _.updateAttr(stop2, { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.4' })
-    _.updateAttr(stop3, { offset: '80%', style: 'stop-color: #4d00ff; stop-opacity: 0.3' })
-    _.updateAttr(stop4, { offset: '100%', style: 'stop-color: #0028ff; stop-opacity: 0' })
-    appendAll({ stop1, stop2, stop3,stop4 }).to(linearGradient)
-    _.updatePath(fillpath, _.genPath(d, lineType)(size).fill)
-    _.updatePath(path, _.genPath(d, lineType)(size).path)
-    appendAll({ fillpath }).to(frame)
-    appendAll({ linearGradient, frame }).to(defs)
+    const { stop1, stop2,stop3, fill, fillG, fillBG, frame, fillPath, defs ,path} = _.initPathSVG
+    
+    appendAll({ stop1, stop2, stop3 }).to(fill)
+    
+    vars = [...vars, w, d]
+    _.updatePathGroup(vars, copy)(lineType)
+    
+    appendAll({ fillPath }).to(frame)
+    appendAll({ fill, frame }).to(defs)
     _.updateAttr(fillBG, { width: w, y: -100 })
 
     appendAll({ fillBG }).to(fillG)
-    appendAll({defs, fillG, path}).to(_.initSVG['gGroup'])
+    appendAll({defs, fillG, path}).to(_.initSVG['group'])
     
 }
 
@@ -962,12 +945,13 @@ const initParams = [
     genPath,
     genSvgFromList(initSVGList, _id('data-list')).named('initSVG'),
     genSvgFromList(initFillList, _id('data-list')).named('initPathSVG'),
-    updatePathGroup,
+    initSetPathGroup,
     genSvgFromList,
     DOMEventAttr,
     // streamChart,
     svgDefinition,
     appendAll,
+    updatePathGroup,
     setEvents
 ]
 
@@ -1001,9 +985,7 @@ const init = (vars, copy) =>
         return e
     })
 
-    console.log(_.initSVG)
-    console.log(_.initPathSVG)
-    _.updatePathGroup(vars,copy)(w,initData)
+    _.initSetPathGroup(vars,copy)(w,initData)
     _.setEvents(vars, copy).addAll(_.DOMEventAttr)
     _.appendAll(_.initSVG).to(svg)
     _.initSVG = { svg, ..._.initSVG }
