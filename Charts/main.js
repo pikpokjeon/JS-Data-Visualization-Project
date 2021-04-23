@@ -324,15 +324,16 @@ const copyParams = (params) =>
 
 const onChangeLineType = (vars, copy, target) => (e) =>
 {
+    const _ = copy(vars)
     const typeNodeList = _name('radio')
-    let lineType = 'default'
-
+    const [w, d] = [_.inputData(_._id('width')), _.inputData( _._id('data-list'))]
+    let lineType 
     typeNodeList.forEach(n =>
     {
-        if (n.checked && n.value === 'curve') lineType = 'curve'
-        else if (n.checked && n.value === 'step') lineType = 'step'
-        else if (n.checked) lineType = 'default'
+        if (n.checked) lineType = n.value
     })
+    const newPath = genPath(d, lineType)(genSize(w,d))
+    _.updatePath(_.initSVG['path'], newPath)
     return lineType
 }
 
@@ -344,10 +345,7 @@ const onChangeInput = (vars, copy, target) => (e) =>
     let d = _.inputData(_._id('data-list'))
     let d_memo = d.map(e => 1)
     let _d_label = d.map((_,i) => Number(2010) + i)
-
-    // const typeNodeList = _name('radio')
     
-    let lastnum = -1
     const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
     const b = Math.floor(Math.random() * 1000)
     const random = _.genSize(w, d).maxData + a + b
@@ -360,15 +358,8 @@ const onChangeInput = (vars, copy, target) => (e) =>
         d_memo.push(0)
 
     }
+    const lineType = onChangeLineType(vars,copy,target)()
 
-    let lineType = 'default'
-
-    typeNodeList.forEach(n =>
-    {
-        if (n.checked && n.value === 'curve') lineType = 'curve'
-        else if (n.checked && n.value === 'step') lineType = 'step'
-        else if (n.checked) lineType = 'default'
-    })
     const size = genSize(w, d)
 
     const first = size.x(0)
@@ -456,10 +447,9 @@ const onChangeInput = (vars, copy, target) => (e) =>
         wth.value = width - 250
         w = width - 250
     }
-    console.log(lineType)
     const newPath = genPath(d, lineType)(size)
 
-    vars = [w, d, ...vars]
+    // vars = [w, d, ...vars]
     _.updatePath(_.initSVG['path'], newPath)
     _.updateTooltip(vars, copy)(w, d,_d_label)
     let n = undefined
@@ -704,7 +694,7 @@ const setEvents = (vars, copy) =>
                 {
                     for (const data of (events))
                     {
-                        if (data.func !== undefined && !data.isAdded)
+                        if (data.func !== undefined )
                         {
                             node.addEventListener(data.event, data.func(vars, copy, target))
                             data.isAdded = true
