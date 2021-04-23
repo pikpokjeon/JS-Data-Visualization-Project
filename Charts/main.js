@@ -545,6 +545,7 @@ const startStream = (vars, copy, target) => (e) =>
     {
         arr_label.push(arr_label[arr_label.length - 1] + 1)
         arr_label.shift()
+        vars = [...vars,arr]
         _.updateTooltip(vars, copy)(w, arr,arr_label)
 
         return res({ arr, arr_memo,arr_label,w,vars})
@@ -559,7 +560,7 @@ const startStream = (vars, copy, target) => (e) =>
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
-            vars = [arr, w, ...vars]
+            vars = [ ...vars,arr,w]
             _.updatePathGroup(vars,copy)(lineType)
             time -= 1
             res({i, delay, round, random, arr, d_memo,arr_label ,w ,vars})
