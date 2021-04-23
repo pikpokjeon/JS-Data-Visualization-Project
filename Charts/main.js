@@ -570,8 +570,8 @@ const startStream = (vars, copy, target) => (e) =>
             arr.shift()
             d_memo.shift()
             const size = genSize(w, arr )
-            const newPath = genPath(arr, lineType)(size).path
-            _.updatePath(_.initPathSVG['path'], newPath)
+            _.updatePath(_.initPathSVG['path'], genPath(arr, lineType)(size).path)
+            _.updatePath(_.initPathSVG['fillpath'], genPath(arr, lineType)(size).fill)
 
             time -= 1
             res({i, delay, round, random, arr, d_memo,arr_label ,w ,vars})
