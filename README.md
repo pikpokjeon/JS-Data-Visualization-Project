@@ -1,4 +1,6 @@
-# Data Visualization Projects
+# Data Visualization Projects 
+<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/">Demo page</a>
+
 ### I am aiming at ... 
 - developing this listed projects without any help of foreign JS libraries
 - containing at least one with custom interactive animation 
