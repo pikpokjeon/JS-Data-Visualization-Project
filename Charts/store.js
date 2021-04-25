@@ -1,5 +1,5 @@
 
-const store =
+const chartIdx =
 {
     lastIdx: -1,
     selectedIdx:
@@ -10,4 +10,4 @@ const store =
 }
 store[Symbol.toStringTag] = 'store'
 
-module.exports = {store}
+export {chartIdx}

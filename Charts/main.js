@@ -1,3 +1,6 @@
+import {chartIdx} from './store.js'
+
+console.log(chartIdx)
 const _id = (target) => document.getElementById(target)
 const _name = (name) => document.getElementsByName(name)
 
@@ -885,12 +888,59 @@ const updateTooltip = (props, use) => (w, d, dlabel) =>
 }
 
 
+const store =
+{
+    lastIdx: -1,
+    selectedIdx:
+    {
+        begin: -1,
+        end: -1,
+    }
+}
+store[Symbol.toStringTag] = 'store'
 
 
-const updateIdx = (props, use) => (x) =>
+const savedChartData = (props, use) =>
 {
     const _ = use(props)
+    console.log(_)
+    // const temp = {..._.store}
+    // const info =
+    // {
+    //     lastIdx: -1,
+    //     selectedIdx:
+    //     {
+    //         begin: -1,
+    //         end: -1,
+    //     }
+    // }
+    return {
+        data: _.store,
+        set: key =>
+        {
+            const t = {key:-1}
+            return {
+
+                data: data =>
+                {
+                    // t[key] = data
+                    // store = {...store, ...t[key]}
+                    // store[key] = data
+                    Reflect.set(_.store, key, data)
+                }
+            }
+
+        },
+        get: key =>
+        {
+            return key === 'all' ? _.store : _.store[key]
+
+        },
+
+    }
 }
+
+
 
 
 const onMove = (props, use) => (e) =>
@@ -898,22 +948,30 @@ const onMove = (props, use) => (e) =>
     const _ = use(props)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
-
-    let idx = undefined
+    const store = savedChartData(props, use)
+    let last = store.get('lastIdx')
+    let idx = size.idx(e.clientX)
     let value = undefined
-    console.log(size.idx(e.clientX))
+    console.log(store,idx)
 
-    if (idx !== size.idx(e.clientX))
-    {
-        // idx = e.clientX
-        if (value !== undefined)
-        {
-            _id(`box-${value}`).setAttribute('fill', 'white')
-            _id(`text-${value}`).setAttribute('fill', 'white')
-        }
-        idx = size.idx(e.clientX)
-        value = d[idx]
-    }
+    console.log(last)
+    savedChartData(props, use).set('lastIdx').data(idx)
+    savedChartData(props, use).set('lalalal').data(idx+10)
+    last = store.get('lastIdx')
+    console.log(last)
+    console.log(store)
+
+    // if (idx !== size.idx(e.clientX))
+    // {
+    //     // idx = e.clientX
+    //     if (value !== undefined)
+    //     {
+    //         _id(`box-${value}`).setAttribute('fill', 'white')
+    //         _id(`text-${value}`).setAttribute('fill', 'white')
+    //     }
+    //     idx = size.idx(e.clientX)
+    //     value = d[idx]
+    // }
     _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 160, x2: e.clientX - 160 })
 
 }
@@ -953,12 +1011,14 @@ const initParams = [
     inputData,
     _id,
     _name,
+    store,
     genSize,
     genElement,
     getElement,
     genAttr,
     updateAttr,
-    updateIdx,
+    store,
+    savedChartData,
     onMove,
     onChangeInput,
     onChangeLineType,
@@ -995,7 +1055,7 @@ const init = (props, use) =>
 
     delete (_.initSVG['svg'])
 
-    const onMoveprops = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents]
+    const onMoveprops = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents,_.store]
     const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(onMoveprops, use)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(onMoveprops, use)) }
 
