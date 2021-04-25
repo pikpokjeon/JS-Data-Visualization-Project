@@ -73,7 +73,11 @@
     </section>
 
   </main>
-  <script src="./Charts/main.js"></script>
+  <script type="module">
+    import {store} from './Charts/store.js'
+    console.log(store)
+  </script>
+  <script src="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/main.js"></script>
 
 </body>
 </html>
