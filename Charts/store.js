@@ -8,6 +8,6 @@ const chartIdx =
         end: -1,
     }
 }
-store[Symbol.toStringTag] = 'store'
+chartIdx[Symbol.toStringTag] = 'chartIdx'
 
 export {chartIdx}
