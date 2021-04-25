@@ -9,7 +9,7 @@
 
 ### HOW TO RUN 
 - git clone this repo
-- make sure there's at least a dozen of html and js files in the project folder you found it interesting
+- make sure there's at least a couple of html and js files in the project folder you found it interesting
 - it's static, just drag n drop the html file to your choice of browser!
 
 ## Project List
