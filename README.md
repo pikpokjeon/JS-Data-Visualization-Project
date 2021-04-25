@@ -18,12 +18,12 @@
 
 ### 1. Algorithms 
 ### (1) Binary search
-#### Last update (17,Apr) : TODO > put some magical sparkles n smooth animation
+#### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.gif)
 
 ### 2. Chart 
 ### (1) Line chart
-##### Last update (21,Apr): TODO > add streaming chart type
+##### Last update (24,Apr): TODO > make width responsive
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/linechart.gif)
