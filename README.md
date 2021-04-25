@@ -1,5 +1,7 @@
 # Data Visualization Projects 
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/">Demo page</a>
+- Demo Pages <br />
+<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
+<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/index.html">2. Line Charts</a>
 
 ### I am aiming at ... 
 - developing this listed projects without any help of foreign JS libraries
