@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
+// import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 import { chartStore, inputStore } from './store.js'
 
 const _id = (target) => document.getElementById(target)
