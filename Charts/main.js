@@ -587,13 +587,14 @@ const onSelectPeriod = (props, Subscribe, target) => (e) =>
         
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx) )
         const [start, end] = [size.x(chartStore['selectedStartIdx']) - size.unitX,size.x(chartStore['selectedEndIdx']) - size.unitX]
-        
+        const last = size.idx(e.clientX)
+        const isSelectReverse = last - maxIdx < 0
+
         Publish(chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
-
-        updateAttr(_.initPathSVG['fillBG'], { x: start , width: selectedWidth})
+        updateAttr(_.initPathSVG['fillBG'], { x: isSelectReverse ? size.x(last) - size.unitX : start , width: selectedWidth})
         updateAttr(_.initSVG['left'], {x1 : start , x2: start })
-        updateAttr(_.initSVG['right'], {x1 : start + selectedWidth , x2: start + selectedWidth })
+        updateAttr(_.initSVG['right'], {x1 :  isSelectReverse ? size.x(last) - size.unitX : start + selectedWidth , x2: isSelectReverse ? size.x(last) - size.unitX : start + selectedWidth })
         
 
     }
