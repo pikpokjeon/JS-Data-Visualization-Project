@@ -2,12 +2,9 @@
 const chartStore =
 {
     lastIdx: -1,
-    x: -1,
-    selectedIdx:
-    {
-        begin: -1,
-        end: -1,
-    }
+    x:-1,
+    selectedStartIdx: -1,
+    selectedEndIdx: -1,
 }
 chartStore[Symbol.toStringTag] = 'chartStore'
 

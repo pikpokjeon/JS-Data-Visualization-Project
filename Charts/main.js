@@ -226,6 +226,13 @@ const svgDefinition = (id) =>
             id: id.svg,
             name: id.svg,
         },
+        eventArea:
+        {
+            type: 'rect',
+            attr: 'eventArea',
+            id: id.eventArea,
+            name: 'eventArea',
+        },
         lineH:
         {
             type: 'line',
@@ -238,7 +245,7 @@ const svgDefinition = (id) =>
             type: 'line',
             attr: 'lineV',
             id: id.lineV,
-            name: 'line',
+            name: 'lineV',
 
         },
         g:
@@ -346,6 +353,7 @@ const svgDefinition = (id) =>
 const svgIdList =
 {
     svg: ['svg'],
+    eventArea: ['eventArea'],
     lineH: ['lineH'],
     lineV: ['lineV'],
     g: ['g', 'group'],
@@ -538,7 +546,29 @@ const onChangeInput = (props, Subscribe, target) => (e) =>
 
 }
 
+const onSelectPeriod = (props, Subscribe, target) => (e) =>
+{
+    const _ = Subscribe(props)
+    console.log('click')
+    if (chartStore['selectedStartIdx'] < 0)
+    {
+        Publish(chartStore, { selectedStartIdx: chartStore['lastIdx'] })
+        
+    } else if (chartStore['selectedEndIdx'] < 0)
+    {
+        const [minIdx, maxIdx] = [
+            Math.min(chartStore['lastIdx'], chartStore['selectedStartIdx']),
+            Math.max(chartStore['lastIdx'], chartStore['selectedStartIdx'])]
 
+        Publish(chartStore, {selectedStartIdx: minIdx , selectedEndIdx: maxIdx})
+        
+    } else
+    {
+        Publish(chartStore, {selectedEndIdx: -1, selectedStartIdx: -1})
+        
+    }
+    console.log(chartStore)
+}
 
 
 const startStream = (props, Subscribe, target) => (e) =>
@@ -722,6 +752,12 @@ const DOMEventAttr = {
                 func: undefined,
                 isAdded: false,
 
+            },
+            {
+                event: 'click',
+                func: onSelectPeriod,
+                isAdded: false,
+
             }
         ],
     'width':
@@ -769,6 +805,7 @@ const DOMEventAttr = {
 
             }
         ],
+
 
 }
 DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
@@ -898,13 +935,13 @@ const updateTooltip = (props, Subscribe) => (w, d, dlabel) =>
  * @param {*} store 데이터를 등록 할 대상 객체 
  * @param {*} obj  등록할 데이터 객체
  */
-const Publish = (store,obj) =>
+const Publish = (store, obj) =>
 {
     for (const [key, value] of Array.from(Object.entries(obj)))
     {
         Reflect.set(store, key, value)
     }
-   
+
 }
 // Publish(chartStore, { arr: [], idx : idx, id: {first:1000, last:2000},count:1000 })
 
@@ -917,14 +954,13 @@ const onMove = (props, Subscribe) => (e) =>
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
     let idx = size.idx(e.clientX)
-    let value =  d[idx]
-    
+    let value = d[idx]
+
     if (idx !== chartStore['lastIdx'])
     {
         Publish(chartStore, { lastIdx: size.idx(e.clientX), x: e.clientX })
 
         if (value !== undefined)
-            
         {
             // _id(`g-${idx}${value}`).setAttribute('fill', 'red')
             // _id(`p-${idx}${value}`).setAttribute('fill', 'green')
@@ -934,7 +970,7 @@ const onMove = (props, Subscribe) => (e) =>
         idx = size.idx(e.clientX)
         value = d[idx]
     }
-    _.updateAttr(_.initSVG['lineV'], { x1:  e.clientX - size.leftMargin  , x2: e.clientX - size.leftMargin  })
+    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
 
 }
 
@@ -991,8 +1027,8 @@ const initParams = [
     updateTooltip,
     genSvgList,
     genPath,
-    genSvgFromList(initSVGList,inputData(_id('data-list')),inputData(_id('width'))).named('initSVG'),
-    genSvgFromList(initPathList,inputData(_id('data-list')),inputData(_id('width'))).named('initPathSVG'),
+    genSvgFromList(initSVGList, inputData(_id('data-list')), inputData(_id('width'))).named('initSVG'),
+    genSvgFromList(initPathList, inputData(_id('data-list')), inputData(_id('width'))).named('initPathSVG'),
     initSetPathGroup,
     genSvgFromList,
     DOMEventAttr,
@@ -1019,7 +1055,7 @@ const init = (props, Subscribe) =>
 
     delete (_.initSVG['svg'])
 
-    const onMoveprops = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents,_.Publish,_.chartStore,]
+    const onMoveprops = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents, _.Publish, _.chartStore,]
     const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(onMoveprops, Subscribe)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(onMoveprops, Subscribe)) }
 
