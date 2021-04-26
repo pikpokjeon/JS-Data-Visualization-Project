@@ -1,13 +1,14 @@
 
-const chartIdx =
+const chartStore =
 {
     lastIdx: -1,
+    x: -1,
     selectedIdx:
     {
         begin: -1,
         end: -1,
     }
 }
-chartIdx[Symbol.toStringTag] = 'chartIdx'
+chartStore[Symbol.toStringTag] = 'chartStore'
 
-export {chartIdx}
+export {chartStore}

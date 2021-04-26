@@ -1,6 +1,6 @@
-import {chartIdx} from './store.js'
+import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
+import { chartStore } from './store.js'
 
-console.log(chartIdx)
 const _id = (target) => document.getElementById(target)
 const _name = (name) => document.getElementsByName(name)
 
@@ -361,9 +361,9 @@ svgIdList[Symbol.toStringTag] = 'svgIdList'
 const getElement = (w, arr, i, v) => (target, type, id) => genElement(type, genAttr(id)(w, genSize(w, arr), i, v)[target])
 
 
-const updateTexts = (props, use) => (d, w) => (num, start, end, target) => 
+const updateTexts = (props, Subscribe) => (d, w) => (num, start, end, target) => 
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const g = _.initSVG['g']
 
     while (g.firstChild)
@@ -393,7 +393,7 @@ const updateTexts = (props, use) => (d, w) => (num, start, end, target) =>
 /**
  * @param {*} params 여러 함수에서 공통적으로 사용할 함수, 요소, 변수들의 변경사항을 복사
  */
-const useParams = (params) =>
+const Subscribe = (params) =>
 {
     const copied = {}
     for (const variable of (params))
@@ -410,9 +410,9 @@ const useParams = (params) =>
 
 
 
-const onChangeLineType = (props, use, target) => (e) =>
+const onChangeLineType = (props, Subscribe, target) => (e) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const typeNodeList = _name('radio')
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     let _d_label = d.map((_, i) => Number(2010) + i)
@@ -422,8 +422,8 @@ const onChangeLineType = (props, use, target) => (e) =>
         if (n.checked) lineType = n.value
     })
     props = [w, d, ...props]
-    _.updatePathGroup(props, use)(lineType)
-    _.updateTooltip(props, use)(w, d, _d_label)
+    _.updatePathGroup(props, Subscribe)(lineType)
+    _.updateTooltip(props, Subscribe)(w, d, _d_label)
 
     return lineType
 }
@@ -431,9 +431,9 @@ const onChangeLineType = (props, use, target) => (e) =>
 
 
 
-const onChangeInput = (props, use, target) => (e) =>
+const onChangeInput = (props, Subscribe, target) => (e) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const [wth, main] = [_._id('width'), _._id('main')]
     let w = _.inputData(wth)
     let d = _.inputData(_._id('data-list'))
@@ -453,7 +453,7 @@ const onChangeInput = (props, use, target) => (e) =>
         props = [...props, w, d,]
     }
 
-    const lineType = onChangeLineType(props, use, target)()
+    const lineType = onChangeLineType(props, Subscribe, target)()
 
     // const getUnitToShow = (d,memo,gap,unit) =>
     // {
@@ -532,8 +532,8 @@ const onChangeInput = (props, use, target) => (e) =>
         w = width - 250
     }
 
-    _.updatePathGroup(props, use)(lineType)
-    _.updateTooltip(props, use)(w, d, _d_label)
+    _.updatePathGroup(props, Subscribe)(lineType)
+    _.updateTooltip(props, Subscribe)(w, d, _d_label)
 
 
 }
@@ -541,9 +541,9 @@ const onChangeInput = (props, use, target) => (e) =>
 
 
 
-const startStream = (props, use, target) => (e) =>
+const startStream = (props, Subscribe, target) => (e) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const [wth, main] = [_._id('width'), _._id('main')]
     let time = _.inputData(_._id('time'))
 
@@ -557,22 +557,25 @@ const startStream = (props, use, target) => (e) =>
         arr_label.push(arr_label[arr_label.length - 1] + 1)
         arr_label.shift()
         props = [...props, arr]
-        _.updateTooltip(props, use)(w, arr, arr_label)
-
+        _.updateTooltip(props, Subscribe)(w, arr, arr_label)
+        console.log(chartStore)
         return res({ arr, arr_memo, arr_label, w, props })
     })
+
+
+
 
     const updateTargetToSort = (i, delay, round, random, arr, arr_memo, arr_label, w, props) => new Promise(res => 
     {
         return setTimeout(() =>
         {
-            const lineType = onChangeLineType(props, use, target)()
+            const lineType = onChangeLineType(props, Subscribe, target)()
             arr.push(random)
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
             props = [...props, arr, w]
-            _.updatePathGroup(props, use)(lineType)
+            _.updatePathGroup(props, Subscribe)(lineType)
             time -= 1
             res({ i, delay, round, random, arr, d_memo, arr_label, w, props })
         }, delay * ((i + 1)))
@@ -618,9 +621,9 @@ const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
 
 
-const updatePathGroup = (props, use) => (lineType) =>
+const updatePathGroup = (props, Subscribe) => (lineType) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const size = _.genSize(_.w, _.d)
     _.updatePath(_.initPathSVG['path'], _.genPath(_.d, lineType)(size).path)
     _.updatePath(_.initPathSVG['fillPath'], _.genPath(_.d, lineType)(size).fill)
@@ -778,9 +781,9 @@ DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
  * @param {*} event 삭제할 이벤트리스너 이름
  * @param {*} target 삭제할 이벤트리스너 대상
  */
-const setEvents = (props, use) =>
+const setEvents = (props, Subscribe) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     return {
 
         addAll: list =>
@@ -794,7 +797,7 @@ const setEvents = (props, use) =>
                     {
                         if (data.func !== undefined)
                         {
-                            node.addEventListener(data.event, data.func(props, use, target))
+                            node.addEventListener(data.event, data.func(props, Subscribe, target))
                             data.isAdded = true
                         }
 
@@ -854,9 +857,9 @@ const genSvgList = (target) =>
 
 
 
-const updateTooltip = (props, use) => (w, d, dlabel) =>
+const updateTooltip = (props, Subscribe) => (w, d, dlabel) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const g = _.initSVG['g']
 
     while (g.firstChild)
@@ -870,9 +873,9 @@ const updateTooltip = (props, use) => (w, d, dlabel) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const [textId, boxId] = [`text-${i}${value}`, `box-${i}${value}`]
+        const [t1id, t2id, pid, gid] = [`t1-${i}${value}`, `t2-${i}${value}`, `p-${i}${value}`, `g-${i}${value}`]
 
-        const list = _.genSvgList('tooltipGroup').setID({ gBox: boxId, label: textId })
+        const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
 
         const { plot, label, gBox, dataText } = _.genSvgFromList(list, d, w, i, value).named('tooltipSVG')
 
@@ -888,108 +891,67 @@ const updateTooltip = (props, use) => (w, d, dlabel) =>
 }
 
 
-const store =
+
+
+/**
+ * 
+ * @param {*} store 데이터를 등록 할 대상 객체 
+ * @param {*} obj  등록할 데이터 객체
+ */
+const Publish = (store,obj) =>
 {
-    lastIdx: -1,
-    selectedIdx:
+    for (const [key, value] of Array.from(Object.entries(obj)))
     {
-        begin: -1,
-        end: -1,
+        Reflect.set(store, key, value)
     }
+   
 }
-store[Symbol.toStringTag] = 'store'
+// Publish(chartStore, { arr: [], idx : idx, id: {first:1000, last:2000},count:1000 })
 
 
-const savedChartData = (props, use) =>
+
+
+const onMove = (props, Subscribe) => (e) =>
 {
-    const _ = use(props)
-    console.log(_)
-    // const temp = {..._.store}
-    // const info =
-    // {
-    //     lastIdx: -1,
-    //     selectedIdx:
-    //     {
-    //         begin: -1,
-    //         end: -1,
-    //     }
-    // }
-    return {
-        data: _.store,
-        set: key =>
-        {
-            const t = {key:-1}
-            return {
-
-                data: data =>
-                {
-                    // t[key] = data
-                    // store = {...store, ...t[key]}
-                    // store[key] = data
-                    Reflect.set(_.store, key, data)
-                }
-            }
-
-        },
-        get: key =>
-        {
-            return key === 'all' ? _.store : _.store[key]
-
-        },
-
-    }
-}
-
-
-
-
-const onMove = (props, use) => (e) =>
-{
-    const _ = use(props)
+    const _ = Subscribe(props)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
-    const store = savedChartData(props, use)
-    let last = store.get('lastIdx')
     let idx = size.idx(e.clientX)
-    let value = undefined
-    console.log(store,idx)
+    let value =  d[idx]
+    
+    if (idx !== chartStore['lastIdx'])
+    {
+        Publish(chartStore, { lastIdx: size.idx(e.clientX), x: e.clientX })
 
-    console.log(last)
-    savedChartData(props, use).set('lastIdx').data(idx)
-    savedChartData(props, use).set('lalalal').data(idx+10)
-    last = store.get('lastIdx')
-    console.log(last)
-    console.log(store)
-
-    // if (idx !== size.idx(e.clientX))
-    // {
-    //     // idx = e.clientX
-    //     if (value !== undefined)
-    //     {
-    //         _id(`box-${value}`).setAttribute('fill', 'white')
-    //         _id(`text-${value}`).setAttribute('fill', 'white')
-    //     }
-    //     idx = size.idx(e.clientX)
-    //     value = d[idx]
-    // }
-    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 160, x2: e.clientX - 160 })
+        if (value !== undefined)
+            
+        {
+            // _id(`g-${idx}${value}`).setAttribute('fill', 'red')
+            // _id(`p-${idx}${value}`).setAttribute('fill', 'green')
+            // _id(`t1-${idx}${value}`).setAttribute('fill', 'red')
+            // _id(`t2-${idx}${value}`).setAttribute('fill', 'blue')
+        }
+        idx = size.idx(e.clientX)
+        value = d[idx]
+    }
+    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 135, x2: e.clientX - 135 })
 
 }
 
 
 
 
-const initSetPathGroup = (props, use) => (w, d) =>
+const initSetPathGroup = (props, Subscribe) => (w, d) =>
 {
-    const _ = use(props)
+    const _ = Subscribe(props)
     const size = genSize(w, d)
-    const lineType = onChangeLineType(props, use, 'line')()
+    const lineType = onChangeLineType(props, Subscribe, 'line')()
     const { stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path } = _.initPathSVG
 
     appendAll({ stop1, stop2, stop3 }).to(fill)
 
     props = [...props, w, d]
-    _.updatePathGroup(props, use)(lineType)
+    _.updatePathGroup(props, Subscribe)(lineType)
 
     appendAll({ fillPath }).to(frame)
     appendAll({ fill, frame }).to(defs)
@@ -1011,14 +973,16 @@ const initParams = [
     inputData,
     _id,
     _name,
-    store,
+    // store,
     genSize,
     genElement,
     getElement,
     genAttr,
     updateAttr,
-    store,
-    savedChartData,
+    Publish,
+    chartStore,
+    // store,
+    // savedChartData,
     onMove,
     onChangeInput,
     onChangeLineType,
@@ -1039,10 +1003,10 @@ const initParams = [
 ]
 
 
-const init = (props, use) =>
+const init = (props, Subscribe) =>
 {
 
-    const _ = use(props)
+    const _ = Subscribe(props)
     const [d, w] = [_.inputData(_._id('data-list')), _.inputData(_._id('width'))]
 
     const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
@@ -1055,9 +1019,9 @@ const init = (props, use) =>
 
     delete (_.initSVG['svg'])
 
-    const onMoveprops = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents,_.store]
-    const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(onMoveprops, use)) }
-    const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(onMoveprops, use)) }
+    const onMoveprops = [_.updateAttr, _.genSize, _._id, _.initSVG, _.inputData, _.setEvents,_.Publish,_.chartStore,]
+    const mouseOn = () => { svg.addEventListener('mousemove', _.onMove(onMoveprops, Subscribe)) }
+    const mouseOut = () => { svg.removeEventListener('mousemove', _.onMove(onMoveprops, Subscribe)) }
 
     _.DOMEventAttr['svg'] = _.DOMEventAttr['svg'].map(e =>
     {
@@ -1066,12 +1030,12 @@ const init = (props, use) =>
         return e
     })
 
-    _.initSetPathGroup(props, use)(w, initData)
-    _.setEvents(props, use).addAll(_.DOMEventAttr)
+    _.initSetPathGroup(props, Subscribe)(w, initData)
+    _.setEvents(props, Subscribe).addAll(_.DOMEventAttr)
     _.appendAll(_.initSVG).to(svg)
     _.initSVG = { svg, ..._.initSVG }
-    _.updateTooltip(props, use)(w, initData, initData.map((_, i) => 2010 + i))
+    _.updateTooltip(props, Subscribe)(w, initData, initData.map((_, i) => 2010 + i))
 
 
 }
-init(initParams, useParams)
+init(initParams, Subscribe)
