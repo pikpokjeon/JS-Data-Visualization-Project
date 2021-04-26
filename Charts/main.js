@@ -568,37 +568,44 @@ const onSelectPeriod = (props, Subscribe, target) => (e) =>
     const _ = Subscribe(props)
     const size = _.genSize(inputStore['w'], inputStore['d'])
 
-    console.log(_.initSVG)
     if (chartStore['selectedStartIdx'] < 0)
     {
         Publish(chartStore, { selectedStartIdx: chartStore['lastIdx'] })
         const x = size.x(chartStore['selectedStartIdx']) - size.unitX
 
         updateAttr(_.initPathSVG['fillBG'], {x : x})
-        updateAttr(_.initSVG['left'], {x1 :x ,x2:x, })
+        updateAttr(_.initSVG['left'], {x1 :x , x2: x })
         
-    } else if (chartStore['selectedEndIdx'] < 0)
+    }
+    else if (chartStore['selectedEndIdx'] < 0)
     {
-        const [minIdx, maxIdx] = [
+        const [minIdx, maxIdx] =
+        [
             Math.min(chartStore['lastIdx'], chartStore['selectedStartIdx']),
-            Math.max(chartStore['lastIdx'], chartStore['selectedStartIdx'])]
+            Math.max(chartStore['lastIdx'], chartStore['selectedStartIdx'])
+        ]
         
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx) )
-
+        const [start, end] = [size.x(chartStore['selectedStartIdx']) - size.unitX,size.x(chartStore['selectedEndIdx']) - size.unitX]
+        
         Publish(chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
-        
-        updateAttr(_.initPathSVG['fillBG'], { width: selectedWidth  + size.unitX })
-        updateAttr(_.initSVG['right'], {x1 :size.x(maxIdx) ,x2:size.x(maxIdx), })
+
+
+        updateAttr(_.initPathSVG['fillBG'], { x: start , width: selectedWidth})
+        updateAttr(_.initSVG['left'], {x1 : start , x2: start })
+        updateAttr(_.initSVG['right'], {x1 : start + selectedWidth , x2: start + selectedWidth })
         
 
-    } else
+    }
+    else
     {
         Publish(chartStore, { selectedEndIdx: -1, selectedStartIdx: -1 })
-        updateAttr(_.initPathSVG['fillBG'], {width : inputStore['w'], x : 0 })
+        updateAttr(_.initPathSVG['fillBG'], { width: inputStore['w'], x: 0 })
+        updateAttr(_.initSVG['left'], {x1 :-1 ,x2:-1, })
+        updateAttr(_.initSVG['right'], {x1 :-1 ,x2:-1, })
         
         
     }
-    console.log(chartStore)
 }
 
 
@@ -606,8 +613,6 @@ const focusSelection = (props, Subscribe) =>
 {
     const _ = Subscribe(props)
     const size = _.genSize(inputStore['w'], inputStore['d'])
-    console.log(inputStore)
-    console.log(_.initPathSVG['fillBG'])
     updateAttr(_.initPathSVG['fillBG'], {x : size.x(chartStore['selectedStartIdx'])})
 }
 
