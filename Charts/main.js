@@ -45,7 +45,6 @@ const genSize = (w, d) =>
 }
 
 
-// const size = genSize(w, d)
 const genAttr = (id) => (w, s, i, v) =>
 {
     const d = inputData(_id('data-list'))
@@ -991,8 +990,8 @@ const initParams = [
     updateTooltip,
     genSvgList,
     genPath,
-    genSvgFromList(initSVGList, _id('data-list')).named('initSVG'),
-    genSvgFromList(initPathList, _id('data-list')).named('initPathSVG'),
+    genSvgFromList(initSVGList,inputData(_id('data-list')),inputData(_id('width'))).named('initSVG'),
+    genSvgFromList(initPathList,inputData(_id('data-list')),inputData(_id('width'))).named('initPathSVG'),
     initSetPathGroup,
     genSvgFromList,
     DOMEventAttr,
