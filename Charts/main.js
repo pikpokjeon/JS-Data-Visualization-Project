@@ -29,11 +29,12 @@ const genSize = (w, d) =>
         d: d.length,
         gap,
         unitX,
+        unitY,
         MAX,
         SUM,
         maxData,
         minData,
-        unitY,
+        leftMargin: 155,
         width: w,
         eventArea: { width: w, height: 700 },
         data: { text: { width: 30, height: 20 } },
@@ -933,7 +934,7 @@ const onMove = (props, Subscribe) => (e) =>
         idx = size.idx(e.clientX)
         value = d[idx]
     }
-    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - 135, x2: e.clientX - 135 })
+    _.updateAttr(_.initSVG['lineV'], { x1:  e.clientX - size.leftMargin  , x2: e.clientX - size.leftMargin  })
 
 }
 
