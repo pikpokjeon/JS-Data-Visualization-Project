@@ -99,7 +99,13 @@ const genAttr = (id) => (w, s, i, v) =>
             y2: h * 2,
             style: style.line,
         },
-
+        borderLine: {
+            x1: s.x(i),
+            y1: -h,
+            x2: s.x(i),
+            y2: h * 2,
+            style: style.line +" stroke-dasharray:5,5;",
+        },
         label: {
             x: s.x(i),
             y: h,
@@ -248,6 +254,14 @@ const svgDefinition = (id) =>
             name: 'lineV',
 
         },
+                borderLine:
+        {
+            type: 'line',
+            attr: 'borderLine',
+            id: id.borderLine,
+            name: 'line',
+
+        },
         g:
         {
             type: 'g',
@@ -359,6 +373,7 @@ const svgIdList =
     lineV: ['lineV'],
     g: ['g', 'group'],
     path: ['path'],
+    borderLine: ['left','right'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
     stop: ['stop1', 'stop2', 'stop3'],
@@ -553,20 +568,28 @@ const onSelectPeriod = (props, Subscribe, target) => (e) =>
     const _ = Subscribe(props)
     const size = _.genSize(inputStore['w'], inputStore['d'])
 
-    console.log('click')
+    console.log(_.initSVG)
     if (chartStore['selectedStartIdx'] < 0)
     {
         Publish(chartStore, { selectedStartIdx: chartStore['lastIdx'] })
-        updateAttr(_.initPathSVG['fillBG'], {x : size.x(chartStore['selectedStartIdx'])})
+        const x = size.x(chartStore['selectedStartIdx']) - size.unitX
+
+        updateAttr(_.initPathSVG['fillBG'], {x : x})
+        updateAttr(_.initSVG['left'], {x1 :x ,x2:x, })
         
     } else if (chartStore['selectedEndIdx'] < 0)
     {
         const [minIdx, maxIdx] = [
             Math.min(chartStore['lastIdx'], chartStore['selectedStartIdx']),
             Math.max(chartStore['lastIdx'], chartStore['selectedStartIdx'])]
+        
+        const selectedWidth = (size.x(maxIdx) - size.x(minIdx) )
 
-        Publish(chartStore, {selectedStartIdx: minIdx , selectedEndIdx: maxIdx})
-        updateAttr(_.initPathSVG['fillBG'], {width : e.clientX - size.x(chartStore['selectedStartIdx']) })
+        Publish(chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
+        
+        updateAttr(_.initPathSVG['fillBG'], { width: selectedWidth  + size.unitX })
+        updateAttr(_.initSVG['right'], {x1 :size.x(maxIdx) ,x2:size.x(maxIdx), })
+        
 
     } else
     {
