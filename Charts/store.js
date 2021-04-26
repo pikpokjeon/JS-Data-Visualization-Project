@@ -8,4 +8,11 @@ const chartStore =
 }
 chartStore[Symbol.toStringTag] = 'chartStore'
 
-export {chartStore}
+const inputStore =
+{
+    w: -1,
+    d: -1,
+}
+inputStore[Symbol.toStringTag] = 'inputStore'
+
+export {chartStore, inputStore}

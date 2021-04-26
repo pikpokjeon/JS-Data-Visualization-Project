@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
-import { chartStore } from './store.js'
+import { chartStore, inputStore } from './store.js'
 
 const _id = (target) => document.getElementById(target)
 const _name = (name) => document.getElementsByName(name)
@@ -354,6 +354,7 @@ const svgIdList =
 {
     svg: ['svg'],
     eventArea: ['eventArea'],
+    fillBG:['fillBG'],
     lineH: ['lineH'],
     lineV: ['lineV'],
     g: ['g', 'group'],
@@ -453,6 +454,7 @@ const onChangeInput = (props, Subscribe, target) => (e) =>
     const random = _.genSize(w, d).maxData + a + b
 
 
+    Publish(inputStore, {w:w, d:d})
 
     if (target === 'add')
     {
@@ -549,10 +551,13 @@ const onChangeInput = (props, Subscribe, target) => (e) =>
 const onSelectPeriod = (props, Subscribe, target) => (e) =>
 {
     const _ = Subscribe(props)
+    const size = _.genSize(inputStore['w'], inputStore['d'])
+
     console.log('click')
     if (chartStore['selectedStartIdx'] < 0)
     {
         Publish(chartStore, { selectedStartIdx: chartStore['lastIdx'] })
+        updateAttr(_.initPathSVG['fillBG'], {x : size.x(chartStore['selectedStartIdx'])})
         
     } else if (chartStore['selectedEndIdx'] < 0)
     {
@@ -561,13 +566,26 @@ const onSelectPeriod = (props, Subscribe, target) => (e) =>
             Math.max(chartStore['lastIdx'], chartStore['selectedStartIdx'])]
 
         Publish(chartStore, {selectedStartIdx: minIdx , selectedEndIdx: maxIdx})
-        
+        updateAttr(_.initPathSVG['fillBG'], {width : e.clientX - size.x(chartStore['selectedStartIdx']) })
+
     } else
     {
-        Publish(chartStore, {selectedEndIdx: -1, selectedStartIdx: -1})
+        Publish(chartStore, { selectedEndIdx: -1, selectedStartIdx: -1 })
+        updateAttr(_.initPathSVG['fillBG'], {width : inputStore['w'], x : 0 })
+        
         
     }
     console.log(chartStore)
+}
+
+
+const focusSelection = (props, Subscribe) =>
+{
+    const _ = Subscribe(props)
+    const size = _.genSize(inputStore['w'], inputStore['d'])
+    console.log(inputStore)
+    console.log(_.initPathSVG['fillBG'])
+    updateAttr(_.initPathSVG['fillBG'], {x : size.x(chartStore['selectedStartIdx'])})
 }
 
 
@@ -1050,6 +1068,7 @@ const init = (props, Subscribe) =>
 
     const [svgArea, svg] = [_id('svg-area'), _.initSVG['svg']]
 
+    Publish(inputStore, {w:w, d: initData})
     _._id('data-list').value = initData.join(',')
     svgArea.appendChild(svg)
 
