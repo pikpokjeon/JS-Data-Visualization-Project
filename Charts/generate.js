@@ -4,7 +4,6 @@ import { getElement } from './pipeline'
 import { updateAttr } from './update'
 const genSize = (w, d) =>
 {
-    console.log(w,d)
     const unitX = w / d.length
     const gap = unitX / d.length
     const [height, margin] = [350, -50]
@@ -50,7 +49,6 @@ const genElement = (type, attr, animate) =>
 
 const genAttr = (w, d, i, v) =>
 {
-    console.log(w,d)
     const s = genSize(w, d)
     const h = s.eventArea.height
     const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
@@ -171,7 +169,6 @@ const genSvgFromList = (list, w, d, i, v) =>
     // const List = (Object.values(list))
     // console.log(List.forEach(e => console.log(e)))
     
-    console.log( list)
     for (const [name, info] of (Object.values(list)))
     {
 

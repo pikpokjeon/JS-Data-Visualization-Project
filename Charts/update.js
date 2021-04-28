@@ -70,7 +70,6 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
 
         label.textContent = dlabel[i]
         dataText.textContent = value
-        console.log( plot, label, gBox, dataText )
         _.appendAll({ label, dataText, plot }).to(gBox)
 
         gBox.appendChild(plot)

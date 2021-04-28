@@ -7,57 +7,57 @@
 const setEvents = (props, Use) =>
 {
     const _ = Use(props)
-    const addAll = list =>
+
+    const addAll = list => Array.from(Object.entries(list))
+        .reduce( (acc, cur) =>
         {
-            for (const [target, events] of Object.entries(list))
+            const [target, events] = [cur[0], cur[1]]
+            const _events = []
+            const added = _._name(target)
+                .forEach(node => events
+                .forEach(e =>
+                {
+                    if (e.func)
+                    {
+                        node.addEventListener(e.event, e.func(props, Use, target))
+                        e.isAdded = true
+                    }
+                    _events.push({...e})
+                }))
+            return Object.assign(acc, Object.assign({}, {...cur}))
+        }, {...list})
+
+    // !! TODO: 이벤트 삭제 부분 구현
+    // 이벤트 이름
+    const off = event =>
+    {
+        // 대상
+        const from = target =>
+        {
+
+
+            const targetNodes = _._name(target)
+
+            for (const node of targetNodes)
             {
-                const targetNodes = _._name(target)
-                for (const node of targetNodes)
+                const targets = _.DOMEventAttr[target].filter(e => e.event === event)
+                for (const tg of (targets))
                 {
-                    for (const data of (events))
+                    if (tg.isAdded)
                     {
-                        if (data.func !== undefined)
-                        {
-                            node.addEventListener(data.event, data.func(props, Use, target))
-                            data.isAdded = true
-                        }
-
+                        node.removeEventListener(event, tg.func)
+                        tg.isAdded = false
+                        _.DOMEventAttr = { tg, ..._.DOMEventAttr }
                     }
+
                 }
+
             }
-            // console.log(_.DOMEventAttr)
-        }
-        // !! TODO: 이벤트 삭제 부분 구현
-        // 이벤트 이름
-        const off = event =>
-        {
-                // 대상
-                const from = target =>
-                {
-
-                   
-                    const targetNodes = _._name(target)
-
-                    for (const node of targetNodes)
-                    {
-                        const targets = _.DOMEventAttr[target].filter(e => e.event === event)
-                        for (const tg of (targets))
-                        {
-                            if (tg.isAdded)
-                            {
-                                node.removeEventListener(event, tg.func)
-                                tg.isAdded = false
-                                _.DOMEventAttr = { tg, ..._.DOMEventAttr }
-                            }
-
-                        }
-
-                    }
-
-                }
-            return { from }
 
         }
+        return { from }
+
+    }
     return { addAll, off }
 }
 
@@ -321,12 +321,10 @@ const startStream = (props, Use, target) => (e) =>
 const onMove = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
-    console.log(_)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
     let idx = size.idx(e.clientX)
     let value = d[idx]
-    console.log(_)
     if (idx !== _.chartStore['lastIdx'])
     {
         _.Publish(_.chartStore, { lastIdx: size.idx(e.clientX), x: e.clientX })
@@ -346,4 +344,4 @@ const onMove = (props, Use, target) => (e) =>
 }
 
 
-export  { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } 
+export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } 
