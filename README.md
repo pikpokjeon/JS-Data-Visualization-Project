@@ -1,4 +1,8 @@
-# Data Visualization Projects
+# Data Visualization Projects 
+- Demo Pages <br />
+<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
+<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/index.html">2. Line Charts</a>
+
 ### I am aiming at ... 
 - developing this listed projects without any help of foreign JS libraries
 - containing at least one with custom interactive animation 
@@ -19,13 +23,13 @@ To start Binary search
 
 ### 1. Algorithms 
 ### (1) Binary search
-#### Last update (17,Apr) : TODO > put some magical sparkles n smooth animation
+#### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.gif)
 
 ### 2. Chart 
 ### (1) Line chart
-##### Last update (21,Apr): TODO > add streaming chart type
+##### Last update (24,Apr): TODO > make width responsive
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/linechart.gif)
 
