@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
@@ -127,56 +128,56 @@ const onChangeInput = (props, Use, target) => (e) =>
     // }
 
 
-    const labelArr = (d, memo, s) =>
-    {
-        let gap = -1
-        let unitToshow = 2
-        let secountIdx = 1
-        let a = -1
-        const size = s(w, d)
+    // const labelArr = (d, memo, s) =>
+    // {
+    //     let gap = -1
+    //     let unitToshow = 2
+    //     let secountIdx = 1
+    //     let a = -1
+    //     const size = s(w, d)
 
-        // unit = unit(d,memo,gap,unitToshow)
+    //     // unit = unit(d,memo,gap,unitToshow)
 
-        for (let i = 1; i < d.length; i++)
-        {
-            if (memo[i] > 0)
-            {
+    //     for (let i = 1; i < d.length; i++)
+    //     {
+    //         if (memo[i] > 0)
+    //         {
 
-                let [x, px] = [size.x(0), size.x(unitToshow)]
-                a = px
-                gap = Math.abs(x - px)
-                if (gap > 40) unitToshow -= 1
-                unitToshow += 1
-                secountIdx = i
-                break
-            }
-        }
+    //             let [x, px] = [size.x(0), size.x(unitToshow)]
+    //             a = px
+    //             gap = Math.abs(x - px)
+    //             if (gap > 40) unitToshow -= 1
+    //             unitToshow += 1
+    //             secountIdx = i
+    //             break
+    //         }
+    //     }
         // return unit
         // console.log(gap, unitToshow, secountIdx, a)
 
         // console.log(unitToshow, gap)
 
-        return d.map((e, i) =>
-        {
-            if (size.unitX < 30)
-            {
-                if (i % unitToshow === 0)
-                {
-                    memo[i] = 1
-                    return e
-                }
-                else
-                {
-                    memo[i] = 0
-                    return undefined
-                }
-            }
-            else
-            {
-                return e
-            }
-        })
-    }
+    //     return d.map((e, i) =>
+    //     {
+    //         if (size.unitX < 30)
+    //         {
+    //             if (i % unitToshow === 0)
+    //             {
+    //                 memo[i] = 1
+    //                 return e
+    //             }
+    //             else
+    //             {
+    //                 memo[i] = 0
+    //                 return undefined
+    //             }
+    //         }
+    //         else
+    //         {
+    //             return e
+    //         }
+    //     })
+    // }
 
 
     _._id('data-list').value = `${(d)}`
