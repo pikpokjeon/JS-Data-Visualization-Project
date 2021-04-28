@@ -15,4 +15,21 @@ const inputStore =
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
 
-export {chartStore, inputStore}
+
+
+/**
+ * 
+ * @param {*} store 데이터를 등록 할 대상 객체 
+ * @param {*} obj  등록할 데이터 객체
+ */
+const Publish = (store, obj) =>
+{
+    for (const [key, value] of Array.from(Object.entries(obj)))
+    {
+        Reflect.set(store, key, value)
+    }
+
+}
+
+
+export { chartStore, inputStore, Publish }
