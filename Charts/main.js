@@ -21,7 +21,6 @@ import { _id, _name, appendAll, inputData, copyParams } from './helper'
 const initSetPathGroup = (props, Use) => (w, d) =>
 {
     const _ = Use(props)
-    console.log(_)
     const lineType = onChangeLineType(props, Use, 'line')()
     const { stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path } = _.initPathSVG
 
@@ -30,6 +29,32 @@ const initSetPathGroup = (props, Use) => (w, d) =>
     props = [...props, w, d]
     updatePathGroup(props, Use)(lineType)
 
+    //  다른 방법을 찾아보자.
+    // 1.
+    // const fragment = (  
+    //     _.initSVG['group'](
+    //         [
+    //             defs({ attr }, [
+    //                 fill({ attr }),
+    //                 frame({ attr })
+    //             ]),
+    //             fillG({ attr },
+    //                 fillBG({ width: w, y: -100 })
+    //             ), path({attr}),
+    //         ]
+    //     )
+    // )
+    // 2.
+    // const fragment = (  
+    //     _.initSVG['group']({attr}, ['<-'],
+    //         [
+    //             defs({ attr },['<-'], [ fill({ attr }), frame({ attr }) ]),
+    //             fillG({ attr },['<-'], [fillBG({ width: w, y: -100 })]),
+    //             path({ attr }),
+    //         ]
+    //     )
+    // )
+    
     appendAll({ fillPath }).to(frame)
     appendAll({ fill, frame }).to(defs)
     updateAttr(fillBG, { width: w, y: -100 })
