@@ -1,7 +1,7 @@
 
-import { svgDefinition, svgIdList, DOMEventAttr } from './definition'
-import { getElement } from './pipeline'
-import { updateAttr } from './update'
+import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
+import { getElement } from './pipeline.js'
+import { updateAttr } from './update.js'
 const genSize = (w, d) =>
 {
     const unitX = w / d.length
