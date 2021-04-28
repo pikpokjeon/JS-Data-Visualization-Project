@@ -1,6 +1,5 @@
 import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
-
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
  * @param {*} event 삭제할 이벤트리스너 이름
@@ -107,7 +106,7 @@ const onChangeInput = (props, Use, target) => (e) =>
     const random = _.genSize(w, d).maxData + a + b
 
 
-    _.Publish(inputStore, { w: w, d: d })
+    _.Publish(_.inputStore, { w: w, d: d })
 
     if (target === 'add')
     {
@@ -206,7 +205,7 @@ const onChangeInput = (props, Use, target) => (e) =>
 const onSelectPeriod = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
-    const size = _.genSize(inputStore['w'], inputStore['d'])
+    const size = _.genSize(_.inputStore['w'], _.inputStore['d'])
 
     if (_.chartStore['selectedStartIdx'] < 0)
     {
@@ -226,7 +225,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
             ]
 
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx))
-        const [start, end] = [size.x(_.chartStore['selectedStartIdx']) - size.unitX, size.x(chartStore['selectedEndIdx']) - size.unitX]
+        const [start, end] = [size.x(_.chartStore['selectedStartIdx']) - size.unitX, size.x(_.chartStore['selectedEndIdx']) - size.unitX]
         const last = size.idx(e.clientX)
         const isSelectReverse = last - maxIdx < 0
 
@@ -241,7 +240,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     else
     {
         _.Publish(_.chartStore, { selectedEndIdx: -1, selectedStartIdx: -1 })
-        _.updateAttr(_.initPathSVG['fillBG'], { width: inputStore['w'], x: 0 })
+        _.updateAttr(_.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 })
         _.updateAttr(_.initSVG['left'], { x1: -1, x2: -1, })
         _.updateAttr(_.initSVG['right'], { x1: -1, x2: -1, })
 
