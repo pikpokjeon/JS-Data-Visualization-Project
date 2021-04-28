@@ -15,7 +15,7 @@ const inputStore =
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
 
-// const Store = (new)
+const Store = (new)
 
 
 /**

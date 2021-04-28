@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "run": "parcel index.html",
+    "parcel": "parcel index.html",
     "test": "mocha --reporter spec",
     "build": "rollup -c",
     "dev": "rollup -c -w"

@@ -7,7 +7,9 @@
 const setEvents = (props, Use) =>
 {
     const _ = Use(props)
-    const addAll = list =>
+    return {
+
+        addAll: list =>
         {
             for (const [target, events] of Object.entries(list))
             {
@@ -26,13 +28,14 @@ const setEvents = (props, Use) =>
                 }
             }
             // console.log(_.DOMEventAttr)
-        }
+        },
         // !! TODO: 이벤트 삭제 부분 구현
         // 이벤트 이름
-        const off = event =>
+        off: event =>
         {
+            return {
                 // 대상
-                const from = target =>
+                from: target =>
                 {
 
                    
@@ -55,10 +58,10 @@ const setEvents = (props, Use) =>
                     }
 
                 }
-            return { from }
+            }
 
         }
-    return { addAll, off }
+    }
 }
 
 
@@ -274,7 +277,7 @@ const startStream = (props, Use, target) => (e) =>
     {
         return setTimeout(() =>
         {
-            const lineType = _.onChangeLineType(props, Use, target)()
+            const lineType = onChangeLineType(props, Use, target)()
             arr.push(random)
             d_memo.push(0)
             arr.shift()
@@ -344,5 +347,6 @@ const onMove = (props, Use) => (e) =>
 
 }
 
+// const allEvents = { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove }
 
 export  { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } 

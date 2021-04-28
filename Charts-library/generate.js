@@ -168,10 +168,6 @@ const genSvgFromList = (props, Use) => (list, w, d, i, v) =>
     const createdSVG = {}
     let temp = undefined
 
-    // const List = (Object.values(list))
-    // console.log(List.forEach(e => console.log(e)))
-    
-
     for (const [name, info] of (Object.values(list)))
     {
 

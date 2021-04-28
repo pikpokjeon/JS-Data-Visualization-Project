@@ -138,8 +138,6 @@ const svgDefinition = (id) =>
 
     return { singleSVG, tooltipGroup, pathGroup }
 }
-svgDefinition[Symbol.toStringTag] = 'svgDefinition'
-
 
 /**
  * 하나의 요소에는 고유한 id값 하나를 가지기에,
