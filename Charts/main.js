@@ -84,22 +84,20 @@ const initParams = [
 
 const init = (props, Use) =>
 {
-    console.log(props)
     const _ = Use(props)
-    console.log(_.initSVG)
 
     const [d, w] = [inputData(_id('data-list')), inputData(_id('width'))]
-
     const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
+    Publish(_.inputStore, { w: w, d: initData, dLabel:initData.map((_, i) => 2010 + i) })
+
 
     const [svgArea, svg] = [_id('svg-area'), _.initSVG['svg']]
 
-    Publish(_.inputStore, { w: w, d: initData })
     _id('data-list').value = initData.join(',')
     svgArea.appendChild(svg)
 
     delete (_.initSVG['svg'])
-    const onMoveprops = [updateAttr, genSize, _id, _.initSVG, _.initPathSVG, inputData, setEvents, Publish, chartStore,]
+    const onMoveprops = [updateAttr, genSize, _id, _.initSVG, _.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore]
     const mouseOn = () => { svg.addEventListener('mousemove', onMove(onMoveprops, Use)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', onMove(onMoveprops, Use)) }
 

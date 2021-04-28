@@ -12,6 +12,7 @@ const inputStore =
 {
     w: -1,
     d: -1,
+    d_label : -1,
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
 

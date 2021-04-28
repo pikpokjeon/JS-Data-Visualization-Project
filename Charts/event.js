@@ -67,17 +67,15 @@ const onChangeLineType = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
     const typeNodeList = _._name('radio')
-    const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
-    let _d_label = d.map((_, i) => Number(2010) + i)
-    let lineType
+    const { w, d, d_label } = _.inputStore
+    let lineType = -1
     typeNodeList.forEach(n =>
     {
         if (n.checked) lineType = n.value
     })
     props = [w, d, ...props]
     _.updatePathGroup(props, Use)(lineType)
-    _.updateTooltip(props, Use)(w, d, _d_label)
-
+    _.updateTooltip(props, Use)(w, d, d_label )
     return lineType
 }
 
@@ -92,17 +90,18 @@ const onChangeInput = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
     const [wth, main] = [_._id('width'), _._id('main')]
-    let w = _.inputData(wth)
-    let d = _.inputData(_._id('data-list'))
+    let [w, d, d_label] =
+        [_.inputData(wth),
+         _.inputData(_._id('data-list')),
+         _.inputData(_._id('data-list')).map((d,i) => 2010 + i)]
     let d_memo = d.map(e => 1)
-    let _d_label = d.map((_, i) => Number(2010) + i)
 
     const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
     const b = Math.floor(Math.random() * 1000)
     const random = _.genSize(w, d).maxData + a + b
 
 
-    _.Publish(_.inputStore, { w: w, d: d })
+    _.Publish(_.inputStore, { w, d, d_label })
 
     if (target === 'add')
     {
@@ -191,7 +190,7 @@ const onChangeInput = (props, Use, target) => (e) =>
     }
 
     _.updatePathGroup(props, Use)(lineType)
-    _.updateTooltip(props, Use)(w, d, _d_label)
+    _.updateTooltip(props, Use)(w, d, d_label )
 
 
 }
@@ -202,34 +201,44 @@ const onSelectPeriod = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
     const size = _.genSize(_.inputStore['w'], _.inputStore['d'])
-
-    if (_.chartStore['selectedStartIdx'] < 0)
+    const {lastIdx, selectedStartIdx, selectedEndIdx } = _.chartStore
+    if (selectedStartIdx < 0)
     {
-        _.Publish(_.chartStore, { selectedStartIdx: _.chartStore['lastIdx'] })
-        const x = size.x(_.chartStore['selectedStartIdx']) - size.unitX
-
+        _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
+        const x = size.x(lastIdx) - size.unitX
         _.updateAttr(_.initPathSVG['fillBG'], { x: x })
         _.updateAttr(_.initSVG['left'], { x1: x, x2: x })
 
     }
-    else if (_.chartStore['selectedEndIdx'] < 0)
+    else if (selectedEndIdx < 0)
     {
         const [minIdx, maxIdx] =
             [
-                Math.min(_.chartStore['lastIdx'], _.chartStore['selectedStartIdx']),
-                Math.max(_.chartStore['lastIdx'], _.chartStore['selectedStartIdx'])
+                Math.min(lastIdx, selectedStartIdx),
+                Math.max(lastIdx, selectedStartIdx)
             ]
 
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx))
-        const [start, end] = [size.x(_.chartStore['selectedStartIdx']) - size.unitX, size.x(_.chartStore['selectedEndIdx']) - size.unitX]
-        const last = size.idx(e.clientX)
+        const [start, last] = [size.x(selectedStartIdx) - size.unitX, size.idx(e.clientX)]
         const isSelectReverse = last - maxIdx < 0
 
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
-        _.updateAttr(_.initPathSVG['fillBG'], { x: isSelectReverse ? size.x(last) - size.unitX : start, width: selectedWidth })
+        _.updateAttr(_.initPathSVG['fillBG'],
+        {
+            x: isSelectReverse
+                ? size.x(last) - size.unitX
+                : start, width: selectedWidth
+        })
         _.updateAttr(_.initSVG['left'], { x1: start, x2: start })
-        _.updateAttr(_.initSVG['right'], { x1: isSelectReverse ? size.x(last) - size.unitX : start + selectedWidth, x2: isSelectReverse ? size.x(last) - size.unitX : start + selectedWidth })
+        _.updateAttr(_.initSVG['right'],
+        {
+            x1: isSelectReverse
+                ? size.x(last) - size.unitX
+                : start + selectedWidth, x2: isSelectReverse
+                ? size.x(last) - size.unitX
+                : start + selectedWidth
+        })
 
 
     }
@@ -256,7 +265,7 @@ const startStream = (props, Use, target) => (e) =>
     let w = _.inputData(wth)
     let d = _.inputData(_._id('data-list'))
     let d_memo = d.map(e => 1)
-    let _d_label = d.map((_, i) => Number(2010) + i)
+    let d_label = d.map((_, i) => Number(2010) + i)
 
     const updateBox = ({ arr, arr_memo, arr_label, w, props }) => new Promise(res => 
     {
@@ -307,7 +316,7 @@ const startStream = (props, Use, target) => (e) =>
             const b = Math.floor(Math.random() * 1000)
             const random = (_.genSize(w, temp_d).maxData + a + b) * 1.5
             props = [w, temp_d, ...props]
-            toDelayUpdate(i, 500, round, random, temp_d, d_memo, _d_label, w, props)
+            toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label , w, props)
             round += 1
 
         }
