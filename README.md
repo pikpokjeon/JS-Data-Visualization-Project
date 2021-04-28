@@ -8,7 +8,12 @@
 ### HOW TO RUN 
 - git clone this repo
 - make sure there's at least a dozen of html and js files in the project folder you found it interesting
-- it's static, just drag n drop the html file to your choice of browser!
+To start Chart project
+```
+npm run parcel
+```
+To start Binary search
+- Just drag and drop the html file to your choice of browser!
 
 ## Project List
 

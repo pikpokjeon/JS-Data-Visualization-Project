@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트

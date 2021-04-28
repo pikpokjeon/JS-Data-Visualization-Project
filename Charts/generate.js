@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
 import { svgDefinition, svgIdList, DOMEventAttr } from './definition'
 
