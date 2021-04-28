@@ -318,14 +318,15 @@ const startStream = (props, Use, target) => (e) =>
 }
 
 
-const onMove = (props, Use) => (e) =>
+const onMove = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
+    console.log(_)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
     let idx = size.idx(e.clientX)
     let value = d[idx]
-
+    console.log(_)
     if (idx !== _.chartStore['lastIdx'])
     {
         _.Publish(_.chartStore, { lastIdx: size.idx(e.clientX), x: e.clientX })

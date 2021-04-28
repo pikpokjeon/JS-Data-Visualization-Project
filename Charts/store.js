@@ -25,6 +25,7 @@ inputStore[Symbol.toStringTag] = 'inputStore'
  */
 const Publish = (store, obj) =>
 {
+    console.log(store,obj)
     for (const [key, value] of Array.from(Object.entries(obj)))
     {
         Reflect.set(store, key, value)

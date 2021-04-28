@@ -10,4 +10,4 @@ const getElement = (w, arr, i, v) => (target, type) => genElement(type, genAttr(
 
 
 
-// export { getElement }
+export { getElement }

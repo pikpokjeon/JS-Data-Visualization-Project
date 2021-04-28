@@ -51,6 +51,7 @@ const svgDefinition = (id) =>
         },
 
     }
+    singleSVG[Symbol.toStringTag] = 'singleSVG'
 
     const tooltipGroup =
     {
@@ -84,6 +85,7 @@ const svgDefinition = (id) =>
         },
 
     }
+    tooltipGroup[Symbol.toStringTag] = 'tooltipGroup'
     const pathGroup = {
         stop: {
             type: 'stop',
@@ -122,6 +124,7 @@ const svgDefinition = (id) =>
             name: 'fillPath',
         },
         defs: {
+            id: 'defs',
             type: 'defs',
             attr: 'defs',
             name: 'defs',
@@ -135,6 +138,8 @@ const svgDefinition = (id) =>
         }
 
     }
+    pathGroup[Symbol.toStringTag] = 'pathGroup'
+
 
     return { singleSVG, tooltipGroup, pathGroup }
 }

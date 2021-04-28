@@ -66,15 +66,15 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
 
         const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
 
-        const { plot, label, gBox, dataText } = _.genSvgFromList(props,Use)(list, w, d, i, value).named('tooltipSVG')
+        const { plot, label, gBox, dataText } = _.genSvgFromList(list, w, d, i, value).named('tooltipSVG')
 
         label.textContent = dlabel[i]
         dataText.textContent = value
+        console.log( plot, label, gBox, dataText )
+        _.appendAll({ label, dataText, plot }).to(gBox)
 
-        // _.appendAll({ label, dataText, plot }).to(gBox)
-
-        // gBox.appendChild(plot)
-        // g.appendChild(gBox)
+        gBox.appendChild(plot)
+        g.appendChild(gBox)
 
     }
 }
