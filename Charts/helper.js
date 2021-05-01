@@ -1,8 +1,89 @@
+// import { genElement } from "./generate"
 
 
 
-const _id = (target) => document.getElementById(target)
+const _id = (id) => document.getElementById(id)
 const _name = (name) => document.getElementsByName(name)
+const _class = (className, target) => target
+    ? target.getElementsByClassName(className) 
+    : document.getElementsByClassName(className)
+
+const pipe = (...fns) => (v) => fns.reduce((v, fn) => Array.isArray(v)?  fn(...v):fn(v) , v)
+
+/**
+ * 속성인지 자식요소인지 확인
+ * @param {*} value 속성/ 자식요소
+ */
+const isChildren = (value) =>
+    Array.isArray(value)
+        || typeof value === 'string'
+        || 'nodeName' in value
+    || 'tagName' in value
+        
+
+/**
+ * Predefined DOM constructor generate helper.
+ * 요소생성자 반환
+ * 
+ * @param {*} type SVG or HTML  S(...), H(...)
+ * @param {*} tag DOM 요소 by tag. div, svg
+ * @param {*} defaultProps 옵션. ex {class:'main'}
+ */
+const alias = type => (tag) =>
+{
+
+    /**
+     * @param {*} attr ex {id: 'bg-shadow'}
+     * @param {*} children a HTML/SVG 요소/ 텍스트
+     */
+    const cons = (attr, children) =>
+    {
+        //속성이 없는경우 자식으로
+        return isChildren(attr)
+            ? genElement(tag, {}, attr)
+            : genElement(tag, attr, children)
+    }
+    return cons
+}
+pipe(genElement,updateAttr,updateChildren)
+
+const updateChildren = type => (el, attr = {}, children = []) =>
+{
+    if (children === undefined) return el
+    if (!Array.isArray(children)) children = [children]
+    for (const c of children)
+    {
+        // 텍스트 p, span or button
+        if (typeof c === 'string') el.appendChild(document.createTextNode(c))
+        // c 노드배열
+        else if (Array.isArray(c)) updateChildren(el, c)
+        // c 노드
+        else el.appendChild(c)
+    }
+    return [el,attr,children]
+}
+
+/**
+ * Pipeline function DOM요소생성
+ * type = SVG HTML태그.
+ */
+const genElement = (type) => (el, attr = {}, children = []) =>
+{
+    
+    el = type === 'svg'
+        ? document.createElementNS('http://www.w3.org/2000/svg', type) 
+        : document.createElement(tag)
+    return isChildren(attr)? [el,{},attr] : [el,attr,children]
+}
+
+const updateAttr = (el, attr = {}, children = []) =>
+{
+    for (const [t, v] of Object.entries(attr))
+    {
+        el.setAttribute(t, v)
+    }
+    return [el,attr,children]
+}
 
 
 /**
@@ -51,4 +132,4 @@ const copyParams = (params) =>
     return copied
 }
 
-export { _id, _name, appendAll, inputData, copyParams }
+// export { appendAll, inputData, copyParams,  }
