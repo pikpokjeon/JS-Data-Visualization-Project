@@ -69,7 +69,6 @@ const alias = (type) => (tag) =>
 
 const updateChildren =  (el, children = []) =>
 {
-    console.log(el)
     if (children === undefined) return el
     if (!Array.isArray(children)) children = [children]
     for (const c of children)
@@ -81,6 +80,7 @@ const updateChildren =  (el, children = []) =>
         // c 노드
         else el.appendChild(c)
     }
+
     return el
 }
 
