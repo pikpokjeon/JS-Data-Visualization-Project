@@ -1,5 +1,5 @@
 
-
+import {test, setEvents} from './event'
 const updateAttr = (el, attr) =>
 {
     for (const [t, v] of Object.entries(attr))
@@ -64,11 +64,14 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const [t1id, t2id, pid, gid] = ['t1','t2','p','g'].map(e =>  `${e}-${i}${value}`)
+        const tooltipList = _.genSvgList('tooltipGroup')
+            .setID(
+                {
+                    gBox: `data-g-${i}`, label: `label-${i}`, dataText: `data-${i}`, plot: `plot-${i}`
+                })
 
-        const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
 
-        const { plot, label, gBox, dataText } = _.genSvgFromList(list, w, d, i, value).named('tooltipSVG')
+        const { plot, label, gBox, dataText } = _.genSvgFromList(tooltipList, w, d, i, value).named('tooltipSVG')
 
 
         // 텍스트 속성과 함께 추가하는 방법?
@@ -77,8 +80,12 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
 
         label.textContent = dlabel[i]
         dataText.textContent = value
+        // const test = (props, Use, target) => (e) =>
+        // {
+        //     console.log(e)
+        //     }
 
-        // 부모 <- 자식 || 자식 -> 부모, 가독성이 더 좋은 쪽은??
+            // 부모 <- 자식 || 자식 -> 부모, 가독성이 더 좋은 쪽은??
         _.appendAll({ label, dataText, plot }).to(gBox)
         
         gBox.appendChild(plot)
