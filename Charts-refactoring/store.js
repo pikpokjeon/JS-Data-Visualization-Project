@@ -44,19 +44,11 @@ const Store = ({ initTopic, initMsg }) =>
             
     //     }
     // }
-    const obj = { ddd: 1, cs: 4, 5: 7 }
-    const a = f => (...args) =>
-    {
-        console.log(f)
-        console.log(...args)
-        obj = Object.assign(obj, Object.assign({}, f(...args)))
-        console.log(obj)
-    }
-    const [c,s] = [1,2]
-    // const set = 
-     a((c, { s }) => ({ idx: c, node: s }))
-    // console.log(aaaa)
 
+    const subscribe = (sub) =>
+    {
+        
+    }
 
 
     
@@ -100,4 +92,4 @@ const Publish = (store, obj) =>
 }
 
 
-// export { chartStore, inputStore, Publish }
+export { chartStore, inputStore, Store, }

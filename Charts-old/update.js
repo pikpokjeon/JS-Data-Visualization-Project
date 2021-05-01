@@ -36,12 +36,14 @@ const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
 
 
+// Pathgroup 배열이나 객체를 넘기도록 변경
 const updatePathGroup = (props, Use) => (lineType) =>
 {
     const _ = Use(props)
     const size = _.genSize(_.w, _.d)
-    _.updatePath(_.initPathSVG['path'], _.genPath(_.d, lineType)(size).path)
-    _.updatePath(_.initPathSVG['fillPath'], _.genPath(_.d, lineType)(size).fill)
+    const path = _.genPath(_.d, lineType)(size)
+    _.updatePath(_.initPathSVG['path'], path.path)
+    _.updatePath(_.initPathSVG['fillPath'], path.fill)
 }
 
 
@@ -62,15 +64,14 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const [t1id, t2id, pid, gid] = [`t1-${i}${value}`, `t2-${i}${value}`, `p-${i}${value}`, `g-${i}${value}`]
+        const [t1id, t2id, pid, gid] = ['t1','t2','p','g'].map(e =>  `${e}-${i}${value}`)
 
         const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
 
-        const { plot, label, gBox, dataText } = _.genSvgFromList(props,Use)(list, w, d, i, value).named('tooltipSVG')
+        const { plot, label, gBox, dataText } = _.genSvgFromList(list, w, d, i, value).named('tooltipSVG')
 
         label.textContent = dlabel[i]
         dataText.textContent = value
-
         _.appendAll({ label, dataText, plot }).to(gBox)
 
         gBox.appendChild(plot)

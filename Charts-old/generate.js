@@ -1,10 +1,9 @@
 
-import { svgDefinition, svgIdList, DOMEventAttr } from './definition'
-
-
+import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
+import { getElement } from './pipeline.js'
+import { updateAttr } from './update.js'
 const genSize = (w, d) =>
 {
-
     const unitX = w / d.length
     const gap = unitX / d.length
     const [height, margin] = [350, -50]
@@ -162,12 +161,14 @@ const genAttr = (w, d, i, v) =>
 
 
 
-const genSvgFromList = (props, Use) => (list, w, d, i, v) =>
+const genSvgFromList = (list, w, d, i, v) =>
 {
-    const _ = Use(props)
     const createdSVG = {}
     let temp = undefined
 
+    // const List = (Object.values(list))
+    // console.log(List.forEach(e => console.log(e)))
+    
     for (const [name, info] of (Object.values(list)))
     {
 
@@ -181,15 +182,15 @@ const genSvgFromList = (props, Use) => (list, w, d, i, v) =>
                     {
                         for (const attr of info.attr)
                         {
-                            temp = _.getElement(w, d, i, v)(attr, info.type, id)
-                            _.updateAttr(temp, { id: id, name: info.name })
+                            temp = getElement(w, d, i, v)(attr, info.type, id)
+                            updateAttr(temp, { id: id, name: info.name })
                             createdSVG[attr] = temp
                         }
                     }
                     else
                     {
-                        temp = _.getElement(w, d, i, v)(info.attr, info.type, id)
-                        _.updateAttr(temp, { id: id, name: info.name })
+                        temp = getElement(w, d, i, v)(info.attr, info.type, id)
+                        updateAttr(temp, { id: id, name: info.name })
                         createdSVG[id] = temp
                     }
 
@@ -197,8 +198,8 @@ const genSvgFromList = (props, Use) => (list, w, d, i, v) =>
                 continue
             }
         }
-        temp = _.getElement(w, d, i, v)(info.attr, info.type)
-        _.updateAttr(temp, { id: info.id, name: info.name })
+        temp = getElement(w, d, i, v)(info.attr, info.type)
+        updateAttr(temp, { id: info.id, name: info.name })
         createdSVG[name] = temp
     }
 

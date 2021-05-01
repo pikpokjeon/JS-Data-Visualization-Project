@@ -1,6 +1,6 @@
 
 
-const updateAttr = (el, attr) =>
+const updateAttr = (el, attr = {}) =>
 {
     for (const [t, v] of Object.entries(attr))
     {
@@ -11,28 +11,28 @@ const updateAttr = (el, attr) =>
 
 const updateTexts = (props, Use) => (d, w) => (num, start, end, target) => 
 {
-//     const _ = Use(props)
-//     const g = _.initSVG['g']
 
-//     while (g.firstChild)
-//     {
-//         g.removeChild(g.firstChild)
-//     }
-//     /**
-//      * 하단의 genSvgFromListList 함수를 사용하여, 
-//      * 복수사용 svg 리스트에 있는 요소들을 생성해준다.
-//      * setSvgId를 사용하여 우선 svgDefinition 정보를 갱신해줘야 한다.
-//      */
-//     for (const [i, value] of (Array.from(Object.entries(d))))
-//     {
-//         // if (value === num) box.setAttribute('fill', 'lemonchiffon'), text.setAttribute('fill', 'black')
-//         // else if (value === start || value === end) box.setAttribute('fill', '#292a38f2')
-//         // if (target !== 'bs' && value > num) box.setAttribute('stroke', 'lightseagreen')
-
-//     }
 }
 
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
+const updateChildren =  (el, children = []) =>
+{
+    if (children === undefined) return el
+    if (!Array.isArray(children)) children = [children]
+    for (const c of children)
+    {
+        console.log(el,c)
+        // 텍스트 p, span or button
+        if (typeof c === 'string') el.appendChild(document.createTextNode(c))
+        // c 노드배열
+        else if (Array.isArray(c)) updateChildren(el, c)
+        // c 노드
+        else el.appendChild(c)
+    }
+    console.log(el)
+
+    return el
+}
 
 
 
@@ -64,23 +64,26 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const [t1id, t2id, pid, gid] = ['t1','t2','p','g'].map(e =>  `${e}-${i}${value}`)
+        const tooltipList = _.genSvgList('tooltipGroup')
+            .setID(
+                {
+                    gBox: `data-g-${i}`, label: `label-${i}`, dataText: `data-${i}`, plot: `plot-${i}`
+                })
 
-        const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
-
-        const { plot, label, gBox, dataText } = _.genSvgFromList(list, w, d, i, value).named('tooltipSVG')
-
-
+        const { plot, label, gBox, dataText } = _.genSvgFromList(tooltipList, w, d, i, value).named('tooltipSVG')
+        const a = _.alias('svg')('g')
+        const b = _.alias('svg')('rect')
         // 텍스트 속성과 함께 추가하는 방법?
         // plot 은 요소를 반환하고, 내부속성 설정시 함수로 사용?
         // 요소를 다르게 정의 해보자 - 속성 업데이트 부분에, 텍스트 컨텐츠 설정도 가능하도록.
+        // updateChildren(label,'hello')
 
         label.textContent = dlabel[i]
         dataText.textContent = value
 
         // 부모 <- 자식 || 자식 -> 부모, 가독성이 더 좋은 쪽은??
         _.appendAll({ label, dataText, plot }).to(gBox)
-        
+        // a([label, dataText, plot])
         gBox.appendChild(plot)
         g.appendChild(gBox)
 

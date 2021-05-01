@@ -1,6 +1,6 @@
 
 
-import { genElement, genAttr } from './generate'
+import { genElement, genAttr } from './generate.js'
 
 const getElement = (w, arr, i, v) => (target, type) => genElement(type, genAttr(w, arr, i, v)[target])
 
@@ -10,4 +10,4 @@ const getElement = (w, arr, i, v) => (target, type) => genElement(type, genAttr(
 
 
 
-// export { getElement }
+export { getElement }
