@@ -100,4 +100,4 @@ const Publish = (store, obj) =>
 }
 
 
-// export { chartStore, inputStore, Publish }
+export { chartStore, inputStore, Publish }

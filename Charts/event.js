@@ -10,23 +10,27 @@ const setEvents = (props, Use) =>
     const _ = Use(props)
 
     const addAll = list => Array.from(Object.entries(list))
-        .reduce( (acc, cur) =>
+        .reduce((acc, cur) =>
         {
             const [target, events] = [cur[0], cur[1]]
             const _events = []
             const added = _._name(target)
                 .forEach(node => events
-                .forEach(e =>
-                {
-                    if (e.func)
+                    .forEach(e =>
                     {
-                        node.addEventListener(e.event, e.func(props, Use, target))
-                        e.isAdded = true
-                    }
-                    _events.push({...e})
-                }))
-            return Object.assign(acc, Object.assign({}, {...cur}))
-        }, {...list})
+                        if (e.func !== undefined && !e.isAdded)
+                        {
+                            node.addEventListener(e.event, e.func(props, Use, target))
+                            e.isAdded = true
+                        } else if (e.func && !e.isAdded)
+                        {
+                            node.addEventListener(e.event, e.func(props, Use, target))
+                            e.isAdded = true
+                        }
+                        _events.push({ ...e })
+                    }))
+            return Object.assign(acc, Object.assign({}, { ...cur }))
+        }, { ...list })
 
     // !! TODO: 이벤트 삭제 부분 구현
     // 이벤트 이름
@@ -76,7 +80,7 @@ const onChangeLineType = (props, Use, target) => (e) =>
     })
     props = [w, d, ...props]
     _.updatePathGroup(props, Use)(lineType)
-    _.updateTooltip(props, Use)(w, d, d_label )
+    _.updateTooltip(props, Use)(w, d, d_label)
     return lineType
 }
 
@@ -93,8 +97,8 @@ const onChangeInput = (props, Use, target) => (e) =>
     const [wth, main] = [_._id('width'), _._id('main')]
     let [w, d, d_label] =
         [_.inputData(wth),
-         _.inputData(_._id('data-list')),
-         _.inputData(_._id('data-list')).map((d,i) => 2010 + i)]
+        _.inputData(_._id('data-list')),
+        _.inputData(_._id('data-list')).map((d, i) => 2010 + i)]
     let d_memo = d.map(e => 1)
 
     const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
@@ -103,7 +107,7 @@ const onChangeInput = (props, Use, target) => (e) =>
 
 
     _.Publish(_.inputStore, { w, d, d_label })
-
+    console.log(_.inputStore)
     if (target === 'add')
     {
         d.push(random)
@@ -152,10 +156,10 @@ const onChangeInput = (props, Use, target) => (e) =>
     //             break
     //         }
     //     }
-        // return unit
-        // console.log(gap, unitToshow, secountIdx, a)
+    // return unit
+    // console.log(gap, unitToshow, secountIdx, a)
 
-        // console.log(unitToshow, gap)
+    // console.log(unitToshow, gap)
 
     //     return d.map((e, i) =>
     //     {
@@ -191,7 +195,7 @@ const onChangeInput = (props, Use, target) => (e) =>
     }
 
     _.updatePathGroup(props, Use)(lineType)
-    _.updateTooltip(props, Use)(w, d, d_label )
+    _.updateTooltip(props, Use)(w, d, d_label)
 
 
 }
@@ -202,7 +206,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
     const size = _.genSize(_.inputStore['w'], _.inputStore['d'])
-    const {lastIdx, selectedStartIdx, selectedEndIdx } = _.chartStore
+    const { lastIdx, selectedStartIdx, selectedEndIdx } = _.chartStore
     if (selectedStartIdx < 0)
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
@@ -226,20 +230,20 @@ const onSelectPeriod = (props, Use, target) => (e) =>
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
         _.updateAttr(_.initPathSVG['fillBG'],
-        {
-            x: isSelectReverse
-                ? size.x(last) - size.unitX
-                : start, width: selectedWidth
-        })
+            {
+                x: isSelectReverse
+                    ? size.x(last) - size.unitX
+                    : start, width: selectedWidth
+            })
         _.updateAttr(_.initSVG['left'], { x1: start, x2: start })
         _.updateAttr(_.initSVG['right'],
-        {
-            x1: isSelectReverse
-                ? size.x(last) - size.unitX
-                : start + selectedWidth, x2: isSelectReverse
-                ? size.x(last) - size.unitX
-                : start + selectedWidth
-        })
+            {
+                x1: isSelectReverse
+                    ? size.x(last) - size.unitX
+                    : start + selectedWidth, x2: isSelectReverse
+                        ? size.x(last) - size.unitX
+                        : start + selectedWidth
+            })
 
 
     }
@@ -317,7 +321,7 @@ const startStream = (props, Use, target) => (e) =>
             const b = Math.floor(Math.random() * 1000)
             const random = (_.genSize(w, temp_d).maxData + a + b) * 1.5
             props = [w, temp_d, ...props]
-            toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label , w, props)
+            toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label, w, props)
             round += 1
 
         }
@@ -331,13 +335,13 @@ const startStream = (props, Use, target) => (e) =>
 const onMove = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
-    const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
+    const [w, d] = [_.inputStore['w'], _.inputStore['d']]
     const size = _.genSize(w, d)
-    let idx = size.idx(e.clientX)
+    let idx = size.idx(e.clientX) - 1
     let value = d[idx]
     if (idx !== _.chartStore['lastIdx'])
     {
-        _.Publish(_.chartStore, { lastIdx: size.idx(e.clientX), x: e.clientX })
+        _.Publish(_.chartStore, { lastIdx: size.idx(e.clientX) - 1, x: e.clientX })
 
         if (value !== undefined)
         {
@@ -346,12 +350,15 @@ const onMove = (props, Use, target) => (e) =>
             // _id(`t1-${idx}${value}`).setAttribute('fill', 'red')
             // _id(`t2-${idx}${value}`).setAttribute('fill', 'blue')
         }
-        idx = size.idx(e.clientX)
+        idx = size.idx(e.clientX) - 1
         value = d[idx]
     }
     _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
 
 }
+const test = (props, Use, target) => (e) =>
+{
+    console.log(e)
+}
 
-
-export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } 
+export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, test } 
