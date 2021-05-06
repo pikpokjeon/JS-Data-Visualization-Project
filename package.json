@@ -12,13 +12,13 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "main": "dist/cjs/index.js",
-  "test": "src/test/index.js",
+  "test": "test/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "parcel": "parcel index.html",
-    "test": "mocha --reporter spec",
+    "test": "jest",
     "build": "rollup -c",
     "dev": "rollup -c -w"
   },

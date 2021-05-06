@@ -19,7 +19,10 @@ const predefinedData =
                 selectedIdx: { start: -1, end: -1 }
             }
         }
+
+
     ]
+
 
 const Store = (msg, sub) =>
 {
@@ -40,6 +43,7 @@ const Store = (msg, sub) =>
                 }
                 Object.assign(acc, Object.assign({}, temp))
                 return acc
+
             }, _store)
         }
 
@@ -75,16 +79,13 @@ const expectation = {
 
 }
 
-// storeSetObjTest.mockReturnValueOnce()
 // Jest도 써서 테스트 해봐야 함
 // 콘솔로그 이제 그만...
-describe('store 초기 정보 객체 넘겨줄 때', () =>
+describe('store 초기 인자 넘겨줄 때', () =>
 {
-    const storeInit = JSON.stringify(Store(predefinedData))
-    const expectedInitObjt = JSON.stringify(expectation)
+    const storeInitSet = Store(predefinedData)
     test('Store 초기 정보 설정 검사', () =>
-        // 공부 필요..
-        expect(storeInit).toBe(expectedInitObjt)
+        expect(storeInitSet).toEqual(expectation)
     )
 })
 
