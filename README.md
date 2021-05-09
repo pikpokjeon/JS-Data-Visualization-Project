@@ -14,6 +14,7 @@
 - make sure there's at least a couple of html and js files in the project folder you found it interesting <br />
 To start Chart project
 ```
+git checkout publish
 npm run parcel
 ```
 
@@ -22,8 +23,7 @@ Insert it in the file named event.js for preventing async/await error on Parcel
 import 'regenerator-runtime/runtime' 
 
 ```
-To start Binary search
-- Just drag and drop the html file to your choice of browser!
+
 
 ## Project List
 
