@@ -43,6 +43,7 @@ const updatePathGroup = (props, Use) => (lineType) =>
     const size = _.genSize(_.w, _.d)
     const path = _.genPath(_.d, lineType)(size)
     _.updatePath(_.initPathSVG['path'], path.path)
+    _.updatePath(_.initPathSVG['pathShadow'], path.path)
     _.updatePath(_.initPathSVG['fillPath'], path.fill)
 }
 

@@ -1,4 +1,4 @@
-// import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
+import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 import { chartStore, inputStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList } from './generate.js'
 import { updateAttr, updatePath, updatePathGroup, updateTexts, updateTooltip } from './update.js'
@@ -9,58 +9,28 @@ import { _id, _name, appendAll, inputData, copyParams } from './helper.js'
 
 
 
-// const focusSelection = (props, Use) =>
-// {
-//     const _ = Use(props)
-//     const size = _.genSize(inputStore['w'], inputStore['d'])
-//     updateAttr(_.initPathSVG['fillBG'], { x: size.x(chartStore['selectedStartIdx']) })
-// }
-
-
 
 const initSetPathGroup = (props, Use) => (w, d) =>
 {
     const _ = Use(props)
     const lineType = onChangeLineType(props, Use, 'line')()
-    const { stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path } = _.initPathSVG
+    const { stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path, pathShadow, blur, lineShadow } = _.initPathSVG
 
+    console.log( _.initPathSVG)
     appendAll({ stop1, stop2, stop3 }).to(fill)
 
     props = [...props, w, d]
     updatePathGroup(props, Use)(lineType)
 
-    //  다른 방법을 찾아보자.
-    // 1.
-    // const fragment = (  
-    //     _.initSVG['group'](
-    //         [
-    //             defs({ attr }, [
-    //                 fill({ attr }),
-    //                 frame({ attr })
-    //             ]),
-    //             fillG({ attr },
-    //                 fillBG({ width: w, y: -100 })
-    //             ), path({attr}),
-    //         ]
-    //     )
-    // )
-    // 2.
-    // const fragment = (  
-    //     _.initSVG['group']({attr}, ['<-'],
-    //         [
-    //             defs({ attr },['<-'], [ fill({ attr }), frame({ attr }) ]),
-    //             fillG({ attr },['<-'], [fillBG({ width: w, y: -100 })]),
-    //             path({ attr }),
-    //         ]
-    //     )
-    // )
-    
+    appendAll({ blur }).to(lineShadow)
     appendAll({ fillPath }).to(frame)
-    appendAll({ fill, frame }).to(defs)
+    appendAll({ fill, frame, lineShadow }).to(defs)
     updateAttr(fillBG, { width: w, y: -100 })
 
+    updateAttr(pathShadow, {
+        filter: 'url(#lineShadow)', stroke: '#3240fc',  })
     appendAll({ fillBG }).to(fillG)
-    appendAll({ defs, fillG, path }).to(_.initSVG['group'])
+    appendAll({ defs, fillG, path, pathShadow }).to(_.initSVG['group'])
 
 }
 

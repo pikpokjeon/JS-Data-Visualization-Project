@@ -152,7 +152,15 @@ const genAttr = (w, d, i, v) =>
         fillPath: {
         },
         defs: {
-
+        },
+        filter: {
+            x: '-7',
+            y: '-7',
+            width: '14',
+            height: '14',
+        },
+        feGaussianBlur: {
+            stdDeviation:"2"
         }
 
     }
