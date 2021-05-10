@@ -4,7 +4,7 @@
 <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/index.html">2. Line Charts</a>
 
 ### I am aiming at ... 
-- developing this listed projects without any help of foreign JS libraries
+- developing this listed projects without any help of foreign JS libraries ( I've used Rollup for building bundles)
 - containing at least one with custom interactive animation 
 - using interactive and dynamic data given by users 
 - Creating a chart web-component system
@@ -38,6 +38,10 @@ import 'regenerator-runtime/runtime'
 ##### Last update (24,Apr): TODO > make width responsive
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/linechart.gif)
+
+
+
+
 
 ## Chart 프로젝트가 리팩토링이 필요한 이유
 - 공유하는 동적 데이터의 흐름을 추적하기 힘들다
