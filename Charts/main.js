@@ -1,4 +1,4 @@
-import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
+// import 'regenerator-runtime/runtime' // parcel async/await 에러 해결/
 import { chartStore, inputStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList } from './generate.js'
 import { updateAttr, updatePath, updatePathGroup, updateTexts, updateTooltip } from './update.js'
