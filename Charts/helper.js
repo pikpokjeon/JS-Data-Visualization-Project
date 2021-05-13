@@ -8,7 +8,7 @@ const _class = (className, target) => target
     ? target.getElementsByClassName(className) 
     : document.getElementsByClassName(className)
 
-const pipe = (...fns) => (v) => fns.reduce((v, fn) => Array.isArray(v)?  fn(...v):fn(v) , v)
+// const pipe = (...fns) => (v) => fns.reduce((v, fn) => Array.isArray(v)?  fn(...v):fn(v) , v)
 
 /**
  * 속성인지 자식요소인지 확인
