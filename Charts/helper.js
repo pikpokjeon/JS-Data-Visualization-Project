@@ -131,5 +131,4 @@ const copyParams = (params) =>
     }
     return copied
 }
-
-// export { appendAll, inputData, copyParams,  }
+ export { appendAll, inputData, copyParams,  }
