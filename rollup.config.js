@@ -1,6 +1,6 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve"
 export default {
-  input: "./src/index.js",
+  input: "./lib/index.js",
   plugins: [nodeResolve()],
   output: [
     {
