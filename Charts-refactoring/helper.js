@@ -1,4 +1,4 @@
-// import { genElement } from "./generate"
+import { genElement } from "./generate"
 
 
 
@@ -7,8 +7,15 @@ const _name = (name) => document.getElementsByName(name)
 const _class = (className, target) => target
     ? target.getElementsByClassName(className) 
     : document.getElementsByClassName(className)
+const inputData = (el) =>
+    el.value.indexOf(',') > -1
+        ? el.value
+            .split(',')
+            .map(_ => Number(_))
+        : Number(el.value)
 
-const pipe = (...fns) => (v) => fns.reduce((v, fn) => Array.isArray(v)?  fn(...v):fn(v) , v)
+
+
 
 /**
  * 속성인지 자식요소인지 확인
@@ -29,25 +36,38 @@ const isChildren = (value) =>
  * @param {*} tag DOM 요소 by tag. div, svg
  * @param {*} defaultProps 옵션. ex {class:'main'}
  */
-const alias = type => (tag) =>
-{
 
+const alias = (type) => (tag) =>
+{
+    // checks if its for html tag or svg element
+    
+    // assigns attributes, and appends children
+    // !! attr could be children when its not assigned
     /**
      * @param {*} attr ex {id: 'bg-shadow'}
      * @param {*} children a HTML/SVG 요소/ 텍스트
      */
-    const cons = (attr, children) =>
-    {
-        //속성이 없는경우 자식으로
-        return isChildren(attr)
-            ? genElement(tag, {}, attr)
-            : genElement(tag, attr, children)
-    }
-    return cons
-}
-pipe(genElement,updateAttr,updateChildren)
+    return (attributes = {}, children = []) =>
+        isChildren(attributes) 
+            ? genElement(type)(tag, {}, attributes)
+            : genElement(type)(tag, attributes, children)
 
-const updateChildren = type => (el, attr = {}, children = []) =>
+    /**
+     * Usage : 
+     * const S = alias('svg')
+     * const svg = S('svg')
+     * const leftRect = S('rect')
+     * const miniText = S('text')
+     * 
+     * svg({class:'main-svg'}, [
+     *  leftRect({id:'last-rect'}, [
+     *      miniText('hello')
+     * ])])
+     */
+}
+
+
+const updateChildren =  (el, children = []) =>
 {
     if (children === undefined) return el
     if (!Array.isArray(children)) children = [children]
@@ -60,59 +80,34 @@ const updateChildren = type => (el, attr = {}, children = []) =>
         // c 노드
         else el.appendChild(c)
     }
-    return [el,attr,children]
+
+    return el
 }
 
-/**
- * Pipeline function DOM요소생성
- * type = SVG HTML태그.
- */
-const genElement = (type) => (el, attr = {}, children = []) =>
-{
-    
-    el = type === 'svg'
-        ? document.createElementNS('http://www.w3.org/2000/svg', type) 
-        : document.createElement(tag)
-    return isChildren(attr)? [el,{},attr] : [el,attr,children]
-}
 
-const updateAttr = (el, attr = {}, children = []) =>
+
+const updateAttr = (el, attr = {}) =>
 {
     for (const [t, v] of Object.entries(attr))
     {
         el.setAttribute(t, v)
     }
-    return [el,attr,children]
+    return el
 }
 
 
-/**
- * @param {*} list 추가할 복수의 svg 요소
- * @param {*} target 타겟이 되는 요소
- */
-const appendAll = (list) =>
+// 객체 전개연산자로 추가할 때
+const appendAll = (children) =>
 {
-    return {
-        to: target =>
+        const to = parent =>
         {
-            for (const [key, el] of Object.entries(list))
+            for (const [key, el] of Object.entries(children))
             {
-                target.appendChild(el)
+                parent.appendChild(el)
             }
         }
-    }
+    return { to }
 }
-
-let inputData = (el) =>
-{
-    return el.value.indexOf(',') > -1
-        ? el.value
-            .split(',')
-            .map(_ => Number(_))
-        : Number(el.value)
-}
-
-
 
 /**
  * @param {*} params 여러 함수에서 공통적으로 사용할 함수, 요소, 변수들의 변경사항을 복사
@@ -132,4 +127,5 @@ const copyParams = (params) =>
     return copied
 }
 
-// export { appendAll, inputData, copyParams,  }
+
+export { alias, appendAll, inputData, copyParams, _id, _name, _class, updateChildren, updateAttr  }

@@ -135,7 +135,20 @@ const svgDefinition = (id) =>
             attr: 'path',
             id: id.path,
             name: 'path'
-        }
+        },
+        filter:
+                {
+            type: 'filter',
+            attr: 'filter',
+            id: id.filter,
+            name: 'filter'
+        },
+        feGaussianBlur:{
+            type: 'feGaussianBlur',
+            attr: 'feGaussianBlur',
+            id: id.feGaussianBlur,
+            name: 'feGaussianBlur'
+        },
 
     }
     pathGroup[Symbol.toStringTag] = 'pathGroup'
@@ -158,12 +171,14 @@ const svgIdList =
     lineH: ['lineH'],
     lineV: ['lineV'],
     g: ['g', 'group'],
-    path: ['path'],
+    path: ['path','pathShadow'],
     borderLine: ['left', 'right'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
     stop: ['stop1', 'stop2', 'stop3'],
     fillPath: ['fillPath'],
+    filter: ['lineShadow'],
+    feGaussianBlur: ['blur']
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
 
