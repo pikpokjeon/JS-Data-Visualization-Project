@@ -3,11 +3,7 @@
 <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
 <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/index.html">2. Line Charts</a>
 
-### I am aiming at ... 
-- developing this listed projects without any help of foreign JS libraries ( I've used Rollup for building bundles)
-- containing at least one with custom interactive animation 
-- using interactive and dynamic data given by users 
-- Creating a chart web-component system
+### This branch < refactoring > is for refactoring the initial trial codes
 
 ### HOW TO RUN 
 - git clone this repo
