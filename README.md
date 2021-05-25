@@ -57,19 +57,11 @@ import 'regenerator-runtime/runtime'
 - 메시지 전송자(Publisher)가 메시지 수신자(Subscriber)와 분리되는 메시징 서비스
 ```
 상에서 하로 진행, 한가지 주제에 일대다 다대일 다대다 관계 성립가능.
-1. Publisher (pub/sub 서비스 주제 생성) publisher messages a topic to  subscriber (might via broker)
+1. Publisher (pub/sub 서비스 주제 생성) 데이터를 생성하고 구독권을 생성
 3. Message (페이로드/컨텐츠설명하는 속성) 
-4. MessageStorage filtered with topic/path (메시지는 구독자가 메시지를 소비할 때까지 구독에 보관)
-5. Subscription (target to assign message, message)
-6. Subscriber (target : 수신된 메세지에 확인 (Ack/Notify)) receives subscription 
-```
-#### 주요 개념
-```
-메시지: 서비스를 통해 이동하는 데이터..
-주제: 메시지 피드를 나타내는, 이름이 지정된 항목.
-구독: 특정 주제의 메시지 수신을 받고자 하는, 이름이 지정된 항목.
-게시자(publisher): 특정 주제에 대한 메시지를 만들어 메시징 서비스로 전송(게시)합니다.
-구독자(subscribe): 지정한 구독에 대한 메시지를 수신합니다. 
+4. MessageStorage filtered with topic/path (데이터 저장소)
+5. Subscription (target to assign message, message- 토픽으로 구분)
+6. Subscriber (target : 수신된 메세지에 확인 (Ack/Notify)을 통해 구독하는 데이터 수신 업데이트) 
 ```
 #### SVG 라이브러리 구조
 - Topic 메세지(상태)를 관리하는 스토어 (MessageStorage)
