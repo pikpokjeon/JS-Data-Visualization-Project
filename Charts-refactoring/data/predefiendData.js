@@ -4,7 +4,7 @@ const predefinedData =
     {
         topic: 'userInputs',
         data: {
-            // [Symbol.toStringTag] : 'userInputs',
+            // [Symbol.toStringTag] : 'userInputs', This will be set when publishing a topic with msgs
             w: 1500,
             d: [0, 230, ],
             d_label: [2010, 2011],
