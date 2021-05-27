@@ -175,7 +175,7 @@ const svgIdList =
     borderLine: ['left', 'right'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
-    stop: ['stop1', 'stop2', 'stop3'],
+    stop: ['stop0','stop1', 'stop2', 'stop3'],
     fillPath: ['fillPath'],
     filter: ['lineShadow'],
     feGaussianBlur: ['blur']
