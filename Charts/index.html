@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charts</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="./Charts/style.css">
 
 </head>
 <body>
@@ -15,7 +15,7 @@
         <h4>Style</h4>
         <div>
           <label for="type">Type of Line</label>
-          <div>
+          <div id ="type-radio">
             <input type="radio" name="radio" value="curve">curve
             <input type="radio" name="radio" value="step">step
             <input type="radio" name="radio" value="default">default
@@ -23,11 +23,7 @@
         </div>
 
 
-        <div>
-          <label for="data-list">Chart Data</label>
-          <div><input type="text" id="data-list" name="data-list" value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
-          </div>
-        </div>
+        
         <!-- <div>
           <label for="target">target</label>
           <div><input type="text" id="target" name="target" value="15" /></div>
@@ -40,41 +36,39 @@
           <label for="time">Streaming Time /sec</label>
           <div><input type="text" id="time" name="time" value="15" /></div>
         </div>
-        <div>
-          <button id="add" name="add">
-            Add data
-          </button>
-        </div>
-                <div>
-          <button id="stream" name="stream">
-            Stream
-          </button>
-        </div>
+
                        
       </article>
     </section>
-    <!-- <section>
+    
+    <section>
       <article>
 
-      <h4>Status</h4>
-        <div>
-        <label>Round : <span id="search-count">0</span></label>
+      <h4>Data</h4>
+      <div>
+        <label for="data-list">Array</label>
+        <div><input type="text" id="data-list" name="data-list" value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
         </div>
-
-        <div>
-        <label> <span id="search-answer">waiting...</span></label>
-        </div>
-
+      </div>
+      <div>
+        <button id="add" name="add">
+          Add data
+        </button>
+      </div>
+      <div>
+        <button id="stream" name="stream">
+          Stream
+        </button>
+      </div>
       </article>
 
-    </section> -->
+    </section> 
     <section id="svg-area">
       <h4>Chart</h4>
     </section>
 
   </main>
   <script type="module" src="./main.js"></script>
- 
 
 </body>
 </html>
