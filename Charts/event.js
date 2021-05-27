@@ -75,7 +75,6 @@ const onChangeLineType = (props, Use, target) => (e) =>
         if (n.checked) lineType = n.value
     })
     props = [w, d, ...props]
-    console.log('dd', w, d, dLabel, props)
     _.updatePathGroup(props, Use)(lineType)
     _.updateTooltip(props, Use)(w, d, dLabel )
     return lineType
