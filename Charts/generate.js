@@ -112,7 +112,7 @@ const genAttr = (w, d, i, v) =>
         },
         label: {
             x: s.x(i) ,
-            y: h - 50,
+            y: h - 30,
             fill: color.default,
             'dominant-baseline': 'start',
             'text-anchor': 'middle',
@@ -125,8 +125,8 @@ const genAttr = (w, d, i, v) =>
             'text-anchor': 'middle',
         },
         plot: {
-            cx: s.x(i),
-            cy: s.y(v),
+            cx: s.x(i) ,
+            cy: s.y(v) ,
             r: 5,
             fill: "white"
         },
