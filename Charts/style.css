@@ -60,7 +60,6 @@ input[type="text"], textarea {
     position: fixed;
     padding: 0;
     z-index: -990;
-    margin-top: 8vh;
 }
 #search-answer{
     font-size: 20px;
