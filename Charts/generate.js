@@ -25,7 +25,7 @@ const genSize = (w, d) =>
         eventArea: { width: w, height: 700 },
         data: { text: { width: 30, height: 20 } },
         line: 1,
-        x: i => Math.floor(unitX * i),
+        x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
         idx: x => Math.floor(((x) / (unitX + gap)))
     }
