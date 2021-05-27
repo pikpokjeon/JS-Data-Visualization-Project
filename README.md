@@ -35,9 +35,9 @@ import 'regenerator-runtime/runtime'
 
 ### 2. Chart 
 ### (1) Line chart
-##### Last update (24,Apr): TODO > make width responsive
+##### Last update (28,May): TODO > work on design UIUX
 
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/linechart.gif)
+![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/publish/linechart.gif)
 
 
 
