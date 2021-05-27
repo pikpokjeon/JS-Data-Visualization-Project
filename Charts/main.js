@@ -1,4 +1,4 @@
-// import 'regenerator-runtime/runtime' // parcel async/await 에러 해결/
+import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 import { chartStore, inputStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList } from './generate.js'
 import { updateAttr, updatePath, updatePathGroup, updateTexts, updateTooltip } from './update.js'
@@ -14,10 +14,10 @@ const initSetPathGroup = (props, Use) => (w, d) =>
 {
     const _ = Use(props)
     const lineType = onChangeLineType(props, Use, 'line')()
-    const { stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path, pathShadow, blur, lineShadow } = _.initPathSVG
+    const { stop0, stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path, pathShadow, blur, lineShadow } = _.initPathSVG
 
     console.log( _.initPathSVG)
-    appendAll({ stop1, stop2, stop3 }).to(fill)
+    appendAll({ stop0, stop1, stop2, stop3 }).to(fill)
 
     props = [...props, w, d]
     updatePathGroup(props, Use)(lineType)
@@ -28,7 +28,7 @@ const initSetPathGroup = (props, Use) => (w, d) =>
     updateAttr(fillBG, { width: w, y: -100 })
 
     updateAttr(pathShadow, {
-        filter: 'url(#lineShadow)', stroke: '#3240fc',  })
+        filter: 'url(#lineShadow)', style: `stroke: #373205, stroke-width:10`, opacity: 1})
     appendAll({ fillBG }).to(fillG)
     appendAll({ defs, fillG, path, pathShadow }).to(_.initSVG['group'])
 
