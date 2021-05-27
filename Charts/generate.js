@@ -6,7 +6,7 @@ const genSize = (w, d) =>
 {
     const unitX = w / d.length
     const gap = unitX / d.length
-    const [height, margin] = [350, -50]
+    const [height, margin] = [250, 50]
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
     const SUM = (maxData + Math.abs(minData))
