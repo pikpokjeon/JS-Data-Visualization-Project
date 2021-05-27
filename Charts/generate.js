@@ -6,7 +6,7 @@ const genSize = (w, d) =>
 {
     const unitX = w / d.length
     const gap = unitX / d.length
-    const [height, margin] = [250, 50]
+    const [height, margin] = [300, 50]
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
     const SUM = (maxData + Math.abs(minData))
@@ -22,7 +22,7 @@ const genSize = (w, d) =>
         minData,
         leftMargin: 155,
         width: w,
-        eventArea: { width: w, height: 700 },
+        eventArea: { width: w, height: 750 },
         data: { text: { width: 30, height: 20 } },
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
@@ -51,12 +51,13 @@ const genAttr = (w, d, i, v) =>
 {
     const s = genSize(w, d)
     const h = s.eventArea.height
-    const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
+    const color = { bg: '#10161f', default: 'white', focus: 'red', blue: 'blue' }
     const style = { line: `stroke: ${ color.default }; stroke-width: ${s.line};` }
     const svg = {
         width: w,
         height: h,
-        style: 'overflow:visible'
+        style: 'overflow:visible, opacity: 0.3',
+        fill: color.bg,
     }
     const list = {
         g: { width: w, height: h, style: 'overflow:visible' },
@@ -106,17 +107,17 @@ const genAttr = (w, d, i, v) =>
             style: style.line + " stroke-dasharray:5,5;",
         },
         label: {
-            x: s.x(i),
-            y: h,
+            x: s.x(i) ,
+            y: h - 50,
             fill: color.default,
             'dominant-baseline': 'start',
             'text-anchor': 'middle',
         },
         dataText: {
-            x: 0,
+            x: 50,
             y: s.y(v),
             fill: color.default,
-            'dominant-baseline': 'start',
+            'dominant-baseline': 'end',
             'text-anchor': 'middle',
         },
         plot: {
