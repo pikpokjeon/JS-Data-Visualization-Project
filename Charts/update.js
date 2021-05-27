@@ -49,7 +49,7 @@ const updatePathGroup = (props, Use) => (lineType) =>
 
 
 
-const updateTooltip = (props, Use) => (w, d, dlabel) =>
+const updateTooltip = (props, Use) => (w, d, dLabel) =>
 {
     const _ = Use(props)
     const g = _.initSVG['g']
@@ -71,7 +71,7 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
 
         const { plot, label, gBox, dataText } = _.genSvgFromList(list, w, d, i, value).named('tooltipSVG')
 
-        label.textContent = dlabel[i]
+        label.textContent = dLabel[i]
         dataText.textContent = value
         _.appendAll({ label, dataText, plot }).to(gBox)
 
