@@ -52,11 +52,15 @@ const genAttr = (w, d, i, v) =>
     const s = genSize(w, d)
     const h = s.eventArea.height
     const color = { bg: '#10161f', default: 'white', focus: 'red', blue: 'blue' }
-    const style = { line: `stroke: ${ color.default }; stroke-width: ${s.line};` }
+    const style = 
+        {   
+            line: `stroke: ${ color.default }; stroke-width: ${s.line};`,  
+            opacity: (n) => `opacity: ${n}` 
+        }
     const svg = {
         width: w,
         height: h,
-        style: 'overflow:visible, opacity: 0.3',
+        style: `overflow:visible, ${style.opacity(0.3)}`,
         fill: color.bg,
     }
     const list = {
@@ -90,7 +94,7 @@ const genAttr = (w, d, i, v) =>
             y1: s.y(v),
             x2: s.width,
             y2: s.y(v),
-            style: style.line,
+            style: style.line +  style.opacity(0.3),
         },
         lineV: {
             x1: s.x(i),
