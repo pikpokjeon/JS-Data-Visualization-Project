@@ -6,7 +6,7 @@ const genSize = (w, d) =>
 {
     const unitX = w / d.length
     const gap = unitX / d.length
-    const [height, margin] = [350, -50]
+    const [height, margin] = [250, 50]
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
     const SUM = (maxData + Math.abs(minData))
@@ -22,7 +22,7 @@ const genSize = (w, d) =>
         minData,
         leftMargin: 155,
         width: w,
-        eventArea: { width: w, height: 700 },
+        eventArea: { width: w, height: 600 },
         data: { text: { width: 30, height: 20 } },
         line: 1,
         x: i => Math.floor(unitX * i),
@@ -51,12 +51,13 @@ const genAttr = (w, d, i, v) =>
 {
     const s = genSize(w, d)
     const h = s.eventArea.height
-    const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
+    const color = { bg: '#111923', default: 'white', focus: 'red', blue: 'blue' }
     const style = { line: `stroke: ${ color.default }; stroke-width: ${s.line};` }
     const svg = {
         width: w,
         height: h,
-        style: 'overflow:visible'
+        style: 'overflow:visible',
+        fill: color.bg,
     }
     const list = {
         g: { width: w, height: h, style: 'overflow:visible' },
