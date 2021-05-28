@@ -63,6 +63,9 @@ const setEvents = (props, Use) =>
 }
 
 
+const getLineType = (nodes) => 
+    Array.from(nodes).reduce((checked, cur) =>  cur.checked ? cur.value : checked , 'default')
+
 
 const onChangeLineType = (props, Use, target) => (e) =>
 {
@@ -72,8 +75,8 @@ const onChangeLineType = (props, Use, target) => (e) =>
     
     const { w, d, dLabel } = _.inputStore
 
-    const lineType = Array.from(typeNodeList).reduce((checked, cur) => cur.checked ? cur.value : checked ,'default')
-
+    const lineType  = getLineType(typeNodeList)
+    
     props = [w, d, ...props]
     
     _.updatePathGroup(props, Use)(lineType)
