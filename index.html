@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charts</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charts</title>
   <link rel="stylesheet" type="text/css" href="./Charts/style.css">
 
 </head>
+
 <body>
-    <main id="main">
+  <main id="main">
     <section>
       <article>
         <h4>Style</h4>
         <div>
           <label for="type">Type of Line</label>
-          <div id ="type-radio">
+          <div id="type-radio">
             <input type="radio" name="radio" value="curve">curve
             <input type="radio" name="radio" value="step">step
             <input type="radio" name="radio" value="default">default
           </div>
         </div>
-
-
-        
         <!-- <div>
           <label for="target">target</label>
           <div><input type="text" id="target" name="target" value="15" /></div>
@@ -36,44 +35,104 @@
           <label for="time">Streaming Time /sec</label>
           <div><input type="text" id="time" name="time" value="15" /></div>
         </div>
-
-                       
+        <div class="button-group">
+          <button id="stream" name="stream">
+            Stream
+          </button>
+        </div>
       </article>
     </section>
-    
+
+    <section>
+      <article id ="data-box">
+
+        <h4>Data</h4>
+        <div class="input-wrap">
+
+            <div class="input-group">
+              <label for="data-list">Data</label>
+              <input type="text" id="data-list" name="data-list"
+                value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
+            </div>
+<!-- 
+
+          <div class="input-group">
+            <label for="data-list">Label</label>
+            <input type="text" id="data-list" name="data-list"
+              value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
+          </div> -->
+
+        </div>
+
+
+        <div class="button-group">
+          <button id="add" name="add">
+            Add data
+          </button>
+        </div>
+
+      </article>
+    </section>
+
     <section>
       <article>
-
-      <h4>Data</h4>
-      <div>
-        <label for="data-list">Array</label>
-        <div><input type="text" id="data-list" name="data-list" value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
+        <h4>Setting</h4>
+        <div id="data-code">
+          <code>
+            {
+              data:0,
+              label:2021,
+            }
+          </code>
         </div>
-      </div>
-      <div>
-        <button id="add" name="add">
-          Add data
-        </button>
-      </div>
-      <div>
-        <button id="stream" name="stream">
-          Stream
-        </button>
-      </div>
-      </article>
+        <div id="setting-code">
+          <code>
+            const chartOptions = 
+            [
+            {
 
-    </section> 
+            }
+            ]
+          </code>
+          <!-- <label for="type">Options</label>
+          <div id ="type-radio">
+            <input type="radio" name="radio" value="hover-range" checked>HoverOnRange
+            <input type="radio" name="radio" value="tooltip">HasTooltip
+            <input type="radio" name="radio" value="tooltipData">HasTooltipData
+          </div>
+        </div>
+         <div>
+          <label for="target">target</label>
+          <div><input type="text" id="target" name="target" value="15" /></div>
+        </div> 
+        <div>
+          <label for="width">width</label>
+          <div><input type="text" id="width" name="width" value="1500" /></div>
+        </div>
+        <div>
+          <label for="time">Streaming Time /sec</label>
+          <div><input type="text" id="time" name="time" value="15" /></div> -->
+        </div>
+      </article>
+    </section>
+
+
+
     <section id="svg-area">
       <h4>Chart</h4>
     </section>
 
-  </main>
-  <!-- <script type="module">
+
+</html>
+
+</main>
+<!-- <script type="module">
     import {chartIdx} from './Charts/store.js'
     console.log(chartIdx)
   </script> -->
-  <!-- <script type="module" src="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/main.js"></script> -->
-  <script type="module" src="./Charts/main.js"></script>
+<!-- <script type="module" src="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/main.js"></script> -->
+<script type="module" src="./Charts/main.js"></script>
 
 </body>
+
 </html>

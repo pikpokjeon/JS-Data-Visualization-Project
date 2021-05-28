@@ -35,27 +35,46 @@ article div{
     align-items: inherit;
     margin: 0 10px 0 10px;
 }
+#data-box{
+  width: 150vh;
+}
 label {
-      font-weight: 600;
-    font-size: 17px;
+  font-weight: 600;
+  font-size: 17px;
+  background: #36b3ad57;
+  background: linear-gradient( 
+331deg
+ , rgb(31 74 76) -32%, rgb(12 23 22) 100%);
+  display: flex;
+  padding-block-end: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-width: 80px;
+
 }
 input[type="text"], textarea {
 
-      background-color: black;
-    color: white;
-    border: 0;
-    border-bottom: 1px solid;
-    padding: 10px;
-    font-size: 16px;
-    letter-spacing: 1px;
+  background-color: black;
+  color: white;
+  border: 0;
+  /* border-bottom: 1px solid; */
+  padding: 10px;
+  font-size: 16px;
+  letter-spacing: 1px;
 
+}
+.input-wrap {
+  width: 100%;
+}
+.input-group {
+  flex-wrap: nowrap;
+  width: 100%;
 }
 #width, #target {
   width: 6vh
 }
 #data-list {
-  width: 50vh;
-}
+  width: 100%;}
 #svg-area {
     position: fixed;
     padding: 0;
