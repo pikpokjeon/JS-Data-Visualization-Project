@@ -67,14 +67,15 @@ const setEvents = (props, Use) =>
 const onChangeLineType = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
+    
     const typeNodeList = _._name('radio')
+    
     const { w, d, dLabel } = _.inputStore
-    let lineType = -1
-    typeNodeList.forEach(n =>
-    {
-        if (n.checked) lineType = n.value
-    })
+
+    const lineType = Array.from(typeNodeList).reduce((checked, cur) => cur.checked ? cur.value : checked ,'default')
+
     props = [w, d, ...props]
+    
     _.updatePathGroup(props, Use)(lineType)
     _.updateTooltip(props, Use)(w, d, dLabel )
     return lineType
