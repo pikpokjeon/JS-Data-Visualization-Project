@@ -1,7 +1,13 @@
 # Data Visualization Projects 
+#### [ Branch ]
+
+- main : supposed to have the final code but its not managed well by now.
+- publish* : most recent update result for publishing on Github Pages
+- refactoring : destructuring the architectrue and refactoring the codes for better readability, performance and reusability of the codes.
+
 ### <strong> Demo Pages </strong> <br />
 <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/">2. Line Charts</a>
+<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/">2. Line Chart</a>
 
 ### I am aiming at ... 
 - developing this listed projects without any help of foreign JS libraries ( I've used Rollup for building bundles)
