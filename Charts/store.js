@@ -13,6 +13,7 @@ const inputStore =
     w: -1,
     d: -1,
     d_label : -1,
+    lineType: 'default'
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
 
@@ -26,7 +27,6 @@ inputStore[Symbol.toStringTag] = 'inputStore'
  */
 const Publish = (store, obj) =>
 {
-    console.log(store,obj)
     for (const [key, value] of Array.from(Object.entries(obj)))
     {
         Reflect.set(store, key, value)
