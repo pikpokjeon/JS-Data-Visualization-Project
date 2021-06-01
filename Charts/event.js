@@ -74,7 +74,8 @@ const onChangeLineType = (props, Use, target) => (e) =>
     
     const typeNodeList = _._name('radio')
     
-    const { w, d, dLabel } = _.inputStore
+    const { w, d } = _.inputStore
+    const dLabel = d.map((d,i) => 2010 + i)
 
     const lineType  = getLineType(typeNodeList)
     _.Publish(_.inputStore, { lineType})
@@ -102,7 +103,7 @@ const onChangeInput = (props, Use, target) => (e) =>
         [_.inputData(wth),
          _.inputData(_._id('data-list')),
          ]
-    let d_label = _.inputData(_._id('data-list')).map((d,i) => 2010 + i)
+    let d_label = d.map((d,i) => 2010 + i)
     let d_memo = d.map(e => 1)
 
     const size = _.genSize(w, d)

@@ -40,7 +40,6 @@ const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 const updatePathGroup = (props, Use) => (lineType) => (w,d) =>
 {
     const _ = Use(props)
-    // const {w,d} = _.inputStore
     const size = _.genSize(w, d)
     const path = _.genPath(d, lineType)(size)
     _.updatePath(_.$.initPathSVG['path'], path.path)
