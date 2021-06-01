@@ -12,7 +12,7 @@ const updateAttr = (el, attr) =>
 const updateTexts = (props, Use) => (d, w) => (num, start, end, target) => 
 {
 //     const _ = Use(props)
-//     const g = _.initSVG['g']
+//     const g = _.$.initSVG['g']
 
 //     while (g.firstChild)
 //     {
@@ -42,9 +42,9 @@ const updatePathGroup = (props, Use) => (lineType) =>
     const _ = Use(props)
     const size = _.genSize(_.w, _.d)
     const path = _.genPath(_.d, lineType)(size)
-    _.updatePath(_.initPathSVG['path'], path.path)
-    _.updatePath(_.initPathSVG['pathShadow'], path.path)
-    _.updatePath(_.initPathSVG['fillPath'], path.fill)
+    _.updatePath(_.$.initPathSVG['path'], path.path)
+    _.updatePath(_.$.initPathSVG['pathShadow'], path.path)
+    _.updatePath(_.$.initPathSVG['fillPath'], path.fill)
 }
 
 
@@ -52,7 +52,7 @@ const updatePathGroup = (props, Use) => (lineType) =>
 const updateTooltip = (props, Use) => (w, d, dLabel) =>
 {
     const _ = Use(props)
-    const g = _.initSVG['g']
+    const g = _.$.initSVG['g']
 
     while (g.firstChild)
     {
