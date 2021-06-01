@@ -20,7 +20,7 @@ const initSetPathGroup = (props, Use) => (w, d) =>
     appendAll({ stop0, stop1, stop2, stop3 }).to(fill)
 
     props = [...props, w, d]
-    updatePathGroup(props, Use)(lineType)
+    updatePathGroup(props, Use)(lineType)(w,d)
 
 
     // appendTree 를 만들어 구조를 작성해서 확장 하도록
@@ -156,12 +156,13 @@ const init = (props, Use) =>
         return e
     })
 
-    initSetPathGroup(props, Use)(w, initData)
-    initTooltipMsg(props, Use)(w, initData)
-    setEvents(props, Use).addAll(_.DOMEventAttr)
+    initSetPathGroup(props, Use)(w, d)
+    initTooltipMsg(props, Use)(w, d)
     appendAll(_.$.initSVG).to(svg)
     _.$.initSVG = { svg, ..._.$.initSVG }
-    updateTooltip(props, Use)(w, initData, initData.map((_, i) => 2010 + i))
+    setEvents(props, Use).addAll(_.DOMEventAttr)
+
+    updateTooltip(props, Use)(w, d, d.map((_, i) => 2010 + i))
 
 
 }
