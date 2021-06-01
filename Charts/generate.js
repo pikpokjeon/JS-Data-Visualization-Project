@@ -48,6 +48,9 @@ const genElement = (type, attr, animate) =>
 
 }
 
+
+
+
 const genAttr = (w, d, i, v) =>
 {
     const s = genSize(w, d)
@@ -58,7 +61,6 @@ const genAttr = (w, d, i, v) =>
             line: `stroke: ${ color.default }; stroke-width: ${s.line};`,  
             opacity: (n) => `opacity: ${n}` 
         }
-        console.log(style,style.opacity(0.3))
     const svg = {
         width: w,
         height: h,
@@ -170,6 +172,30 @@ const genAttr = (w, d, i, v) =>
         },
         feGaussianBlur: {
             stdDeviation:"15"
+        },
+        msgTitle: {
+            x: 30,
+            y: 30,
+            fill: color.default,
+            'dominant-baseline': 'end',
+            'text-anchor': 'middle',
+        },
+        msgValue: {
+            x: 70,
+            y: 30,
+            fill: color.default,
+            'dominant-baseline': 'end',
+            'text-anchor': 'middle',
+        },
+        msgBox: {
+            x: 0,
+            y: 0,
+            width: 200,
+            height: 100,
+            fill: color.focus,
+        },
+        msgGroup: {
+            transform:`translate(50,50)`
         }
 
     }
@@ -177,18 +203,50 @@ const genAttr = (w, d, i, v) =>
 }
 
 
+// const genElById = (w, d, i, v) => (attr,info,id) =>
+// {
+//     const el = getElement(w, d, i, v)(attr, info.type, id)
+//     updateAttr(el, { id: id, name: info.name })
+//     return el
+// }
 
 const genSvgFromList = (list, w, d, i, v) =>
 {
     const createdSVG = {}
-    let temp = undefined
+    let temp = undefined        
 
-    // const List = (Object.values(list))
-    // console.log(List.forEach(e => console.log(e)))
-    
+    // console.log('dd', (Object.values(list)), list)
+
+    // list.reduce((stored, cur) =>
+    // {
+    //     const [name, info] = cur
+
+    //     if ( info.id )
+    //     {
+    //         const idList = Array.isArray(info.id) ? [...info.id] : [info.id] 
+
+    //         for( const id of idList )
+    //         {
+    //             temp = getElement(w, d, i, v)(info.attr, info.type, id)
+    //                         updateAttr(temp, { id: id, name: info.name })
+    //                         createdSVG[info.attr] = temp
+    //         }
+    //         continue
+    //     }
+    //     else
+    //     {
+    //         temp = getElement(w, d, i, v)(info.attr, info.type, id)
+    //         updateAttr(temp, { id: id, name: info.name })
+    //         createdSVG[info.attr] = temp
+    //     }
+
+    // },{})
+
+
+    // ! TODO: need to simplify the logic
+
     for (const [name, info] of (Object.values(list)))
     {
-
         if (info.id)
         {
             if (Array.isArray(info.id))
@@ -266,6 +324,11 @@ const genSvgList = (target) =>
     return {
         setID: ids => Object.entries(svgDefinition(ids)[target])
     }
+}
+
+const genRandomChartData = (w,d,size) =>
+{
+    
 }
 
 
