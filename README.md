@@ -47,7 +47,7 @@ import 'regenerator-runtime/runtime'
 
 
 
-
+--- 
 
 ## Chart 프로젝트가 리팩토링이 필요한 이유
 - 공유하는 동적 데이터의 흐름을 추적하기 힘들다
@@ -75,4 +75,7 @@ import 'regenerator-runtime/runtime'
 - 새로운 메세지를 생성하는 메서드 (Publisher) 주체
 - 발행된 메세지가 가공되 이동하는 파이프라인 ->  Subscriber로 이동
 - Subscriber가 메세지를 수신하면, 승인 (update)를 진행
+
+
+---
 
