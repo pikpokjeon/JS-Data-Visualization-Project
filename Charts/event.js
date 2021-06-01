@@ -76,6 +76,8 @@ const onChangeLineType = (props, Use, target) => (e) =>
     const { w, d, dLabel } = _.inputStore
 
     const lineType  = getLineType(typeNodeList)
+    _.Publish(_.inputStore, { lineType})
+
     
     props = [w, d, ...props]
     
@@ -95,26 +97,27 @@ const onChangeInput = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
     const [wth, main] = [_._id('width'), _._id('main')]
-    let [w, d, d_label] =
+    let [w, d, ] =
         [_.inputData(wth),
          _.inputData(_._id('data-list')),
-         _.inputData(_._id('data-list')).map((d,i) => 2010 + i)]
+         ]
+    let d_label = _.inputData(_._id('data-list')).map((d,i) => 2010 + i)
     let d_memo = d.map(e => 1)
 
-    const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
-    const b = Math.floor(Math.random() * 1000)
-    const random = _.genSize(w, d).maxData + a + b
+    const size = _.genSize(w, d)
+
+    const random = _.genRanomChartData(size.maxData, size.minData)
 
 
     _.Publish(_.inputStore, { w, d, d_label })
 
-    if (target === 'add')
-    {
-        d.push(random)
-        d_memo.push(0)
-        props = [...props, w, d,]
-    }
+    if (target === 'add') d.push(random)
+    
+    const lastLabel = d_label[d_label.lenght-1]+1
+    d_label.push(lastLabel)
+    d_memo.push(0)
 
+    props = [...props, w, d,]
     const lineType = onChangeLineType(props, Use, target)()
 
     // const getUnitToShow = (d,memo,gap,unit) =>
