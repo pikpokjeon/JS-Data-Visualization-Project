@@ -82,7 +82,7 @@ const onChangeLineType = (props, Use, target) => (e) =>
     
     props = [w, d, ...props]
     
-    _.updatePathGroup(props, Use)(lineType)
+    _.updatePathGroup(props, Use)(lineType)(w,d)
     _.updateTooltip(props, Use)(w, d, dLabel )
     return lineType
 }
@@ -201,7 +201,7 @@ const onChangeInput = (props, Use, target) => (e) =>
         _.Publish(_.inputStore, {w})
     }
 
-    _.updatePathGroup(props, Use)(lineType)
+    _.updatePathGroup(props, Use)(lineType)(w,d)
     _.updateTooltip(props, Use)(w, d, d_label )
 
 
@@ -300,8 +300,9 @@ const startStream = (props, Use, target) => (e) =>
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
+            _._id('data-list').value = `${(arr)}`
             props = [...props, arr, w]
-            _.updatePathGroup(props, Use)(lineType)
+            _.updatePathGroup(props, Use)(lineType)(w,arr)
             time -= 1
             res({ i, delay, round, random, arr, d_memo, arr_label, w, props })
         }, delay * ((i + 1)))
