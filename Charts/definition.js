@@ -192,7 +192,7 @@ const svgDefinition = (id) =>
 
 
 
-    return { singleSVG, tooltipGroup, pathGroup }
+    return { singleSVG, tooltipGroup, pathGroup, tooltipMsgGroup }
 }
 svgDefinition[Symbol.toStringTag] = 'svgDefinition'
 
@@ -208,7 +208,7 @@ const svgIdList =
     fillBG: ['fillBG'],
     lineH: ['lineH'],
     lineV: ['lineV'],
-    g: ['g', 'group'],
+    g: ['g', 'group','msgG'],
     path: ['path','pathShadow'],
     borderLine: ['left', 'right'],
     linearGradient: ['fill'],
