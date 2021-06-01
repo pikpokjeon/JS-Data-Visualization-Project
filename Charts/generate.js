@@ -326,11 +326,11 @@ const genSvgList = (target) =>
     }
 }
 
-const genRandomChartData = (max, min) =>
+const genRandomChartData = (min) => (max) => 
 {
     const a = min - Math.floor(1000 - Math.random() * 1000)
     const b = Math.floor(Math.random() * 1000)
-    return max + a + b
+    return  max + a + b
 }
 
 

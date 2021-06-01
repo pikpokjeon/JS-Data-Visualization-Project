@@ -1,5 +1,6 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
+
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
  * @param {*} event 삭제할 이벤트리스너 이름
@@ -106,14 +107,16 @@ const onChangeInput = (props, Use, target) => (e) =>
 
     const size = _.genSize(w, d)
 
-    const random = _.genRanomChartData(size.maxData, size.minData)
-
 
     _.Publish(_.inputStore, { w, d, d_label })
+
+
+    const random = _.genRandomChartData( size.minData)(size.maxData,)
 
     if (target === 'add') d.push(random)
     
     const lastLabel = d_label[d_label.lenght-1]+1
+
     d_label.push(lastLabel)
     d_memo.push(0)
 
