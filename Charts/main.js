@@ -43,7 +43,14 @@ const initSetPathGroup = (props, Use) => (w, d) =>
 
 }
 
-
+const initTooltipMsg = (props,Use) => (w,d) =>
+{
+    const _ = Use(props)
+    console.log(_)
+    const {avg,avgV,max,maxV,min,minV,per,perV,msgBox,msgGroup} = _.$.msgSVG
+    appendAll({avg,avgV,max,maxV,min,minV,per,perV}).to(msgGroup)
+    appendAll({msgGroup}).to(_.$.initSVG['msgG'])
+}
 
 const initSVGLists = (idList, list) =>  list.reduce((obj, cur) =>
     {
@@ -81,6 +88,10 @@ const initSVGListObj = initSVGLists(svgIdList, [
     {
         from: 'pathGroup',
         as: 'initPathSVG'
+    },
+    {
+        from: 'tooltipMsgGroup',
+        as: 'msgSVG'
     }
 ])
 
@@ -145,6 +156,7 @@ const init = (props, Use) =>
     })
 
     initSetPathGroup(props, Use)(w, initData)
+    initTooltipMsg(props, Use)(w, initData)
     setEvents(props, Use).addAll(_.DOMEventAttr)
     appendAll(_.$.initSVG).to(svg)
     _.$.initSVG = { svg, ..._.$.initSVG }
