@@ -1,5 +1,7 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
+import { Publish } from "./store"
+
 
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
@@ -198,6 +200,7 @@ const onChangeInput = (props, Use, target) => (e) =>
     {
         wth.value = width - 250
         w = width - 250
+        _.Publish(_.inputStore, {w})
     }
 
     _.updatePathGroup(props, Use)(lineType)
