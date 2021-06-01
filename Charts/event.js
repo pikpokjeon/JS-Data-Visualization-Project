@@ -211,8 +211,8 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
         const x = size.x(lastIdx) - size.unitX
-        _.updateAttr(_.initPathSVG['fillBG'], { x: x })
-        _.updateAttr(_.initSVG['left'], { x1: x, x2: x })
+        _.updateAttr(_.$.initPathSVG['fillBG'], { x: x })
+        _.updateAttr(_.$.initSVG['left'], { x1: x, x2: x })
 
     }
     else if (selectedEndIdx < 0)
@@ -229,14 +229,14 @@ const onSelectPeriod = (props, Use, target) => (e) =>
 
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
-        _.updateAttr(_.initPathSVG['fillBG'],
+        _.updateAttr(_.$.initPathSVG['fillBG'],
         {
             x: isSelectReverse
                 ? size.x(last) - size.unitX
                 : start, width: selectedWidth
         })
-        _.updateAttr(_.initSVG['left'], { x1: start, x2: start })
-        _.updateAttr(_.initSVG['right'],
+        _.updateAttr(_.$.initSVG['left'], { x1: start, x2: start })
+        _.updateAttr(_.$.initSVG['right'],
         {
             x1: isSelectReverse
                 ? size.x(last) - size.unitX
@@ -250,9 +250,9 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     else
     {
         _.Publish(_.chartStore, { selectedEndIdx: -1, selectedStartIdx: -1 })
-        _.updateAttr(_.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 })
-        _.updateAttr(_.initSVG['left'], { x1: -1, x2: -1, })
-        _.updateAttr(_.initSVG['right'], { x1: -1, x2: -1, })
+        _.updateAttr(_.$.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 })
+        _.updateAttr(_.$.initSVG['left'], { x1: -1, x2: -1, })
+        _.updateAttr(_.$.initSVG['right'], { x1: -1, x2: -1, })
 
 
     }
@@ -353,7 +353,7 @@ const onMove = (props, Use, target) => (e) =>
         idx = size.idx(e.clientX)
         value = d[idx]
     }
-    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
+    _.updateAttr(_.$.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
 
 }
 
