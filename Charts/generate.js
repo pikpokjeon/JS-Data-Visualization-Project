@@ -326,11 +326,13 @@ const genSvgList = (target) =>
     }
 }
 
-const genRandomChartData = (w,d,size) =>
+const genRandomChartData = (max, min) =>
 {
-    
+    const a = min - Math.floor(1000 - Math.random() * 1000)
+    const b = Math.floor(Math.random() * 1000)
+    return max + a + b
 }
 
 
 
-export { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList }
+export { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList, genRandomChartData }
