@@ -28,7 +28,7 @@ const genSize = (w, d) =>
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
-        idx: x => Math.floor(((x) / (unitX + gap)))
+        idx: x => Math.floor(((x) / (unitX + unitX/(gap + 30)) ))
     }
 }
 
@@ -326,11 +326,12 @@ const genSvgList = (target) =>
     }
 }
 
-const genRandomChartData = (min) => (max) => 
+const genRandomChartData = (size)=> 
 {
-    const a = min - Math.floor(1000 - Math.random() * 1000)
+
+    const a = size.minData - Math.floor(1000 - Math.random() * 1000)
     const b = Math.floor(Math.random() * 1000)
-    return  max + a + b
+    return (size.maxData + a + b) * 1.5
 }
 
 

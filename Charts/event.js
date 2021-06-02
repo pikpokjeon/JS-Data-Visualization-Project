@@ -1,6 +1,5 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
-
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
  * @param {*} event 삭제할 이벤트리스너 이름
@@ -74,16 +73,13 @@ const onChangeLineType = (props, Use, target) => (e) =>
     
     const typeNodeList = _._name('radio')
     
-    const { w, d } = _.inputStore
-    const dLabel = d.map((d,i) => 2010 + i)
+    const { w, d, dLabel } = _.inputStore
 
     const lineType  = getLineType(typeNodeList)
-    _.Publish(_.inputStore, { lineType})
-
     
     props = [w, d, ...props]
     
-    _.updatePathGroup(props, Use)(lineType)(w,d)
+    _.updatePathGroup(props, Use)(lineType)
     _.updateTooltip(props, Use)(w, d, dLabel )
     return lineType
 }
@@ -103,24 +99,21 @@ const onChangeInput = (props, Use, target) => (e) =>
         [_.inputData(wth),
          _.inputData(_._id('data-list')),
          ]
-    let d_label = d.map((d,i) => 2010 + i)
+    let d_label = _.inputData(_._id('data-list')).map((d,i) => 2010 + i)
     let d_memo = d.map(e => 1)
 
     const size = _.genSize(w, d)
 
+    const random = _.genRandomChartData(size)
+
+    const lastLabel = d_label[d_label.lenght-1]+1
 
     _.Publish(_.inputStore, { w, d, d_label })
 
-
-    const random = _.genRandomChartData( size.minData)(size.maxData,)
-
     if (target === 'add') d.push(random)
     
-    const lastLabel = d_label[d_label.lenght-1]+1
-
     d_label.push(lastLabel)
-    d_memo.push(0)
-
+    // d_memo.push(0)
     props = [...props, w, d,]
     const lineType = onChangeLineType(props, Use, target)()
 
@@ -199,10 +192,9 @@ const onChangeInput = (props, Use, target) => (e) =>
     {
         wth.value = width - 250
         w = width - 250
-        _.Publish(_.inputStore, {w})
     }
 
-    _.updatePathGroup(props, Use)(lineType)(w,d)
+    _.updatePathGroup(props, Use)(lineType)
     _.updateTooltip(props, Use)(w, d, d_label )
 
 
@@ -280,19 +272,24 @@ const startStream = (props, Use, target) => (e) =>
     let d_memo = d.map(e => 1)
     let d_label = d.map((_, i) => Number(2010) + i)
 
-    const updateBox = ({ arr, arr_memo, arr_label, w, props }) => new Promise(res => 
+    const updateBox = ({ i, arr, arr_memo, arr_label, w, props }) => new Promise(res => 
     {
         arr_label.push(arr_label[arr_label.length - 1] + 1)
         arr_label.shift()
         props = [...props, arr]
         _.updateTooltip(props, Use)(w, arr, arr_label)
-        return res({ arr, arr_memo, arr_label, w, props })
+        return res({time })
     })
 
+    const checkIfTimeOver = ({i}) => {
+        console.log(i)
+        if(i < 2) _.Publish(_.chartStore, {isStreaming:false}) 
+    }
 
 
 
-    const updateTargetToSort = (i, delay, round, random, arr, arr_memo, arr_label, w, props) => new Promise(res => 
+
+    const updateTargetToSort = ( i, delay, round, random, arr, arr_memo, arr_label, w, props) => new Promise(res => 
     {
         return setTimeout(() =>
         {
@@ -301,23 +298,24 @@ const startStream = (props, Use, target) => (e) =>
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
-            _._id('data-list').value = `${(arr)}`
             props = [...props, arr, w]
+            _.updateDataInputBox(props, Use)(arr)
             _.updatePathGroup(props, Use)(lineType)(w,arr)
-            time -= 1
-            res({ i, delay, round, random, arr, d_memo, arr_label, w, props })
+            res({  i, delay, round, random, arr, d_memo, arr_label, w, props })
         }, delay * ((i + 1)))
     })
 
-    const toDelayUpdate = async (i, delay, round, random, arr, arr_memo, arr_label, w, props) =>
+    const toDelayUpdate = async ( i, delay, round, random, arr, arr_memo, arr_label, w, props) =>
     {
-        await updateTargetToSort(i, delay, round, random, arr, arr_memo, arr_label, w, props).then(updateBox)
+        await updateTargetToSort( i, delay, round, random, arr, arr_memo, arr_label, w, props).then(updateBox).then(checkIfTimeOver)
     }
 
-    const stream = () =>
+    const stream = (time) =>
     {
         let temp_d = [...d]
         let round = -1
+        const size = _.genSize(w,d)
+        _.Publish(_.chartStore, {isStreaming:true})
         for (let i = 0; i < time; i++)
         {
             if (w > width)
@@ -325,19 +323,19 @@ const startStream = (props, Use, target) => (e) =>
                 wth.value = width - 250
                 w = width - 250
             }
-
-            const a = _.genSize(w, temp_d).minData - Math.floor(1000 - Math.random() * 1000)
-            const b = Math.floor(Math.random() * 1000)
-            const random = (_.genSize(w, temp_d).maxData + a + b) * 1.5
+            const random = _.genRandomChartData(size)
             props = [w, temp_d, ...props]
-            toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label , w, props)
             round += 1
+            toDelayUpdate( i, 500, round, random, temp_d, d_memo, d_label , w, props)
 
         }
 
-    }
 
-    stream()
+    }
+    const {isStreaming} = _.chartStore
+    if(!isStreaming) stream(time)
+    else console.log(_.chartStore)
+   
 }
 
 
