@@ -63,8 +63,6 @@ const setEvents = (props, Use) =>
 }
 
 
-const getLineType = (nodes) => 
-    Array.from(nodes).reduce((checked, cur) =>  cur.checked ? cur.value : checked , 'default')
 
 
 const onChangeLineType = (props, Use, target) => (e) =>
@@ -75,11 +73,12 @@ const onChangeLineType = (props, Use, target) => (e) =>
     
     const { w, d, dLabel } = _.inputStore
 
-    const lineType  = getLineType(typeNodeList)
+    const lineType  = _.getLineType(typeNodeList)
+    _.Publish(_.inputStore, {lineType})
     
     props = [w, d, ...props]
     
-    _.updatePathGroup(props, Use)(lineType)
+    _.updatePathGroup(props, Use)(lineType)(w,d)
     _.updateTooltip(props, Use)(w, d, dLabel )
     return lineType
 }
@@ -113,9 +112,9 @@ const onChangeInput = (props, Use, target) => (e) =>
     if (target === 'add') d.push(random)
     
     d_label.push(lastLabel)
-    // d_memo.push(0)
+    d_memo.push(0)
     props = [...props, w, d,]
-    const lineType = onChangeLineType(props, Use, target)()
+    const {lineType}  = _.inputStore
 
     // const getUnitToShow = (d,memo,gap,unit) =>
     // {
@@ -293,7 +292,7 @@ const startStream = (props, Use, target) => (e) =>
     {
         return setTimeout(() =>
         {
-            const lineType = _.onChangeLineType(props, Use, target)()
+            const {lineType}  = _.inputStore
             arr.push(random)
             d_memo.push(0)
             arr.shift()

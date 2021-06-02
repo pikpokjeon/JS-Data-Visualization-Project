@@ -131,4 +131,8 @@ const copyParams = (params) =>
     }
     return copied
 }
- export { _id, _name, _class, appendAll, inputData, copyParams,  }
+
+const getLineType = (nodes) => 
+    Array.from(nodes).reduce((checked, cur) =>  cur.checked ? cur.value : checked , 'default')
+
+ export { _id, _name, _class, appendAll, inputData, copyParams, getLineType }

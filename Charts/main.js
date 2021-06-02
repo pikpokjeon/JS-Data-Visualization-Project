@@ -6,7 +6,7 @@ import { updateAttr, updatePath, updatePathGroup, updateTexts, updateTooltip, up
 import {  setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove  } from './event.js'
 import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
 import { getElement, pipe } from './pipeline.js'
-import { _id, _name, appendAll, inputData, copyParams } from './helper.js'
+import { _id, _name, appendAll, inputData, copyParams, getLineType } from './helper.js'
 
 
 
@@ -130,6 +130,7 @@ const initParams = [
     setEvents,
     genRandomChartData,
     pipe,
+    getLineType
 ]
 
 
