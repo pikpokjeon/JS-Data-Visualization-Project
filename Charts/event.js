@@ -277,12 +277,11 @@ const startStream = (props, Use, target) => (e) =>
         arr_label.shift()
         props = [...props, arr]
         _.updateTooltip(props, Use)(w, arr, arr_label)
-        return res({time })
+        return res({i})
     })
 
     const checkIfTimeOver = ({i}) => {
-        console.log(i)
-        if(i < 2) _.Publish(_.chartStore, {isStreaming:false}) 
+        if(i >= time -1) _.Publish(_.chartStore, {isStreaming:false}) 
     }
 
 
