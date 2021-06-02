@@ -194,7 +194,7 @@ const onChangeInput = (props, Use, target) => (e) =>
         w = width - 250
     }
 
-    _.updatePathGroup(props, Use)(lineType)
+    _.updatePathGroup(props, Use)(lineType)(w,d)
     _.updateTooltip(props, Use)(w, d, d_label )
 
 
