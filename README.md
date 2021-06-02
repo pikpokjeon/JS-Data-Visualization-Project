@@ -1,8 +1,8 @@
 # Data Visualization Projects 
 #### [ Branch ]
 
-- main : supposed to have the final code but its not managed well by now.
-- publish* : most recent update result for publishing on Github Pages
+- main : old version
+- publish* : most recent version for publishing on Github Pages ( continuously working on direct refactoring )
 - refactoring : destructuring the architectrue and refactoring the codes for better readability, performance and reusability of the codes.
 
 ### <strong> Demo Pages </strong> <br />
