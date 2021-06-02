@@ -34,14 +34,18 @@ const updateTexts = (props, Use) => (d, w) => (num, start, end, target) =>
 
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
-
+const updateDataInputBox = (props, Use) =>  (d) => 
+{
+    const _ = Use(props)
+    _._id('data-list').value = `${(d)}`
+}
 
 // Pathgroup 배열이나 객체를 넘기도록 변경
 const updatePathGroup = (props, Use) => (lineType) => (w,d) =>
 {
     const _ = Use(props)
     const size = _.genSize(w, d)
-    const path = _.genPath(d, lineType)(size)
+    const path = _.genPath(_.d, lineType)(size)
     _.updatePath(_.$.initPathSVG['path'], path.path)
     _.updatePath(_.$.initPathSVG['pathShadow'], path.path)
     _.updatePath(_.$.initPathSVG['fillPath'], path.fill)
@@ -83,4 +87,4 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
 
 
 
-export { updateAttr, updateTexts, updatePath, updatePathGroup, updateTooltip }
+export { updateAttr, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox }
