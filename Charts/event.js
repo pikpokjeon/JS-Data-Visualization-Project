@@ -184,7 +184,7 @@ const onChangeInput = (props, Use, target) => (e) =>
     // }
 
 
-    _._id('data-list').value = `${(d)}`
+    _.updateDataInputBox(props,Use)(d)
 
     const { width } = main.getBoundingClientRect()
 
