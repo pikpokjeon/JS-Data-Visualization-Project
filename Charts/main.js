@@ -2,10 +2,10 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 import { chartStore, inputStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList, genRandomChartData } from './generate.js'
-import { updateAttr, updatePath, updatePathGroup, updateTexts, updateTooltip } from './update.js'
+import { updateAttr, updatePath, updatePathGroup, updateTexts, updateTooltip, updateDataInputBox } from './update.js'
 import {  setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove  } from './event.js'
 import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
-import { getElement } from './pipeline.js'
+import { getElement, pipe } from './pipeline.js'
 import { _id, _name, appendAll, inputData, copyParams } from './helper.js'
 
 
@@ -117,6 +117,7 @@ const initParams = [
     updatePath,
     updateTexts,
     updateTooltip,
+    updateDataInputBox,
     genSvgList,
     genPath,
     initSVGElements(initSVGListObj),
@@ -128,6 +129,7 @@ const initParams = [
     updatePathGroup,
     setEvents,
     genRandomChartData,
+    pipe,
 ]
 
 
