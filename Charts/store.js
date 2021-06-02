@@ -5,6 +5,10 @@ const chartStore =
     x: -1,
     selectedStartIdx: -1,
     selectedEndIdx: -1,
+    unitToShow: 1,
+    unitGap : -1,
+    memo: [],
+    isStreaming: false,
 }
 chartStore[Symbol.toStringTag] = 'chartStore'
 
@@ -12,7 +16,8 @@ const inputStore =
 {
     w: -1,
     d: -1,
-    d_label: -1,
+    d_label : -1,
+    lineType: 'default'
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
 
@@ -47,13 +52,9 @@ const Store = ({ initTopic, initMsg }) =>
     const obj = { ddd: 1, cs: 4, 5: 7 }
     const a = f => (...args) =>
     {
-        console.log(f)
-        console.log(...args)
         obj = Object.assign(obj, Object.assign({}, f(...args)))
-        console.log(obj)
     }
     const [c,s] = [1,2]
-    // const set = 
      a((c, { s }) => ({ idx: c, node: s }))
     // console.log(aaaa)
 

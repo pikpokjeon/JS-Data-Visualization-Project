@@ -68,19 +68,22 @@ const setEvents = (props, Use) =>
 
 
 
+
 const onChangeLineType = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
+    
     const typeNodeList = _._name('radio')
-    const { w, d, d_label } = _.inputStore
-    let lineType = -1
-    typeNodeList.forEach(n =>
-    {
-        if (n.checked) lineType = n.value
-    })
+    
+    const { w, d, dLabel } = _.inputStore
+
+    const lineType  = _.getLineType(typeNodeList)
+    _.Publish(_.inputStore, {lineType})
+    
     props = [w, d, ...props]
-    _.updatePathGroup(props, Use)(lineType)
-    _.updateTooltip(props, Use)(w, d, d_label)
+    
+    _.updatePathGroup(props, Use)(lineType)(w,d)
+    _.updateTooltip(props, Use)(w, d, dLabel )
     return lineType
 }
 
@@ -95,41 +98,58 @@ const onChangeInput = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
     const [wth, main] = [_._id('width'), _._id('main')]
-    let [w, d, d_label] =
+    let [w, d, ] =
         [_.inputData(wth),
-        _.inputData(_._id('data-list')),
-        _.inputData(_._id('data-list')).map((d, i) => 2010 + i)]
-    let d_memo = d.map(e => 1)
+         _.inputData(_._id('data-list')),
+         ]
+         
+    const {lineType}  = _.inputStore
+    const { isStreaming} = _.chartStore
 
-    const a = _.genSize(w, d).minData - Math.floor(1000 - Math.random() * 1000)
-    const b = Math.floor(Math.random() * 1000)
-    const random = _.genSize(w, d).maxData + a + b
+    let d_label = _.inputData(_._id('data-list')).map((d,i) => 2010 + i)
 
+    const memo = d.map(e => 1)
+     _.Publish(_.chartStore, {memo})
+
+    const size = _.genSize(w, d)
+
+    const random = _.genRandomChartData(size)
+
+    const lastLabel = d_label[d_label.lenght-1]+1
 
     _.Publish(_.inputStore, { w, d, d_label })
-    console.log(_.inputStore)
-    if (target === 'add')
+
+    if (target === 'add' && !isStreaming ) 
     {
-        d.push(random)
-        d_memo.push(0)
-        props = [...props, w, d,]
+        d.push(random) , d_label.push(lastLabel)
+        memo.push(1),  _.Publish(_.chartStore, {memo})
+    }
+   
+    props = [...props, w, d,]
+
+    const getUnitToShow = (d) =>
+    {
+        let {memo, unitToshow, unitGap} = _.chartStore
+        for (let i = 1; i < d.length; i++)
+            {
+                if (memo[i] > 0)
+                {
+    
+                    let [x, px] = [size.x(0), size.x(unitToshow)]
+                    const a = px
+                    unitGap = Math.abs( px - x)
+                    if (unitGap > 40) unitToshow -= 1
+                    unitToshow += 1
+                    // secountIdx = i
+                    break
+                }
+            }
+        _.Publish(_.chartStore, {unitToshow, unitGap})
+        console.log(unitToshow,memo,unitGap)
+        return unitToshow
     }
 
-    const lineType = onChangeLineType(props, Use, target)()
-
-    // const getUnitToShow = (d,memo,gap,unit) =>
-    // {
-    //     for (let i = 2; i < d.length; i++)
-    //     {
-    //         if (memo[i] !== undefined)
-    //         {
-    //             if (gap > 40) unit -= 1
-    //             unit += 1
-    //             break
-    //         }
-    //     }
-    //     return unit
-    // }
+    getUnitToShow(d)
 
 
     // const labelArr = (d, memo, s) =>
@@ -184,7 +204,7 @@ const onChangeInput = (props, Use, target) => (e) =>
     // }
 
 
-    _._id('data-list').value = `${(d)}`
+    _.updateDataInputBox(props,Use)(d)
 
     const { width } = main.getBoundingClientRect()
 
@@ -194,8 +214,8 @@ const onChangeInput = (props, Use, target) => (e) =>
         w = width - 250
     }
 
-    _.updatePathGroup(props, Use)(lineType)
-    _.updateTooltip(props, Use)(w, d, d_label)
+    _.updatePathGroup(props, Use)(lineType)(w,d)
+    _.updateTooltip(props, Use)(w, d, d_label )
 
 
 }
@@ -211,8 +231,8 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
         const x = size.x(lastIdx) - size.unitX
-        _.updateAttr(_.initPathSVG['fillBG'], { x: x })
-        _.updateAttr(_.initSVG['left'], { x1: x, x2: x })
+        _.updateAttr(_.$.initPathSVG['fillBG'], { x: x })
+        _.updateAttr(_.$.initSVG['left'], { x1: x, x2: x })
 
     }
     else if (selectedEndIdx < 0)
@@ -229,30 +249,30 @@ const onSelectPeriod = (props, Use, target) => (e) =>
 
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
-        _.updateAttr(_.initPathSVG['fillBG'],
-            {
-                x: isSelectReverse
-                    ? size.x(last) - size.unitX
-                    : start, width: selectedWidth
-            })
-        _.updateAttr(_.initSVG['left'], { x1: start, x2: start })
-        _.updateAttr(_.initSVG['right'],
-            {
-                x1: isSelectReverse
-                    ? size.x(last) - size.unitX
-                    : start + selectedWidth, x2: isSelectReverse
-                        ? size.x(last) - size.unitX
-                        : start + selectedWidth
-            })
+        _.updateAttr(_.$.initPathSVG['fillBG'],
+        {
+            x: isSelectReverse
+                ? size.x(last) - size.unitX
+                : start, width: selectedWidth
+        })
+        _.updateAttr(_.$.initSVG['left'], { x1: start, x2: start })
+        _.updateAttr(_.$.initSVG['right'],
+        {
+            x1: isSelectReverse
+                ? size.x(last) - size.unitX
+                : start + selectedWidth, x2: isSelectReverse
+                ? size.x(last) - size.unitX
+                : start + selectedWidth
+        })
 
 
     }
     else
     {
         _.Publish(_.chartStore, { selectedEndIdx: -1, selectedStartIdx: -1 })
-        _.updateAttr(_.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 })
-        _.updateAttr(_.initSVG['left'], { x1: -1, x2: -1, })
-        _.updateAttr(_.initSVG['right'], { x1: -1, x2: -1, })
+        _.updateAttr(_.$.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 })
+        _.updateAttr(_.$.initSVG['left'], { x1: -1, x2: -1, })
+        _.updateAttr(_.$.initSVG['right'], { x1: -1, x2: -1, })
 
 
     }
@@ -272,43 +292,49 @@ const startStream = (props, Use, target) => (e) =>
     let d_memo = d.map(e => 1)
     let d_label = d.map((_, i) => Number(2010) + i)
 
-    const updateBox = ({ arr, arr_memo, arr_label, w, props }) => new Promise(res => 
+    const updateBox = ({ i, arr, arr_memo, arr_label, w, props }) => new Promise(res => 
     {
         arr_label.push(arr_label[arr_label.length - 1] + 1)
         arr_label.shift()
         props = [...props, arr]
         _.updateTooltip(props, Use)(w, arr, arr_label)
-        return res({ arr, arr_memo, arr_label, w, props })
+        return res({i})
     })
 
+    const checkIfTimeOver = ({i}) => {
+        if(i >= time -1) _.Publish(_.chartStore, {isStreaming:false}) 
+    }
 
 
 
-    const updateTargetToSort = (i, delay, round, random, arr, arr_memo, arr_label, w, props) => new Promise(res => 
+
+    const updateTargetToSort = ( i, delay, round, random, arr, arr_memo, arr_label, w, props) => new Promise(res => 
     {
         return setTimeout(() =>
         {
-            const lineType = _.onChangeLineType(props, Use, target)()
+            const {lineType}  = _.inputStore
             arr.push(random)
             d_memo.push(0)
             arr.shift()
             d_memo.shift()
             props = [...props, arr, w]
-            _.updatePathGroup(props, Use)(lineType)
-            time -= 1
-            res({ i, delay, round, random, arr, d_memo, arr_label, w, props })
+            _.updateDataInputBox(props, Use)(arr)
+            _.updatePathGroup(props, Use)(lineType)(w,arr)
+            res({  i, delay, round, random, arr, d_memo, arr_label, w, props })
         }, delay * ((i + 1)))
     })
 
-    const toDelayUpdate = async (i, delay, round, random, arr, arr_memo, arr_label, w, props) =>
+    const toDelayUpdate = async ( i, delay, round, random, arr, arr_memo, arr_label, w, props) =>
     {
-        await updateTargetToSort(i, delay, round, random, arr, arr_memo, arr_label, w, props).then(updateBox)
+        await updateTargetToSort( i, delay, round, random, arr, arr_memo, arr_label, w, props).then(updateBox).then(checkIfTimeOver)
     }
 
-    const stream = () =>
+    const stream = (time) =>
     {
         let temp_d = [...d]
         let round = -1
+        const size = _.genSize(w,d)
+        _.Publish(_.chartStore, {isStreaming:true})
         for (let i = 0; i < time; i++)
         {
             if (w > width)
@@ -316,19 +342,19 @@ const startStream = (props, Use, target) => (e) =>
                 wth.value = width - 250
                 w = width - 250
             }
-
-            const a = _.genSize(w, temp_d).minData - Math.floor(1000 - Math.random() * 1000)
-            const b = Math.floor(Math.random() * 1000)
-            const random = (_.genSize(w, temp_d).maxData + a + b) * 1.5
+            const random = _.genRandomChartData(size)
             props = [w, temp_d, ...props]
-            toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label, w, props)
             round += 1
+            toDelayUpdate( i, 500, round, random, temp_d, d_memo, d_label , w, props)
 
         }
 
-    }
 
-    stream()
+    }
+    const {isStreaming} = _.chartStore
+    if(!isStreaming) stream(time)
+    else console.log(_.chartStore)
+   
 }
 
 
@@ -353,7 +379,7 @@ const onMove = (props, Use, target) => (e) =>
         idx = size.idx(e.clientX) - 1
         value = d[idx]
     }
-    _.updateAttr(_.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
+    _.updateAttr(_.$.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
 
 }
 const test = (props, Use, target) => (e) =>

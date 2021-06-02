@@ -12,7 +12,7 @@ const updateAttr = (el, attr) =>
 const updateTexts = (props, Use) => (d, w) => (num, start, end, target) => 
 {
 //     const _ = Use(props)
-//     const g = _.initSVG['g']
+//     const g = _.$.initSVG['g']
 
 //     while (g.firstChild)
 //     {
@@ -34,25 +34,29 @@ const updateTexts = (props, Use) => (d, w) => (num, start, end, target) =>
 
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
-
-
-// Pathgroup 배열이나 객체를 넘기도록 변경
-const updatePathGroup = (props, Use) => (lineType) =>
+const updateDataInputBox = (props, Use) =>  (d) => 
 {
     const _ = Use(props)
-    const size = _.genSize(_.w, _.d)
-    const path = _.genPath(_.d, lineType)(size)
-    _.updatePath(_.initPathSVG['path'], path.path)
-    _.updatePath(_.initPathSVG['pathShadow'], path.path)
-    _.updatePath(_.initPathSVG['fillPath'], path.fill)
+    _._id('data-list').value = `${(d)}`
+}
+
+// Pathgroup 배열이나 객체를 넘기도록 변경
+const updatePathGroup = (props, Use) => (lineType) => (w,d) =>
+{
+    const _ = Use(props)
+    const size = _.genSize(w, d)
+    const path = _.genPath(d, lineType)(size)
+    _.updatePath(_.$.initPathSVG['path'], path.path)
+    _.updatePath(_.$.initPathSVG['pathShadow'], path.path)
+    _.updatePath(_.$.initPathSVG['fillPath'], path.fill)
 }
 
 
 
-const updateTooltip = (props, Use) => (w, d, dlabel) =>
+const updateTooltip = (props, Use) => (w, d, dLabel) =>
 {
     const _ = Use(props)
-    const g = _.initSVG['g']
+    const g = _.$.initSVG['g']
 
     while (g.firstChild)
     {
@@ -79,7 +83,7 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
         // plot 은 요소를 반환하고, 내부속성 설정시 함수로 사용?
         // 요소를 다르게 정의 해보자 - 속성 업데이트 부분에, 텍스트 컨텐츠 설정도 가능하도록.
 
-        label.textContent = dlabel[i]
+        label.textContent = dLabel[i]
         dataText.textContent = value
         // const test = (props, Use, target) => (e) =>
         // {
@@ -99,4 +103,4 @@ const updateTooltip = (props, Use) => (w, d, dlabel) =>
 
 
 
-export { updateAttr, updateTexts, updatePath, updatePathGroup, updateTooltip }
+export { updateAttr, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox }

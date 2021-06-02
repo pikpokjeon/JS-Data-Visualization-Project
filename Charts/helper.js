@@ -8,7 +8,6 @@ const _class = (className, target) => target
     ? target.getElementsByClassName(className) 
     : document.getElementsByClassName(className)
 
-const pipe = (...fns) => (v) => fns.reduce((v, fn) => Array.isArray(v)?  fn(...v):fn(v) , v)
 
 /**
  * 속성인지 자식요소인지 확인
@@ -45,7 +44,8 @@ const alias = type => (tag) =>
     }
     return cons
 }
-pipe(genElement,updateAttr,updateChildren)
+
+
 
 const updateChildren = type => (el, attr = {}, children = []) =>
 {
@@ -132,4 +132,7 @@ const copyParams = (params) =>
     return copied
 }
 
-// export { appendAll, inputData, copyParams,  }
+const getLineType = (nodes) => 
+    Array.from(nodes).reduce((checked, cur) =>  cur.checked ? cur.value : checked , 'default')
+
+ export { _id, _name, _class, appendAll, inputData, copyParams, getLineType }

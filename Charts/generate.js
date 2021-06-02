@@ -6,7 +6,7 @@ const genSize = (w, d) =>
 {
     const unitX = w / d.length
     const gap = unitX / d.length
-    const [height, margin] = [350, -50]
+    const [height, margin] = [300, 30]
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
     const SUM = (maxData + Math.abs(minData))
@@ -16,18 +16,19 @@ const genSize = (w, d) =>
         gap,
         unitX,
         unitY,
+        margin,
         MAX,
         SUM,
         maxData,
         minData,
         leftMargin: 155,
         width: w,
-        eventArea: { width: w, height: 700 },
+        eventArea: { width: w, height: 750 },
         data: { text: { width: 30, height: 20 } },
         line: 1,
-        x: i => Math.floor(unitX * i),
+        x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
-        idx: x => Math.floor(((x) / (unitX + gap)))
+        idx: x => Math.floor(((x) / (unitX + unitX/(gap + 30)) ))
     }
 }
 
@@ -47,16 +48,25 @@ const genElement = (type, attr, animate) =>
 
 }
 
+
+
+
 const genAttr = (w, d, i, v) =>
 {
     const s = genSize(w, d)
     const h = s.eventArea.height
-    const color = { bg: 'black', default: 'white', focus: 'red', blue: 'blue' }
-    const style = { line: `stroke: ${ color.default }; stroke-width: ${s.line};` }
+    const color = { bg: '#10161f', default: 'white', focus: 'red', blue: 'blue' }
+    const style = 
+        {   
+            line: `stroke: ${ color.default }; stroke-width: ${s.line};`,  
+            opacity: (n) => `opacity: ${n}` 
+        }
     const svg = {
         width: w,
         height: h,
-        style: 'overflow:visible'
+        style: `overflow:visible, ${style.opacity(0.8)}`,
+        fill: color.bg,
+    
     }
     const list = {
         g: { width: w, height: h, style: 'overflow:visible' },
@@ -89,7 +99,7 @@ const genAttr = (w, d, i, v) =>
             y1: s.y(v),
             x2: s.width,
             y2: s.y(v),
-            style: style.line,
+            style: style.line +  style.opacity(0.3),
         },
         lineV: {
             x1: s.x(i),
@@ -106,31 +116,29 @@ const genAttr = (w, d, i, v) =>
             style: style.line + " stroke-dasharray:5,5;",
         },
         label: {
-            x: s.x(i),
-            y: h,
+            x: s.x(i) ,
+            y: h - 30,
             fill: color.default,
             'dominant-baseline': 'start',
             'text-anchor': 'middle',
         },
         dataText: {
-            x: 0,
+            x: 50,
             y: s.y(v),
             fill: color.default,
-            'dominant-baseline': 'start',
+            'dominant-baseline': 'end',
             'text-anchor': 'middle',
         },
         plot: {
-            cx: s.x(i),
-            cy: s.y(v),
+            cx: s.x(i) ,
+            cy: s.y(v) ,
             r: 5,
             fill: "white"
         },
-        stop: {
-            style: 'stop-color: white'
-        },
-        stop1: { offset: '0%', style: 'stop-color: white; stop-opacity: 0.7' },
-        stop2: { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.4' },
-        stop3: { offset: '100%', style: 'stop-color: #4d00ff; stop-opacity: 0' },
+        stop0: { offset: '0%', style: 'stop-color: #9bffc9; stop-opacity: 1' },
+        stop1: { offset: '30%', style: 'stop-color: white; stop-opacity: 0.7' },
+        stop2: { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.3' },
+        stop3: { offset: '100%', style: 'stop-color:#4b00ff; stop-opacity: 0' },
         linearGradient: {  //fill
             x1: '0%',
             x2: '0%',
@@ -150,6 +158,8 @@ const genAttr = (w, d, i, v) =>
         clipPath: { // frame
         },
         fillPath: {
+            // filter: 'url(#lineShadow)',
+            // fill: 'red',
         },
         defs: {
         },
@@ -158,9 +168,34 @@ const genAttr = (w, d, i, v) =>
             y: '-7',
             width: '14',
             height: '14',
+            
         },
         feGaussianBlur: {
-            stdDeviation:"2"
+            stdDeviation:"15"
+        },
+        msgTitle: {
+            x: 30,
+            y: 30,
+            fill: color.default,
+            'dominant-baseline': 'end',
+            'text-anchor': 'middle',
+        },
+        msgValue: {
+            x: 70,
+            y: 30,
+            fill: color.default,
+            'dominant-baseline': 'end',
+            'text-anchor': 'middle',
+        },
+        msgBox: {
+            x: 0,
+            y: 0,
+            width: 200,
+            height: 100,
+            fill: color.focus,
+        },
+        msgGroup: {
+            transform:`translate(50,50)`
         }
 
     }
@@ -168,18 +203,50 @@ const genAttr = (w, d, i, v) =>
 }
 
 
+// const genElById = (w, d, i, v) => (attr,info,id) =>
+// {
+//     const el = getElement(w, d, i, v)(attr, info.type, id)
+//     updateAttr(el, { id: id, name: info.name })
+//     return el
+// }
 
 const genSvgFromList = (list, w, d, i, v) =>
 {
     const createdSVG = {}
-    let temp = undefined
+    let temp = undefined        
 
-    // const List = (Object.values(list))
-    // console.log(List.forEach(e => console.log(e)))
-    
+    // console.log('dd', (Object.values(list)), list)
+
+    // list.reduce((stored, cur) =>
+    // {
+    //     const [name, info] = cur
+
+    //     if ( info.id )
+    //     {
+    //         const idList = Array.isArray(info.id) ? [...info.id] : [info.id] 
+
+    //         for( const id of idList )
+    //         {
+    //             temp = getElement(w, d, i, v)(info.attr, info.type, id)
+    //                         updateAttr(temp, { id: id, name: info.name })
+    //                         createdSVG[info.attr] = temp
+    //         }
+    //         continue
+    //     }
+    //     else
+    //     {
+    //         temp = getElement(w, d, i, v)(info.attr, info.type, id)
+    //         updateAttr(temp, { id: id, name: info.name })
+    //         createdSVG[info.attr] = temp
+    //     }
+
+    // },{})
+
+
+    // ! TODO: need to simplify the logic
+
     for (const [name, info] of (Object.values(list)))
     {
-
         if (info.id)
         {
             if (Array.isArray(info.id))
@@ -259,6 +326,14 @@ const genSvgList = (target) =>
     }
 }
 
+const genRandomChartData = (size)=> 
+{
+
+    const a = size.minData - Math.floor(1000 - Math.random() * 1000)
+    const b = Math.floor(Math.random() * 1000)
+    return (size.maxData + a + b) * 1.5
+}
 
 
-export { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList }
+
+export { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList, genRandomChartData }

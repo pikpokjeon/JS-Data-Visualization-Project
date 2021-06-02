@@ -86,6 +86,7 @@ const svgDefinition = (id) =>
 
     }
     tooltipGroup[Symbol.toStringTag] = 'tooltipGroup'
+
     const pathGroup = {
         stop: {
             type: 'stop',
@@ -154,7 +155,44 @@ const svgDefinition = (id) =>
     pathGroup[Symbol.toStringTag] = 'pathGroup'
 
 
-    return { singleSVG, tooltipGroup, pathGroup }
+    
+    const tooltipMsgGroup =
+    {
+        msgTitle:
+        {
+            type: 'text',
+            attr: 'msgTitle',
+            id: id.msgTitle,
+            name: 'msgText'
+        },
+        msgValue:
+        {
+            type: 'text',
+            attr: 'msgValue',
+            id: id.msgValue,
+            name: 'msgText'
+        },
+        msgBox:
+        {
+            type: 'rect',
+            attr: 'msgBox',
+            id: id.msgBox,
+            name: 'msgBox',
+        },
+        msgGroup:
+        {
+            type: 'g',
+            attr: 'msgGroup',
+            id: id.msgGroup,
+            name: 'msgGroup',
+        },
+
+    }
+    tooltipMsgGroup[Symbol.toStringTag] = 'tooltipMsgGroup'
+
+
+
+    return { singleSVG, tooltipGroup, pathGroup, tooltipMsgGroup }
 }
 svgDefinition[Symbol.toStringTag] = 'svgDefinition'
 
@@ -170,15 +208,19 @@ const svgIdList =
     fillBG: ['fillBG'],
     lineH: ['lineH'],
     lineV: ['lineV'],
-    g: ['g', 'group'],
+    g: ['g', 'group','msgG'],
     path: ['path','pathShadow'],
     borderLine: ['left', 'right'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
-    stop: ['stop1', 'stop2', 'stop3'],
+    stop: ['stop0','stop1', 'stop2', 'stop3'],
     fillPath: ['fillPath'],
     filter: ['lineShadow'],
-    feGaussianBlur: ['blur']
+    feGaussianBlur: ['blur'],
+    msgTitle: ['max', 'min', 'avg', 'per'],
+    msgValue: ['maxV', 'minV', 'avgV', 'perV'],
+    msgBox: ['msgBox'],
+    msgGroup: ['msgGroup']
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
 
