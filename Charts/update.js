@@ -9,36 +9,31 @@ const updateAttr = (el, attr) =>
     return el
 }
 
-const updateTexts = (props, Use) => (d, w) => (num, start, end, target) => 
+
+const updateAll = (...updates) =>
 {
-//     const _ = Use(props)
-//     const g = _.$.initSVG['g']
-
-//     while (g.firstChild)
-//     {
-//         g.removeChild(g.firstChild)
-//     }
-//     /**
-//      * 하단의 genSvgFromListList 함수를 사용하여, 
-//      * 복수사용 svg 리스트에 있는 요소들을 생성해준다.
-//      * setSvgId를 사용하여 우선 svgDefinition 정보를 갱신해줘야 한다.
-//      */
-//     for (const [i, value] of (Array.from(Object.entries(d))))
-//     {
-//         // if (value === num) box.setAttribute('fill', 'lemonchiffon'), text.setAttribute('fill', 'black')
-//         // else if (value === start || value === end) box.setAttribute('fill', '#292a38f2')
-//         // if (target !== 'bs' && value > num) box.setAttribute('stroke', 'lightseagreen')
-
-//     }
+    for (const [el, attr] of Array.from(...updates))
+    {
+       updateAttr(el,attr)
+    }
 }
 
+
+const updateTexts = (props, Use) => (d, w) => (num, start, end, target) => 
+{
+
+}
+
+
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
+
 
 const updateDataInputBox = (props, Use) =>  (d) => 
 {
     const _ = Use(props)
     _._id('data-list').value = `${(d)}`
 }
+
 
 // Pathgroup 배열이나 객체를 넘기도록 변경
 const updatePathGroup = (props, Use) => (lineType) => (w,d) =>
@@ -50,7 +45,6 @@ const updatePathGroup = (props, Use) => (lineType) => (w,d) =>
     _.updatePath(_.$.initPathSVG['pathShadow'], path.path)
     _.updatePath(_.$.initPathSVG['fillPath'], path.fill)
 }
-
 
 
 const updateTooltip = (props, Use) => (w, d, dLabel) =>
@@ -87,4 +81,4 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
 
 
 
-export { updateAttr, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox }
+export { updateAttr, updateAll, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox }
