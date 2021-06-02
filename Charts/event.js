@@ -107,14 +107,14 @@ const onChangeInput = (props, Use, target) => (e) =>
 
     const lastLabel = d_label[d_label.lenght-1]+1
 
+    const {lineType}  = _.inputStore
+    const {isStreaming} = _.chartStore
+
     _.Publish(_.inputStore, { w, d, d_label })
 
-    if (target === 'add') d.push(random)
-    
-    d_label.push(lastLabel)
-    d_memo.push(0)
+    if (target === 'add' && !isStreaming ) d.push(random) , d_label.push(lastLabel),  d_memo.push(0)
+   
     props = [...props, w, d,]
-    const {lineType}  = _.inputStore
 
     // const getUnitToShow = (d,memo,gap,unit) =>
     // {
