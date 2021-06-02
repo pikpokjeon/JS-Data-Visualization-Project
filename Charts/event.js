@@ -98,8 +98,14 @@ const onChangeInput = (props, Use, target) => (e) =>
         [_.inputData(wth),
          _.inputData(_._id('data-list')),
          ]
+         
+    const {lineType}  = _.inputStore
+    const { isStreaming} = _.chartStore
+
     let d_label = _.inputData(_._id('data-list')).map((d,i) => 2010 + i)
-    let d_memo = d.map(e => 1)
+
+    const memo = d.map(e => 1)
+     _.Publish(_.chartStore, {memo})
 
     const size = _.genSize(w, d)
 
@@ -107,28 +113,39 @@ const onChangeInput = (props, Use, target) => (e) =>
 
     const lastLabel = d_label[d_label.lenght-1]+1
 
-    const {lineType}  = _.inputStore
-    const {isStreaming} = _.chartStore
-
     _.Publish(_.inputStore, { w, d, d_label })
 
-    if (target === 'add' && !isStreaming ) d.push(random) , d_label.push(lastLabel),  d_memo.push(0)
+    if (target === 'add' && !isStreaming ) 
+    {
+        d.push(random) , d_label.push(lastLabel)
+        memo.push(1),  _.Publish(_.chartStore, {memo})
+    }
    
     props = [...props, w, d,]
 
-    // const getUnitToShow = (d,memo,gap,unit) =>
-    // {
-    //     for (let i = 2; i < d.length; i++)
-    //     {
-    //         if (memo[i] !== undefined)
-    //         {
-    //             if (gap > 40) unit -= 1
-    //             unit += 1
-    //             break
-    //         }
-    //     }
-    //     return unit
-    // }
+    const getUnitToShow = (d) =>
+    {
+        let {memo, unitToshow, unitGap} = _.chartStore
+        for (let i = 1; i < d.length; i++)
+            {
+                if (memo[i] > 0)
+                {
+    
+                    let [x, px] = [size.x(0), size.x(unitToshow)]
+                    const a = px
+                    unitGap = Math.abs( px - x)
+                    if (unitGap > 40) unitToshow -= 1
+                    unitToshow += 1
+                    // secountIdx = i
+                    break
+                }
+            }
+        _.Publish(_.chartStore, {unitToshow, unitGap})
+        console.log(unitToshow,memo,unitGap)
+        return unitToshow
+    }
+
+    getUnitToShow(d)
 
 
     // const labelArr = (d, memo, s) =>

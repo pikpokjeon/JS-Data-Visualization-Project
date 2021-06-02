@@ -5,7 +5,9 @@ const chartStore =
     x:-1,
     selectedStartIdx: -1,
     selectedEndIdx: -1,
-    unitToShow: 2,
+    unitToShow: 1,
+    unitGap : -1,
+    memo: [],
     isStreaming: false,
 }
 chartStore[Symbol.toStringTag] = 'chartStore'
