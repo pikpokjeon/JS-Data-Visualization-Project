@@ -41,13 +41,30 @@
     </section>
     <section>
       <article>
-        <h4>Style</h4>
+        <h4>Type</h4>
         <div>
-          <label for="type">Type of Line</label>
+          <input type="radio" name="type-radio" value="line" checked>
+          <label for="type">Line</label>
           <div id="type-radio">
+            <input type="radio" name="radio" value="default" checked>default
             <input type="radio" name="radio" value="curve">curve
             <input type="radio" name="radio" value="step">step
-            <input type="radio" name="radio" value="default" checked>default
+          </div>
+        </div>
+        <div>
+          <input type="radio" name="type-radio" value="bar">
+          <label for="type">Bar</label>
+          <div id="type-radio">
+            <input type="radio" name="bar-radio" value="rect" checked>rect
+            <input type="radio" name="bar-radio" value="line">line
+          </div>
+        </div>
+        <div>
+          <input type="radio" name="type-radio" value="plot">
+          <label for="type">Plot</label>
+          <div id="type-radio">
+            <input type="radio" name="plot-radio" value="default" checked>default
+            <input type="radio" name="plot-radio" value="volume">volume
           </div>
         </div>
         <!-- <div>
