@@ -14,19 +14,16 @@
   <main id="main">
     <section>
       <article>
-        <h4>Style</h4>
+        <h4>
+          Setting
+        </h4>
         <div>
-          <label for="type">Type of Line</label>
-          <div id="type-radio">
-            <input type="radio" name="radio" value="curve">curve
-            <input type="radio" name="radio" value="step">step
-            <input type="radio" name="radio" value="default">default
-          </div>
+          <label for="type">Options</label>
+          <input type="checkbox" name="checkbox" value="full-range-line" checked>fullRangeLine
+          <input type="checkbox" name="checkbox" value="is-focus-line" checked>isFocusLine
+          <input type="checkbox" name="checkbox" value="is-tooltip" checked>istooltip
+          <input type="checkbox" name="checkbox" value="is-tooltip-box" checked>istooltipBox
         </div>
-        <!-- <div>
-          <label for="target">target</label>
-          <div><input type="text" id="target" name="target" value="15" /></div>
-        </div> -->
         <div>
           <label for="width">width</label>
           <div><input type="text" id="width" name="width" value="1500" /></div>
@@ -42,19 +39,55 @@
         </div>
       </article>
     </section>
+    <section>
+      <article>
+        <h4>Type</h4>
+        <div>
+          <input type="radio" name="type-radio" value="line" checked>
+          <label for="type">Line</label>
+          <div id="type-radio">
+            <input type="radio" name="radio" value="default" checked>default
+            <input type="radio" name="radio" value="curve">curve
+            <input type="radio" name="radio" value="step">step
+          </div>
+        </div>
+        <div>
+          <input type="radio" name="type-radio" value="bar">
+          <label for="type">Bar</label>
+          <div id="type-radio">
+            <input type="radio" name="bar-radio" value="rect" checked>rect
+            <input type="radio" name="bar-radio" value="line">line
+          </div>
+        </div>
+        <div>
+          <input type="radio" name="type-radio" value="plot">
+          <label for="type">Plot</label>
+          <div id="type-radio">
+            <input type="radio" name="plot-radio" value="default" checked>default
+            <input type="radio" name="plot-radio" value="volume">volume
+          </div>
+        </div>
+        <!-- <div>
+          <label for="target">target</label>
+          <div><input type="text" id="target" name="target" value="15" /></div>
+        </div> -->
+
+
+      </article>
+    </section>
 
     <section>
-      <article id ="data-box">
+      <article id="data-box">
 
         <h4>Data</h4>
         <div class="input-wrap">
 
-            <div class="input-group">
-              <label for="data-list">Data</label>
-              <input type="text" id="data-list" name="data-list"
-                value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
-            </div>
-<!-- 
+          <div class="input-group">
+            <label for="data-list">Data</label>
+            <input type="text" id="data-list" name="data-list"
+              value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
+          </div>
+          <!-- 
 
           <div class="input-group">
             <label for="data-list">Label</label>
@@ -74,7 +107,7 @@
       </article>
     </section>
 
-   <!-- <section>
+    <!-- <section>
       <article>
         <h4>Setting</h4>
         <div id="data-code">

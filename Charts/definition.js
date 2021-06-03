@@ -1,5 +1,5 @@
 
-import { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } from './event.js'
+import { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption } from './event.js'
 
 const svgDefinition = (id) =>
 {
@@ -125,9 +125,9 @@ const svgDefinition = (id) =>
             name: 'fillPath',
         },
         defs: {
-            id: 'defs',
             type: 'defs',
             attr: 'defs',
+            id: id.defs,
             name: 'defs',
         },
         path:
@@ -138,13 +138,13 @@ const svgDefinition = (id) =>
             name: 'path'
         },
         filter:
-                {
+        {
             type: 'filter',
             attr: 'filter',
             id: id.filter,
             name: 'filter'
         },
-        feGaussianBlur:{
+        feGaussianBlur: {
             type: 'feGaussianBlur',
             attr: 'feGaussianBlur',
             id: id.feGaussianBlur,
@@ -155,7 +155,7 @@ const svgDefinition = (id) =>
     pathGroup[Symbol.toStringTag] = 'pathGroup'
 
 
-    
+
     const tooltipMsgGroup =
     {
         msgTitle:
@@ -178,6 +178,13 @@ const svgDefinition = (id) =>
             attr: 'msgBox',
             id: id.msgBox,
             name: 'msgBox',
+        },
+        msgShadow:
+        {
+            type: 'rect',
+            attr: 'msgShadow',
+            id: id.msgShadow,
+            name: 'msgShadow',
         },
         msgGroup:
         {
@@ -208,18 +215,20 @@ const svgIdList =
     fillBG: ['fillBG'],
     lineH: ['lineH'],
     lineV: ['lineV'],
-    g: ['g', 'group','msgG'],
-    path: ['path','pathShadow'],
+    g: ['g', 'group', 'msgG'],
+    path: ['path', 'pathShadow'],
+    defs: ['pathDefs', 'msgDefs'],
     borderLine: ['left', 'right'],
     linearGradient: ['fill'],
     clipPath: ['frame'],
-    stop: ['stop0','stop1', 'stop2', 'stop3'],
+    stop: ['stop0', 'stop1', 'stop2', 'stop3'],
     fillPath: ['fillPath'],
-    filter: ['lineShadow'],
-    feGaussianBlur: ['blur'],
+    filter: ['lineShadow', 'msgFilter'],
+    feGaussianBlur: ['blur', 'msgBlur'],
     msgTitle: ['max', 'min', 'avg', 'per'],
     msgValue: ['maxV', 'minV', 'avgV', 'perV'],
     msgBox: ['msgBox'],
+    msgShadow: ['msgShadow'],
     msgGroup: ['msgGroup']
 }
 svgIdList[Symbol.toStringTag] = 'svgIdList'
@@ -296,10 +305,18 @@ const DOMEventAttr = {
 
             }
         ],
+    'checkbox':
+        [
+            {
+                event: 'click',
+                func: selectOption,
+                isAdded: false,
+            }
+        ]
 
 
 }
 DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
 
 
-export { svgDefinition,  svgIdList, DOMEventAttr}
+export { svgDefinition, svgIdList, DOMEventAttr }

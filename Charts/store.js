@@ -5,8 +5,9 @@ const chartStore =
     x: -1,
     selectedStartIdx: -1,
     selectedEndIdx: -1,
+    selectedIdx: [-1, -1],
     unitToShow: 1,
-    unitGap : -1,
+    unitGap: -1,
     memo: [],
     isStreaming: false,
 }
@@ -16,7 +17,7 @@ const inputStore =
 {
     w: -1,
     d: -1,
-    d_label : -1,
+    d_label: -1,
     lineType: 'default'
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
