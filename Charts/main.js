@@ -66,7 +66,7 @@ const initTooltipMsg = (props, Use) => (w, d) =>
     max.textContent = 'max'
     min.textContent = 'min'
     per.textContent = 'per'
-    avgV.textContent = 'averageV'
+    avgV.textContent = 'averageV  툴팁메세지로 띄우기 위해 개발 중'
     maxV.textContent = 'maxV'
     minV.textContent = 'minV'
     perV.textContent = 'perV'
