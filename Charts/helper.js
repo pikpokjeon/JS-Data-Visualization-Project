@@ -5,7 +5,7 @@
 const _id = (id) => document.getElementById(id)
 const _name = (name) => document.getElementsByName(name)
 const _class = (className, target) => target
-    ? target.getElementsByClassName(className) 
+    ? target.getElementsByClassName(className)
     : document.getElementsByClassName(className)
 
 
@@ -15,10 +15,10 @@ const _class = (className, target) => target
  */
 const isChildren = (value) =>
     Array.isArray(value)
-        || typeof value === 'string'
-        || 'nodeName' in value
+    || typeof value === 'string'
+    || 'nodeName' in value
     || 'tagName' in value
-        
+
 
 /**
  * Predefined DOM constructor generate helper.
@@ -60,7 +60,12 @@ const updateChildren = type => (el, attr = {}, children = []) =>
         // c 노드
         else el.appendChild(c)
     }
-    return [el,attr,children]
+    return [el, attr, children]
+}
+
+const renderAll = (...updates) =>
+{
+
 }
 
 /**
@@ -69,11 +74,11 @@ const updateChildren = type => (el, attr = {}, children = []) =>
  */
 const genElement = (type) => (el, attr = {}, children = []) =>
 {
-    
+
     el = type === 'svg'
-        ? document.createElementNS('http://www.w3.org/2000/svg', type) 
+        ? document.createElementNS('http://www.w3.org/2000/svg', type)
         : document.createElement(tag)
-    return isChildren(attr)? [el,{},attr] : [el,attr,children]
+    return isChildren(attr) ? [el, {}, attr] : [el, attr, children]
 }
 
 const updateAttr = (el, attr = {}, children = []) =>
@@ -82,7 +87,7 @@ const updateAttr = (el, attr = {}, children = []) =>
     {
         el.setAttribute(t, v)
     }
-    return [el,attr,children]
+    return [el, attr, children]
 }
 
 
@@ -132,7 +137,7 @@ const copyParams = (params) =>
     return copied
 }
 
-const getLineType = (nodes) => 
-    Array.from(nodes).reduce((checked, cur) =>  cur.checked ? cur.value : checked , 'default')
+const getLineType = (nodes) =>
+    Array.from(nodes).reduce((checked, cur) => cur.checked ? cur.value : checked, 'default')
 
- export { _id, _name, _class, appendAll, inputData, copyParams, getLineType }
+export { _id, _name, _class, appendAll, inputData, copyParams, getLineType }

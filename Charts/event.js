@@ -428,7 +428,12 @@ const onMove = (props, Use, target) => (e) =>
 
 const showTooltipMsg = (props, Use) => (e) =>
 {
-    console.log('dd')
 }
 
-export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg }
+const selectOption = (props, Use) => (e) =>
+{
+    console.log('dd')
+
+}
+
+export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption }

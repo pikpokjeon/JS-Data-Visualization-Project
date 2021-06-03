@@ -37,7 +37,7 @@ const initSetPathGroup = (props, Use) => (w, d) =>
         ])
 
     appendAll({ fillBG }).to(fillG)
-    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG['group'])
+    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG['g'])
 
 }
 
@@ -169,7 +169,7 @@ const initParams = [
 const init = (props, Use) =>
 {
     const _ = Use(props)
-    const [d, w] = [inputData(_id('data-list')), inputData(_id('width'))]
+    const [d, w] = [inputData(_id('data-list')), 1500]
     const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
     Publish(_.inputStore, { w: w, d: initData, dLabel: initData.map((_, i) => 2010 + i) })
 

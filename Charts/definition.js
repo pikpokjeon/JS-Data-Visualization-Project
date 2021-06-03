@@ -1,5 +1,5 @@
 
-import { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg } from './event.js'
+import { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption } from './event.js'
 
 const svgDefinition = (id) =>
 {
@@ -305,14 +305,14 @@ const DOMEventAttr = {
 
             }
         ],
-    // 'eventArea':
-    //     [
-    //         {
-    //             event: 'mouseover',
-    //             func: showTooltipMsg,
-    //             isAdded: false,
-    //         }
-    //     ]
+    'checkbox':
+        [
+            {
+                event: 'click',
+                func: selectOption,
+                isAdded: false,
+            }
+        ]
 
 
 }

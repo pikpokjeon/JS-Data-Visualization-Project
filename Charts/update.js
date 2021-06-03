@@ -50,7 +50,7 @@ const updatePathGroup = (props, Use) => (lineType) => (w, d) =>
 const updateTooltip = (props, Use) => (w, d, dLabel) =>
 {
     const _ = Use(props)
-    const g = _.$.initSVG['g']
+    const g = _.$.initSVG['group']
 
     while (g.firstChild)
     {
