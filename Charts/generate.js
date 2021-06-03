@@ -114,7 +114,7 @@ const genAttr = (w, d, i, v) =>
             y1: -h,
             x2: s.x(i),
             y2: h * 2,
-            style: style.line + " stroke-dasharray:5,5;",
+            style: style.line + " stroke-dasharray:5,5;" + style.opacity(0.5),
         },
         label: {
             x: s.x(i),
