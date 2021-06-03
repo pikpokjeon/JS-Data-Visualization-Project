@@ -227,15 +227,22 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     const { w, d } = _.inputStore
     const size = _.genSize(w, d)
     const { lastIdx, selectedStartIdx, selectedEndIdx } = _.chartStore
+    const [x, y] = [size.x(lastIdx), size.y(d[lastIdx])]
+    const maxY = y + size.msgBox.height + size.data.text.height
+    const maxX = y + size.msgBox.width
+    const unit = (y / d.length)
+    const offsetY = maxY + size.data.text.height * 3 > 750 ? y - unit - size.msgBox.height : y + unit
+
     if (selectedStartIdx < 0)
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
-        const x = size.x(lastIdx)
+
 
         _.updateAll(
             [
                 [_.$.initPathSVG['fillBG'], { x: 0, width: x }],
-                [_.$.initSVG['left'], { x1: x, x2: x }]
+                [_.$.initSVG['left'], { x1: x, x2: x }],
+                [_.$.msgSVG['msgGroup'], { transform: `translate(${x},${offsetY})`, style: `visibility: visible` }]
             ])
 
     }
@@ -282,7 +289,9 @@ const onSelectPeriod = (props, Use, target) => (e) =>
             [
                 [_.$.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 }],
                 [_.$.initSVG['left'], { x1: -1, x2: -1, }],
-                [_.$.initSVG['right'], { x1: -1, x2: -1, }]
+                [_.$.initSVG['right'], { x1: -1, x2: -1, }],
+                [_.$.msgSVG['msgGroup'], { style: `visibility: hidden` }]
+
             ]
         )
     }

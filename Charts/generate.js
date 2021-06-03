@@ -25,6 +25,7 @@ const genSize = (w, d) =>
         width: w,
         eventArea: { width: w, height: 750 },
         data: { text: { width: 30, height: 20 } },
+        msgBox: { width: 100, height: 140 },
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
@@ -190,8 +191,8 @@ const genAttr = (w, d, i, v) =>
         msgBox: {
             x: 0,
             y: 0,
-            width: 200,
-            height: 100,
+            width: s.msgBox.width,
+            height: s.msgBox.height,
             fill: color.focus,
         },
         msgGroup: {

@@ -14,7 +14,7 @@ const updateAll = (...updates) =>
 {
     for (const [el, attr] of Array.from(...updates))
     {
-       updateAttr(el,attr)
+        updateAttr(el, attr)
     }
 }
 
@@ -28,7 +28,7 @@ const updateTexts = (props, Use) => (d, w) => (num, start, end, target) =>
 const updatePath = (el, d) => el.setAttribute('d', `${d}`)
 
 
-const updateDataInputBox = (props, Use) =>  (d) => 
+const updateDataInputBox = (props, Use) => (d) => 
 {
     const _ = Use(props)
     _._id('data-list').value = `${(d)}`
@@ -36,7 +36,7 @@ const updateDataInputBox = (props, Use) =>  (d) =>
 
 
 // Pathgroup 배열이나 객체를 넘기도록 변경
-const updatePathGroup = (props, Use) => (lineType) => (w,d) =>
+const updatePathGroup = (props, Use) => (lineType) => (w, d) =>
 {
     const _ = Use(props)
     const size = _.genSize(w, d)
@@ -63,7 +63,7 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
      */
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-        const [t1id, t2id, pid, gid] = ['t1','t2','p','g'].map(e =>  `${e}-${i}${value}`)
+        const [t1id, t2id, pid, gid] = ['label', 'data', 'plot', 'g'].map(e => `${e}-${i}${value}`)
 
         const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
 
