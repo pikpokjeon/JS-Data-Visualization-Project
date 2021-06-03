@@ -1,53 +1,71 @@
+
 # Data Visualization Projects 
-#### [ Branch ]
+### VanilaJS Mini Project Lists
 
-- main : old version
-- publish* : most recent version for publishing on Github Pages ( continuously working on direct refactoring )
-- refactoring : destructuring the architectrue and refactoring the codes for better readability, performance and reusability of the codes.
-
-### <strong> Demo Pages </strong> <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/">2. Line Chart</a>
-
-### I am aiming at ... 
-- developing this listed projects without any help of foreign JS libraries ( I've used Rollup for building bundles)
-- containing at least one with custom interactive animation 
-- using interactive and dynamic data given by users 
-- Creating a chart web-component system
-
-### HOW TO RUN 
-- git clone this repo
-- make sure there's at least a couple of html and js files in the project folder you found it interesting <br />
-To start Chart project
-```
-git checkout publish
-npm run parcel
-```
-
-Insert it in the file named event.js for preventing async/await error on Parcel
-```
-import 'regenerator-runtime/runtime' 
-
-```
-
+> It's developed without any foreign JS libraries.
+But I haved used several for bundling and unit testing
+---
 
 ## Project List
 
 ### 1. Algorithms 
-### (1) Binary search
-#### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
+### (1) Binary search <small><a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">>demo page</a></small> <br />
+##### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.gif)
 
 ### 2. Chart 
-### (1) Line chart
-##### Last update (28,May): TODO > work on design UIUX
+### (1) Line chart <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/"> >demo page</a>
+
+##### Last update (3,june): TODO > Add options of functionality and styles
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/publish/linechart.gif)
 
 
 
+
+---
+
+#### Branch
+```
+ [ main ] :         old version
+ [ publish ] :      most recent version for publishing on Github Pages ( continuously working on direct refactoring )
+ [ refactoring ] :  destructuring the architectrue and refactoring the codes for better readability, 
+                    performance and reusability of the codes.
+```
+---
+### I am aiming at ... 
+1. developing listed projects without any help of foreign JS libraries ( I've used Rollup and Parcel for building bundles)
+- containing at least one with custom interactive animation 
+- using interactive and dynamic data given by users 
+- Creating a chart web-component system
+
+### HOW TO RUN 
+1. git clone this repo
+2. make sure there's at least a couple of html and js files in the project folder you found it interesting <br />
+#### To start Algorithms project
+```
+open index.html in the folder of your choice
+```
+#### To start Chart project
+```
+git checkout publish
+npm run parcel
+```
+#### Any problems with starting the project?
+1. Insert it in the file named event.js for preventing async/await error on Parcel
+```
+import 'regenerator-runtime/runtime' 
+
+```
+---
+
+
+
 --- 
+
+
+
 
 ## Chart 프로젝트가 리팩토링이 필요한 이유
 - 공유하는 동적 데이터의 흐름을 추적하기 힘들다
@@ -59,6 +77,8 @@ import 'regenerator-runtime/runtime'
 - SVG 요소를 변화 해야하는 경우, 예정된 변화될 요소들을 그룹화하고 적용하는 함수 생성
 - SVG 요소의 변화에 순서가 있다면 순서에 따른 동기식 적용 호출 함수 생성
 
+
+---
 ## Pub/sub 서비스 ? 
 - 메시지 전송자(Publisher)가 메시지 수신자(Subscriber)와 분리되는 메시징 서비스
 ```
@@ -79,3 +99,10 @@ import 'regenerator-runtime/runtime'
 
 ---
 
+### Skill sets
+#### Language spec
+- Vanila Javascript ESNEXT
+#### Unit Testing
+- Mocha/ Chai/ Jest
+#### Bundling
+- Parcel/ Rollup
