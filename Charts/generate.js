@@ -212,7 +212,7 @@ const genAttr = (w, d, i, v) =>
         }
 
     }
-    return { svg, ...list }
+    return { svg, color, style, ...list }
 }
 
 

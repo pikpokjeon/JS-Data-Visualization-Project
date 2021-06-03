@@ -226,13 +226,14 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     const _ = Use(props)
     const { w, d } = _.inputStore
     const size = _.genSize(w, d)
-    const { lastIdx, selectedStartIdx, selectedEndIdx } = _.chartStore
+    const attr = _.genAttr(w, d)
+    const { lastIdx, selectedStartIdx, selectedEndIdx, selectedIdx } = _.chartStore
     const [x, y] = [size.x(lastIdx), size.y(d[lastIdx])]
     const maxY = y + size.msgBox.height + size.data.text.height
     const maxX = y + size.msgBox.width
     const unit = (y / d.length)
     const offsetY = maxY + size.data.text.height * 3 > 750 ? y - unit - size.msgBox.height : y + unit
-
+    const visibility = (v) => ({ style: `visibility: ${v}` })
     if (selectedStartIdx < 0)
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
@@ -241,8 +242,8 @@ const onSelectPeriod = (props, Use, target) => (e) =>
         _.updateAll(
             [
                 [_.$.initPathSVG['fillBG'], { x: 0, width: x }],
-                [_.$.initSVG['left'], { x1: x, x2: x }],
-                [_.$.msgSVG['msgGroup'], { transform: `translate(${x - size.msgBox.width / 2},${offsetY})`, style: `visibility: visible` }]
+                [_.$.initSVG['left'], { x1: x, x2: x, style: attr.borderLine.style }],
+                [_.$.msgSVG['msgGroup'], { transform: `translate(${x - size.msgBox.width / 2},${offsetY})`, ...visibility('visible') }]
             ])
 
     }
@@ -274,9 +275,11 @@ const onSelectPeriod = (props, Use, target) => (e) =>
                 {
                     x1: isSelectReverse
                         ? size.x(last)
-                        : start + selectedWidth, x2: isSelectReverse
-                            ? size.x(last)
-                            : start + selectedWidth
+                        : start + selectedWidth,
+                    x2: isSelectReverse
+                        ? size.x(last)
+                        : start + selectedWidth,
+                    style: attr.borderLine.style
                 }],
                 [_.$.msgSVG['msgGroup'], { transform: `translate(${start + offsetX},${offsetY})`, style: `visibility: visible` }]
 
@@ -287,13 +290,13 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     else
     {
         _.Publish(_.chartStore, { selectedEndIdx: -1, selectedStartIdx: -1 })
-
+        const initializeAttr = { x1: -1, x2: -1, style: 'display: none' }
         _.updateAll(
             [
                 [_.$.initPathSVG['fillBG'], { width: _.inputStore['w'], x: 0 }],
-                [_.$.initSVG['left'], { x1: -1, x2: -1, }],
-                [_.$.initSVG['right'], { x1: -1, x2: -1, }],
-                [_.$.msgSVG['msgGroup'], { style: `visibility: hidden` }]
+                [_.$.initSVG['left'], { ...initializeAttr }],
+                [_.$.initSVG['right'], { ...initializeAttr }],
+                [_.$.msgSVG['msgGroup'], { style: 'visibility: hidden' }]
 
             ]
         )
