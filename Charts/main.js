@@ -53,24 +53,27 @@ const initTooltipMsg = (props, Use) => (w, d) =>
 
     updateAll(
         [
-            [avg, { y: 10 }],
-            [max, { y: 50 }],
+            [avg, { y: 30 }],
+            [max, { y: 60 }],
             [min, { y: 90 }],
-            [per, { y: 130 }],
-            [avgV, { y: 10, x: 80 }],
-            [maxV, { y: 50, x: 80 }],
-            [minV, { y: 90, x: 80 }],
-            [perV, { y: 130, x: 80 }],
+            [per, { y: 120 }],
+            [avgV, { y: 30, x: 110 }],
+            [maxV, { y: 60, x: 110 }],
+            [minV, { y: 90, x: 110 }],
+            [perV, { y: 120, x: 110 }],
         ])
     updateAll(
         [
-            [msgFilter, { width: 200, height: 200 }]
+            [msgFilter, { width: 200, height: 200 }],
+
+            [msgBlur, { stdDeviation: '10' }]
         ]
     )
     avg.textContent = 'average'
     max.textContent = 'max'
     min.textContent = 'min'
     per.textContent = 'per'
+
     avgV.textContent = 'averageV '
     maxV.textContent = 'maxV'
     minV.textContent = 'minV'

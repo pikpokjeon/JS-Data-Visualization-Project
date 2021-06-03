@@ -25,7 +25,7 @@ const genSize = (w, d) =>
         width: w,
         eventArea: { width: w, height: 750 },
         data: { text: { width: 30, height: 20 } },
-        msgBox: { width: 200, height: 140 },
+        msgBox: { width: 200, height: 150 },
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
@@ -194,7 +194,7 @@ const genAttr = (w, d, i, v) =>
             width: s.msgBox.width,
             height: s.msgBox.height,
             fill: color.bg,
-            style: 'opacity:0.75'
+            style: 'opacity:0.65;stroke:black;stroke-width:1'
 
         },
         msgShadow: {
@@ -204,7 +204,8 @@ const genAttr = (w, d, i, v) =>
             height: s.msgBox.height,
             fill: 'black',
             filter: 'url(#msgFilter)',
-            style: 'opacity:0.4'
+            style: 'opacity:0.4',
+            stroke: 1,
         },
         msgGroup: {
             transform: `translate(50,50)`
