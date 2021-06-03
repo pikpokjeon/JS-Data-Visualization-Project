@@ -14,7 +14,7 @@ const initSetPathGroup = (props, Use) => (w, d) =>
 {
     const _ = Use(props)
     const { lineType } = _.inputStore
-    const { stop0, stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, defs, path, pathShadow, blur, lineShadow } = _.$.initPathSVG
+    const { stop0, stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, pathDefs, path, pathShadow, blur, lineShadow } = _.$.initPathSVG
 
     appendAll({ stop0, stop1, stop2, stop3 }).to(fill)
 
@@ -28,7 +28,7 @@ const initSetPathGroup = (props, Use) => (w, d) =>
 
     appendAll({ blur }).to(lineShadow)
     appendAll({ fillPath }).to(frame)
-    appendAll({ fill, frame, lineShadow }).to(defs)
+    appendAll({ fill, frame, lineShadow }).to(pathDefs)
 
     updateAll(
         [
@@ -37,7 +37,7 @@ const initSetPathGroup = (props, Use) => (w, d) =>
         ])
 
     appendAll({ fillBG }).to(fillG)
-    appendAll({ defs, fillG, path, pathShadow }).to(_.$.initSVG['group'])
+    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG['group'])
 
 }
 
@@ -46,7 +46,8 @@ const initTooltipMsg = (props, Use) => (w, d) =>
 {
     const _ = Use(props)
     console.log(_)
-    const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgGroup } = _.$.msgSVG
+    const { msgBlur, msgDefs, msgFilter } = _.$.initPathSVG
+    const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
 
 
 
@@ -61,17 +62,25 @@ const initTooltipMsg = (props, Use) => (w, d) =>
             [minV, { y: 90, x: 80 }],
             [perV, { y: 130, x: 80 }],
         ])
-
+    updateAll(
+        [
+            [msgFilter, { width: 200, height: 200 }]
+        ]
+    )
     avg.textContent = 'average'
     max.textContent = 'max'
     min.textContent = 'min'
     per.textContent = 'per'
-    avgV.textContent = 'averageV  툴팁메세지로 띄우기 위해 개발 중'
+    avgV.textContent = 'averageV '
     maxV.textContent = 'maxV'
     minV.textContent = 'minV'
     perV.textContent = 'perV'
-    appendAll({ avg, avgV, max, maxV, min, minV, per, perV }).to(msgGroup)
-    appendAll({ msgGroup }).to(_.$.initSVG['msgG'])
+
+
+    appendAll({ msgBlur }).to(msgFilter)
+    appendAll({ msgFilter }).to(msgDefs)
+    appendAll({ msgBox, msgShadow, avg, avgV, max, maxV, min, minV, per, perV, }).to(msgGroup)
+    appendAll({ msgDefs, msgGroup }).to(_.$.initSVG['msgG'])
 }
 
 

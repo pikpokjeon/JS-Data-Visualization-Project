@@ -25,7 +25,7 @@ const genSize = (w, d) =>
         width: w,
         eventArea: { width: w, height: 750 },
         data: { text: { width: 30, height: 20 } },
-        msgBox: { width: 100, height: 140 },
+        msgBox: { width: 200, height: 140 },
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
@@ -178,8 +178,8 @@ const genAttr = (w, d, i, v) =>
             x: 30,
             y: 30,
             fill: color.default,
-            'dominant-baseline': 'end',
-            'text-anchor': 'middle',
+            'dominant-baseline': 'start',
+            'text-anchor': 'start',
         },
         msgValue: {
             x: 70,
@@ -193,7 +193,18 @@ const genAttr = (w, d, i, v) =>
             y: 0,
             width: s.msgBox.width,
             height: s.msgBox.height,
-            fill: color.focus,
+            fill: color.bg,
+            style: 'opacity:0.75'
+
+        },
+        msgShadow: {
+            x: 0,
+            y: 0,
+            width: s.msgBox.width,
+            height: s.msgBox.height,
+            fill: 'black',
+            filter: 'url(#msgFilter)',
+            style: 'opacity:0.4'
         },
         msgGroup: {
             transform: `translate(50,50)`
