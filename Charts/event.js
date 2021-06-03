@@ -224,7 +224,8 @@ const onChangeInput = (props, Use, target) => (e) =>
 const onSelectPeriod = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
-    const size = _.genSize(_.inputStore['w'], _.inputStore['d'])
+    const { w, d } = _.inputStore
+    const size = _.genSize(w, d)
     const { lastIdx, selectedStartIdx, selectedEndIdx } = _.chartStore
     if (selectedStartIdx < 0)
     {
@@ -233,7 +234,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
 
         _.updateAll(
             [
-                [_.$.initPathSVG['fillBG'], { x: x }],
+                [_.$.initPathSVG['fillBG'], { x: 0, width: x }],
                 [_.$.initSVG['left'], { x1: x, x2: x }]
             ])
 
@@ -378,6 +379,7 @@ const onMove = (props, Use, target) => (e) =>
     let idxAfter = undefined
     if (idx !== _.chartStore['lastIdx'])
     {
+        console.log(_)
         _.Publish(_.chartStore, { lastIdx: size.idx(e.layerX), x: e.layerX })
         console.log(idx)
         if (value !== undefined)
@@ -409,4 +411,9 @@ const onMove = (props, Use, target) => (e) =>
 }
 
 
-export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove }
+const showTooltipMsg = (props, Use) => (e) =>
+{
+    console.log('dd')
+}
+
+export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg }
