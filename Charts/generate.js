@@ -28,7 +28,7 @@ const genSize = (w, d) =>
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
-        idx: x => Math.floor(((x) / (unitX + unitX/(gap + 30)) ))
+        idx: x => Math.floor(x / (unitX))
     }
 }
 
@@ -56,17 +56,17 @@ const genAttr = (w, d, i, v) =>
     const s = genSize(w, d)
     const h = s.eventArea.height
     const color = { bg: '#10161f', default: 'white', focus: 'red', blue: 'blue' }
-    const style = 
-        {   
-            line: `stroke: ${ color.default }; stroke-width: ${s.line};`,  
-            opacity: (n) => `opacity: ${n}` 
-        }
+    const style =
+    {
+        line: `stroke: ${color.default}; stroke-width: ${s.line};`,
+        opacity: (n) => `opacity: ${n}`
+    }
     const svg = {
         width: w,
         height: h,
         style: `overflow:visible, ${style.opacity(0.8)}`,
         fill: color.bg,
-    
+
     }
     const list = {
         g: { width: w, height: h, style: 'overflow:visible' },
@@ -99,7 +99,7 @@ const genAttr = (w, d, i, v) =>
             y1: s.y(v),
             x2: s.width,
             y2: s.y(v),
-            style: style.line +  style.opacity(0.3),
+            style: style.line + style.opacity(0.3),
         },
         lineV: {
             x1: s.x(i),
@@ -116,7 +116,7 @@ const genAttr = (w, d, i, v) =>
             style: style.line + " stroke-dasharray:5,5;",
         },
         label: {
-            x: s.x(i) ,
+            x: s.x(i),
             y: h - 30,
             fill: color.default,
             'dominant-baseline': 'start',
@@ -130,8 +130,8 @@ const genAttr = (w, d, i, v) =>
             'text-anchor': 'middle',
         },
         plot: {
-            cx: s.x(i) ,
-            cy: s.y(v) ,
+            cx: s.x(i),
+            cy: s.y(v),
             r: 5,
             fill: "white"
         },
@@ -168,10 +168,10 @@ const genAttr = (w, d, i, v) =>
             y: '-7',
             width: '14',
             height: '14',
-            
+
         },
         feGaussianBlur: {
-            stdDeviation:"15"
+            stdDeviation: "15"
         },
         msgTitle: {
             x: 30,
@@ -184,8 +184,8 @@ const genAttr = (w, d, i, v) =>
             x: 70,
             y: 30,
             fill: color.default,
-            'dominant-baseline': 'end',
-            'text-anchor': 'middle',
+            'dominant-baseline': 'start',
+            'text-anchor': 'start',
         },
         msgBox: {
             x: 0,
@@ -195,7 +195,7 @@ const genAttr = (w, d, i, v) =>
             fill: color.focus,
         },
         msgGroup: {
-            transform:`translate(50,50)`
+            transform: `translate(50,50)`
         }
 
     }
@@ -213,7 +213,7 @@ const genAttr = (w, d, i, v) =>
 const genSvgFromList = (list, w, d, i, v) =>
 {
     const createdSVG = {}
-    let temp = undefined        
+    let temp = undefined
 
     // console.log('dd', (Object.values(list)), list)
 
@@ -326,7 +326,7 @@ const genSvgList = (target) =>
     }
 }
 
-const genRandomChartData = (size)=> 
+const genRandomChartData = (size) =>
 {
 
     const a = size.minData - Math.floor(1000 - Math.random() * 1000)
