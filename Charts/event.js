@@ -1,5 +1,7 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
+import { updateAll } from "./update"
+
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
  * @param {*} event 삭제할 이벤트리스너 이름
@@ -227,7 +229,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     if (selectedStartIdx < 0)
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
-        const x = size.x(lastIdx) - size.unitX
+        const x = size.x(lastIdx)
 
         _.updateAll(
             [
@@ -245,7 +247,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
             ]
 
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx))
-        const [start, last] = [size.x(selectedStartIdx) - size.unitX, size.idx(e.clientX)]
+        const [start, last] = [size.x(selectedStartIdx), size.idx(e.layerX)]
         const isSelectReverse = last - maxIdx < 0
 
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
@@ -255,16 +257,16 @@ const onSelectPeriod = (props, Use, target) => (e) =>
                 [_.$.initPathSVG['fillBG'],
                 {
                     x: isSelectReverse
-                        ? size.x(last) - size.unitX
+                        ? size.x(last)
                         : start, width: selectedWidth
                 }],
                 [_.$.initSVG['left'], { x1: start, x2: start }],
                 [_.$.initSVG['right'],
                 {
                     x1: isSelectReverse
-                        ? size.x(last) - size.unitX
+                        ? size.x(last)
                         : start + selectedWidth, x2: isSelectReverse
-                            ? size.x(last) - size.unitX
+                            ? size.x(last)
                             : start + selectedWidth
                 }]
             ]
@@ -371,23 +373,38 @@ const onMove = (props, Use, target) => (e) =>
     const _ = Use(props)
     const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
-    let idx = size.idx(e.clientX)
+    let idx = size.idx(e.layerX)
     let value = d[idx]
+    let idxAfter = undefined
     if (idx !== _.chartStore['lastIdx'])
     {
-        _.Publish(_.chartStore, { lastIdx: size.idx(e.clientX), x: e.clientX })
-
+        _.Publish(_.chartStore, { lastIdx: size.idx(e.layerX), x: e.layerX })
+        console.log(idx)
         if (value !== undefined)
         {
-            // _id(`g-${idx}${value}`).setAttribute('fill', 'red')
-            // _id(`p-${idx}${value}`).setAttribute('fill', 'green')
-            // _id(`t1-${idx}${value}`).setAttribute('fill', 'red')
-            // _id(`t2-${idx}${value}`).setAttribute('fill', 'blue')
+            updateAll(
+                [
+                    [_._id(`plot-${idx}${value}`), { fill: 'red' }],
+                    [_._id(`label-${idx}${value}`), { fill: 'green' }],
+                    [_._id(`data-${idx}${value}`), { fill: 'blue' }],
+                ]
+            )
+
         }
-        idx = size.idx(e.clientX)
-        value = d[idx]
+        idxAfter = size.idx(e.layerX)
+        value = d[idxAfter]
+
+    } else if (idx === idxAfter)
+    {
+        updateAll(
+            [
+                [_._id(`plot-${idx}${value}`), { fill: 'white' }],
+                [_._id(`label-${idx}${value}`), { fill: 'white' }],
+                [_._id(`data-${idx}${value}`), { fill: 'white' }],
+            ]
+        )
     }
-    _.updateAttr(_.$.initSVG['lineV'], { x1: e.clientX - size.leftMargin, x2: e.clientX - size.leftMargin })
+    _.updateAttr(_.$.initSVG['lineV'], { x1: e.layerX, x2: e.layerX })
 
 }
 
