@@ -1,15 +1,28 @@
 
 # Data Visualization Projects 
 ### VanilaJS Mini Project Lists
----
+
 > It's developed without any foreign JS libraries.
 But I haved used several for bundling and unit testing
 ---
 
+## Project List
 
-### <strong> Demo Pages </strong> <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/">2. Line Chart</a>
+### 1. Algorithms 
+### (1) Binary search <small><a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">>demo page</a></small> <br />
+##### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
+
+![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.gif)
+
+### 2. Chart 
+### (1) Line chart <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/"> >demo page</a>
+
+##### Last update (3,june): TODO > Add options of functionality and styles
+
+![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/publish/linechart.gif)
+
+
+
 
 ---
 
@@ -46,20 +59,6 @@ import 'regenerator-runtime/runtime'
 
 ```
 ---
-
-## Project List
-
-### 1. Algorithms 
-### (1) Binary search
-##### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
-
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.gif)
-
-### 2. Chart 
-### (1) Line chart
-##### Last update (3,june): TODO > Add options of functionality and styles
-
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/publish/linechart.gif)
 
 
 
