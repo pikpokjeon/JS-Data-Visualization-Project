@@ -242,12 +242,13 @@ const onSelectPeriod = (props, Use, target) => (e) =>
             [
                 [_.$.initPathSVG['fillBG'], { x: 0, width: x }],
                 [_.$.initSVG['left'], { x1: x, x2: x }],
-                [_.$.msgSVG['msgGroup'], { transform: `translate(${x},${offsetY})`, style: `visibility: visible` }]
+                [_.$.msgSVG['msgGroup'], { transform: `translate(${x - size.msgBox.width / 2},${offsetY})`, style: `visibility: visible` }]
             ])
 
     }
     else if (selectedEndIdx < 0)
     {
+
         const [minIdx, maxIdx] =
             [
                 Math.min(lastIdx, selectedStartIdx),
@@ -257,7 +258,7 @@ const onSelectPeriod = (props, Use, target) => (e) =>
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx))
         const [start, last] = [size.x(selectedStartIdx), size.idx(e.layerX)]
         const isSelectReverse = last - maxIdx < 0
-
+        const offsetX = selectedWidth / 3
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
         _.updateAll(
@@ -276,7 +277,9 @@ const onSelectPeriod = (props, Use, target) => (e) =>
                         : start + selectedWidth, x2: isSelectReverse
                             ? size.x(last)
                             : start + selectedWidth
-                }]
+                }],
+                [_.$.msgSVG['msgGroup'], { transform: `translate(${start + offsetX},${offsetY})`, style: `visibility: visible` }]
+
             ]
         )
 
