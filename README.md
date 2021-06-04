@@ -3,7 +3,7 @@
 ### VanilaJS Mini Project Lists
 
 > It's developed without any foreign JS libraries.
-But I haved used several for bundling and unit testing
+But I've used several for bundling and unit testing
 ---
 
 ## Project List
