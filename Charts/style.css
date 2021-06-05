@@ -1,5 +1,6 @@
 html {
-  background: linear-gradient( 0deg, rgb(5 9 19) 29%, rgb(18 26 43) 53%, rgb(19 26 35) 100%);
+  /* background: linear-gradient( 0deg, rgb(5 9 19) 29%, rgb(18 26 43) 53%, rgb(19 26 35) 100%); */
+  background: linear-gradient( 8deg, rgb(97 31 255 / 80%) 17%, rgb(109 0 255 / 88%) 53%, rgb(69 21 215) 100%);
   height: 110vh;
   overflow-x: overlay;
 }
@@ -9,11 +10,38 @@ main {
 }
 
 h4 {
-  border: 1px solid;
-  padding: 10px 13px;
-  width: 8vh;
+  border: 1px solid #ffffffc7;
+  padding: 0.8rem;
+  width: 6rem;
   text-align: center;
-  margin: 1vh 1vh;
+  margin: 1rem;
+  background: #6720c4;
+  border-radius: 55px;
+  box-shadow: 3px 3px 0px 2px rgb(75 0 255 / 45%);
+}
+
+#setting-wrapper {
+  display: flex;
+  position: fixed;
+  background: linear-gradient( 199deg, rgb(220 31 255 / 80%) -118%, rgb(118 18 251 / 48%) 53%, rgb(37 195 255 / 44%) 100%);
+  width: 100%;
+  padding-top: 2rem;
+  margin: 0;
+  box-shadow: 62px 31px 0px -19px rgb(0 0 0 / 18%);
+}
+
+#left-section {
+  /* border: 1px solid white; */
+  color: white;
+}
+
+#right-section {
+  width: 1500px;
+  background: #00000087;
+}
+
+#close-section {
+  color: white
 }
 
 section {
@@ -84,9 +112,12 @@ input[type="text"], textarea {
 }
 
 #svg-area {
-  position: fixed;
+  min-height: 100vh;
+  /* position: relative; */
+  display: flex;
   padding: 0;
-  z-index: -990;
+  /* z-index: -990; */
+  align-items: center;
 }
 
 #search-answer {
