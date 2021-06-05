@@ -402,8 +402,8 @@ const onMove = (props, Use, target) => (e) =>
             updateAll(
                 [
                     [_._id(`plot-${idx}${value}`), { fill: 'red' }],
-                    [_._id(`label-${idx}${value}`), { fill: 'green' }],
-                    [_._id(`data-${idx}${value}`), { fill: 'blue' }],
+                    [_._id(`label-${idx}${value}`), { fill: 'red' }],
+                    [_._id(`data-${idx}${value}`), { fill: 'red' }],
                 ]
             )
 
@@ -421,7 +421,9 @@ const onMove = (props, Use, target) => (e) =>
             ]
         )
     }
-    _.updateAttr(_.$.initSVG['lineV'], { x1: e.layerX, x2: e.layerX })
+    if (_.optionStore['isFocusLine']) _.updateAttr(_.$.initSVG['lineV'], { x1: e.layerX, x2: e.layerX })
+    else _.updateAttr(_.$.initSVG['lineV'], { x1: -1, x2: -1 })
+    // console.log(_.optionStore['fullRangeLine'])
 
 }
 
@@ -432,8 +434,23 @@ const showTooltipMsg = (props, Use) => (e) =>
 
 const selectOption = (props, Use) => (e) =>
 {
-    console.log('dd')
+    const _ = Use(props)
+    const selectedNodes = _._name('checkbox')
 
+    Array.from(selectedNodes).reduce((options, cur) =>
+    {
+        const name = cur.value.split('-').reduce((words, word, i) =>
+        {
+            let w = word.split('')
+            w[0] = i > 0 ? word[0].toUpperCase() : word[0].toLowerCase()
+            words += w.join('')
+            return words
+        }, '')
+        Reflect.set(options, name, cur.checked)
+        return options
+    }, _.optionStore)
+
+    console.log(_.optionStore)
 }
 
 export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption }
