@@ -151,9 +151,9 @@ const genAttr = (w, d, i, v) =>
         },
         fillBG: {
             x: 0,
-            y: 600,
+            y: 800,
             width: w,
-            height: 600,
+            height: 800,
             fill: 'url(#fill)'
         },
         clipPath: { // frame
