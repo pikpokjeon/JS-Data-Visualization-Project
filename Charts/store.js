@@ -22,7 +22,14 @@ const inputStore =
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
 
-// const Store = (new)
+const optionStore =
+{
+    fullRangeLine: true,
+    isFocusLine: true,
+    isTooltip: true,
+    isTooltipBox: true,
+}
+optionStore[Symbol.toStringTag] = 'optionStore'
 
 
 /**
@@ -40,4 +47,4 @@ const Publish = (store, obj) =>
 }
 
 
-export { chartStore, inputStore, Publish }
+export { chartStore, inputStore, optionStore, Publish }

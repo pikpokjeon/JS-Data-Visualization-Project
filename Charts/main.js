@@ -1,6 +1,6 @@
 // !TODO : dynamically import when this project is ran by parcel
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
-import { chartStore, inputStore, Publish } from './store.js'
+import { chartStore, inputStore, optionStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList, genRandomChartData } from './generate.js'
 import { updateAttr, updateAll, updatePath, updatePathGroup, updateTexts, updateTooltip, updateDataInputBox } from './update.js'
 import { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } from './event.js'
@@ -48,9 +48,6 @@ const initTooltipMsg = (props, Use) => (w, d) =>
     console.log(_)
     const { msgBlur, msgDefs, msgFilter } = _.$.initPathSVG
     const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
-
-
-
     updateAll(
         [
             [avg, { y: 30 }],
@@ -78,7 +75,6 @@ const initTooltipMsg = (props, Use) => (w, d) =>
     maxV.textContent = 'maxV'
     minV.textContent = 'minV'
     perV.textContent = 'perV'
-
 
     appendAll({ msgBlur }).to(msgFilter)
     appendAll({ msgFilter }).to(msgDefs)
@@ -143,6 +139,7 @@ const initParams = [
     Publish,
     inputStore,
     chartStore,
+    optionStore,
     onMove,
     onChangeInput,
     onChangeLineType,
@@ -184,7 +181,7 @@ const init = (props, Use) =>
 
     const onMoveprops =
         [
-            updateAttr, genSize, _id, _.$, _.$.initSVG, _.$.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore
+            updateAttr, genSize, _id, _.$, _.$.initSVG, _.$.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore, optionStore
         ]
 
     const mouseOn = () => { svg.addEventListener('mousemove', onMove(onMoveprops, Use)) }
