@@ -13,24 +13,53 @@
   <main id="main">
     <div id="setting-wrapper">
       <div id="left-section">
-        <h4>Setting</h4>
+        <h3>Setting</h3>
       </div>
       <div id="right-section">
+
+        <section>
+          <article id="data-box">
+            <details open>
+              <summary> Data</summary>
+              <div class="input-wrap">
+
+                <div>
+                  <label for="data-list">Data</label>
+                  <input type="text" id="data-list" name="data-list"
+                    value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
+                  <button id="add" name="add">
+                    Add
+                  </button>
+                </div>
+                <div>
+                  <label for="width">width</label>
+                  <div><input type="text" id="width" name="width" value="1500" /></div>
+                </div>
+
+              </div>
+
+
+              <!-- <div class="button-group">
+                   
+                    </div> -->
+            </details>
+          </article>
+        </section>
         <section>
 
-
           <article>
-            <h4>Type</h4>
-            <div>
-              <input type="radio" name="type-radio" value="line" checked>
-              <label for="type">Line</label>
-              <div id="type-radio">
-                <input type="radio" name="radio" value="default" checked>default
-                <input type="radio" name="radio" value="curve">curve
-                <input type="radio" name="radio" value="step">step
+            <details>
+              <summary>Type</summary>
+              <div>
+                <input type="radio" name="type-radio" value="line" checked>
+                <label for="type">Line</label>
+                <div id="type-radio">
+                  <input type="radio" name="radio" value="default" checked>default
+                  <input type="radio" name="radio" value="curve">curve
+                  <input type="radio" name="radio" value="step">step
+                </div>
               </div>
-            </div>
-            <div>
+              <!-- <div>
               <input type="radio" name="type-radio" value="bar">
               <label for="type">Bar</label>
               <div id="type-radio">
@@ -45,74 +74,38 @@
                 <input type="radio" name="plot-radio" value="default" checked>default
                 <input type="radio" name="plot-radio" value="volume">volume
               </div>
-            </div>
+            </div> -->
 
+            </details>
           </article>
-
         </section>
         <section>
           <article>
-            <h4>
-              Function
-            </h4>
-            <div>
-              <label for="option">Option</label>
-              <input type="checkbox" name="checkbox" value="full-range-line" checked>fullRangeLine
-              <input type="checkbox" name="checkbox" value="is-focus-line" checked>isFocusLine
-              <input type="checkbox" name="checkbox" value="is-tooltip" checked>istooltip
-              <input type="checkbox" name="checkbox" value="is-tooltip-box" checked>istooltipBox
-            </div>
-
-            <div>
-              <label for="time">Streaming Time /sec</label>
-              <div><input type="text" id="time" name="time" value="15" /></div>
-            </div>
-            <div class="button-group">
-              <button id="stream" name="stream">
-                Stream
-              </button>
-            </div>
-          </article>
-        </section>
-
-
-        <section>
-          <article id="data-box">
-
-            <h4>Data</h4>
-            <div class="input-wrap">
+            <details>
+              <summary>Function</summary>
               <div>
-                <label for="width">width</label>
-                <div><input type="text" id="width" name="width" value="1500" /></div>
+                <label for="option">Option</label>
+                <input type="checkbox" name="checkbox" value="full-range-line" checked>fullRangeLine
+                <input type="checkbox" name="checkbox" value="is-focus-line" checked>isFocusLine
+                <input type="checkbox" name="checkbox" value="is-tooltip" checked>istooltip
+                <input type="checkbox" name="checkbox" value="is-tooltip-box" checked>istooltipBox
               </div>
-              <div class="input-group">
-                <label for="data-list">Data</label>
-                <input type="text" id="data-list" name="data-list"
-                  value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
+
+              <div>
+                <label for="time">Streaming Time /sec</label>
+                <div><input type="text" id="time" name="time" value="15" /></div>
               </div>
-              <!-- 
-
-          <div class="input-group">
-            <label for="data-list">Label</label>
-            <input type="text" id="data-list" name="data-list"
-              value="0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0" />
-          </div> -->
-
-            </div>
-
-
-            <div class="button-group">
-              <button id="add" name="add">
-                Add data
-              </button>
-            </div>
-
+              <div class="button-group">
+                <button id="stream" name="stream">
+                  Stream
+                </button>
+              </div>
+            </details>
           </article>
         </section>
+
       </div>
-      <div id="close-section">
-        <p>Close</p>
-      </div>
+
       </article>
       </section>
     </div>
@@ -120,7 +113,7 @@
 
 
     <section id="svg-area">
-      <h4>Chart</h4>
+      <!-- Chart<su>
     </section>
 
 
@@ -129,8 +122,8 @@
     import {chartIdx} from './Charts/store.js'
     console.log(chartIdx)
   </script> -->
-  <!-- <script type="module" src="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/main.js"></script> -->
-  <script type="module" src="./Charts/main.js"></script>
+      <!-- <script type="module" src="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/main.js"></script> -->
+      <script type="module" src="./Charts/main.js"></script>
 
 </body>
 

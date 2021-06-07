@@ -1,12 +1,32 @@
 html {
-  /* background: linear-gradient( 0deg, rgb(5 9 19) 29%, rgb(18 26 43) 53%, rgb(19 26 35) 100%); */
-  background: linear-gradient( 8deg, rgb(97 31 255 / 80%) 17%, rgb(109 0 255 / 88%) 53%, rgb(69 21 215) 100%);
+  background: linear-gradient(
+    0deg,
+    rgb(14 20 34 / 99%) 29%,
+    rgb(22 29 42) 53%,
+    rgb(19 26 35) 100%
+  );
+  /* background: linear-gradient( 8deg, rgb(97 31 255 / 80%) 17%, rgb(109 0 255 / 88%) 53%, rgb(69 21 215) 100%); */
   height: 110vh;
   overflow-x: overlay;
 }
 
 main {
   margin: 0;
+}
+h3 {
+  border: 1px solid #ffffffc7;
+  padding: 0.8rem;
+  width: 6rem;
+  text-align: center;
+  margin: 1rem;
+  background: linear-gradient(
+    0deg,
+    rgb(5 9 19) 29%,
+    rgb(18 26 43) 53%,
+    rgb(19 26 35) 100%
+  );
+  border-radius: 55px;
+  box-shadow: 3px 3px 0px 2px rgb(75 0 255 / 45%);
 }
 
 h4 {
@@ -20,28 +40,35 @@ h4 {
   box-shadow: 3px 3px 0px 2px rgb(75 0 255 / 45%);
 }
 
+summary{
+  padding-bottom: 1rem;
+}
+
 #setting-wrapper {
   display: flex;
   position: fixed;
-  background: linear-gradient( 199deg, rgb(220 31 255 / 80%) -118%, rgb(118 18 251 / 48%) 53%, rgb(37 195 255 / 44%) 100%);
   width: 100%;
-  padding-top: 2rem;
+  padding-top: 1rem;
   margin: 0;
   box-shadow: 62px 31px 0px -19px rgb(0 0 0 / 18%);
 }
 
 #left-section {
   /* border: 1px solid white; */
+  width: fit-content;
   color: white;
 }
 
 #right-section {
-  width: 1500px;
-  background: #00000087;
+  width: fit-content;
+  z-index: 99;
+  display: inline-flex;
+  flex-direction: column;
+  padding-top: 1rem;
 }
 
 #close-section {
-  color: white
+  color: white;
 }
 
 section {
@@ -49,6 +76,8 @@ section {
   display: flex;
   align-items: baseline;
   justify-content: stretch;
+      padding: 0.5rem;
+
 }
 
 section div {
@@ -75,8 +104,10 @@ article div {
 label {
   font-weight: 600;
   font-size: 17px;
-  background: #36b3ad57;
-  background: linear-gradient( 331deg, rgb(31 74 76) -32%, rgb(12 23 22) 100%);
+  background: #131b27;
+  /* background: linear-gradient( 
+331deg
+, rgb(31 74 76) -32%, rgb(12 23 22) 100%); */
   display: flex;
   padding-block-end: 5px;
   padding-left: 10px;
@@ -84,7 +115,8 @@ label {
   min-width: 80px;
 }
 
-input[type="text"], textarea {
+input[type="text"],
+textarea {
   background-color: black;
   color: white;
   border: 0;
@@ -95,7 +127,7 @@ input[type="text"], textarea {
 }
 
 .input-wrap {
-  width: 100%;
+  width: 90%;
 }
 
 .input-group {
@@ -103,12 +135,13 @@ input[type="text"], textarea {
   width: 100%;
 }
 
-#width, #target {
-  width: 6vh
+#width,
+#target {
+  width: 6vh;
 }
 
 #data-list {
-  width: 100%;
+ width: 90vh;
 }
 
 #svg-area {
@@ -118,6 +151,7 @@ input[type="text"], textarea {
   padding: 0;
   /* z-index: -990; */
   align-items: center;
+  justify-content: center;
 }
 
 #search-answer {
