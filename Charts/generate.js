@@ -57,7 +57,7 @@ const genAttr = (w, d, i, v) =>
 {
     const s = genSize(w, d)
     const h = s.eventArea.height
-    const color = { bg: '#141d31', default: 'white', focus: 'red', purple: '#9f57ff' }
+    const color = { bg: '#141d31', default: 'white', focus: 'red', purple: '#9f57ff', blue: '#00f3ff' }
     const style =
     {
         line: `stroke: ${color.default}; stroke-width: ${s.line};`,
@@ -139,8 +139,8 @@ const genAttr = (w, d, i, v) =>
             fill: "white"
         },
         stop0: { offset: '0%', style: 'stop-color: #9bffc9; stop-opacity: 1' },
-        stop1: { offset: '30%', style: 'stop-color: white; stop-opacity: 0.7' },
-        stop2: { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.3' },
+        stop1: { offset: '30%', style: 'stop-color: white; stop-opacity: 0.8' },
+        stop2: { offset: '50%', style: 'stop-color: #00f0ff; stop-opacity: 0.2' },
         stop3: { offset: '100%', style: 'stop-color:#4b00ff; stop-opacity: 0' },
         linearGradient: {  //fill
             x1: '0%',
@@ -174,7 +174,7 @@ const genAttr = (w, d, i, v) =>
 
         },
         feGaussianBlur: {
-            stdDeviation: "4"
+            stdDeviation: "2.5"
         },
         msgTitle: {
             x: 30,
