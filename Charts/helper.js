@@ -110,11 +110,11 @@ const appendAll = (list) =>
 
 let inputData = (el) =>
 {
-    return el.value.indexOf(',') > -1
+    return el? el.value.indexOf(',') > -1
         ? el.value
             .split(',')
             .map(_ => Number(_))
-        : Number(el.value)
+        : Number(el.value) : 50
 }
 
 

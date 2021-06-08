@@ -2,6 +2,7 @@
 import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
 import { getElement } from './pipeline.js'
 import { updateAttr } from './update.js'
+
 const genSize = (w, d) =>
 {
     const unitX = w / d.length
@@ -56,7 +57,7 @@ const genAttr = (w, d, i, v) =>
 {
     const s = genSize(w, d)
     const h = s.eventArea.height
-    const color = { bg: '#10161f', default: 'white', focus: 'red', blue: 'blue' }
+    const color = { bg: '#141d31', default: 'white', focus: 'red', purple: '#9f57ff' }
     const style =
     {
         line: `stroke: ${color.default}; stroke-width: ${s.line};`,
@@ -66,7 +67,7 @@ const genAttr = (w, d, i, v) =>
         width: w,
         height: h,
         style: `overflow:visible, ${style.opacity(0.8)}`,
-        fill: color.bg,
+        // fill: color.bg,
 
     }
     const list = {
@@ -74,7 +75,7 @@ const genAttr = (w, d, i, v) =>
         gBox: {
         },
         path: {
-            stroke: 'white', fill: "transparent", strokeWidth: 3
+            stroke: color.default, fill: "transparent", strokeWidth: 10
         },
         focusLine: {
             'attributeName': 'stroke-width',
@@ -93,6 +94,7 @@ const genAttr = (w, d, i, v) =>
         },
         eventArea: {
             ...svg,
+            style: style.opacity(0.2)
             // fill: color.bg,
         },
         lineH: {
@@ -151,28 +153,28 @@ const genAttr = (w, d, i, v) =>
         },
         fillBG: {
             x: 0,
-            y: 800,
+            y: 600,
             width: w,
-            height: 800,
+            height: 600,
             fill: 'url(#fill)'
         },
         clipPath: { // frame
         },
         fillPath: {
             // filter: 'url(#lineShadow)',
-            // fill: 'red',
+            fill: color.default,
         },
         defs: {
         },
         filter: {
-            x: '-7',
-            y: '-7',
+            x: '0',
+            y: '-10',
             width: '14',
             height: '14',
 
         },
         feGaussianBlur: {
-            stdDeviation: "15"
+            stdDeviation: "4"
         },
         msgTitle: {
             x: 30,
@@ -208,7 +210,7 @@ const genAttr = (w, d, i, v) =>
             stroke: 1,
         },
         msgGroup: {
-            transform: `translate(50,50)`
+            transform: `translate(100,100)`
         }
 
     }

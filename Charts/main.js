@@ -9,11 +9,21 @@ import { getElement, pipe } from './pipeline.js'
 import { _id, _name, appendAll, inputData, copyParams, getLineType } from './helper.js'
 
 
-
-const initSetPathGroup = (props, Use) => (w, d) =>
+const resizeChart = (props,Use)=> (e) =>
 {
     const _ = Use(props)
-    const { lineType } = _.inputStore
+    const { width } = main.getBoundingClientRect()
+    const w = width 
+    Publish(_.inputStore, { w : width - 100 })
+
+      console.log(w)
+}
+
+const initSetPathGroup = (props, Use) => (a, d) =>
+{
+    const _ = Use(props)
+    
+    const { lineType, w } = _.inputStore
     const { stop0, stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, pathDefs, path, pathShadow, blur, lineShadow } = _.$.initPathSVG
 
     appendAll({ stop0, stop1, stop2, stop3 }).to(fill)
@@ -99,8 +109,8 @@ const initSVGLists = (idList, list) => list.reduce((obj, cur) =>
 const initSVGElements = (obj) => Object.entries(obj).reduce((elStore, cur) =>
 {
     const [name, list] = [cur[0], cur[1]]
-
-    const tempEls = genSvgFromList(list, inputData(_id('width')), inputData(_id('data-list')),).named(name)
+    const {w,d} = inputStore
+    const tempEls = genSvgFromList(list, w, d).named(name)
     elStore[Symbol.toStringTag] = '$'
 
     Object.assign(elStore, { [name]: { ...tempEls } })
@@ -126,6 +136,7 @@ const initSVGListObj = initSVGLists(svgIdList, [
 
 
 const initParams = [
+    resizeChart,
     inputData,
     _id,
     _name,
@@ -162,18 +173,20 @@ const initParams = [
     getLineType
 ]
 
-
 const init = (props, Use) =>
 {
     const _ = Use(props)
-    const [d, w] = [inputData(_id('data-list')), 1500]
-    const initData = [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0]
-    Publish(_.inputStore, { w: w, d: initData, dLabel: initData.map((_, i) => 2010 + i) })
+
+    const resizeChartEvent = resizeChart(props,Use)
+    window.addEventListener('resize', resizeChartEvent)
+
+    const { w, d } = _.inputStore
+    Publish(_.inputStore, { w: w, d:d, dLabel: d.map((_, i) => 2010 + i) })
 
 
     const [svgArea, svg] = [_id('svg-area'), _.$.initSVG['svg']]
 
-    _id('data-list').value = initData.join(',')
+    _id('data-list').value = d.join(',')
 
     svgArea.appendChild(svg)
 
@@ -181,7 +194,7 @@ const init = (props, Use) =>
 
     const onMoveprops =
         [
-            updateAttr, genSize, _id, _.$, _.$.initSVG, _.$.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore, optionStore
+            updateAttr, genSize,genAttr, _id, _.$, _.$.initSVG, _.$.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore, optionStore
         ]
 
     const mouseOn = () => { svg.addEventListener('mousemove', onMove(onMoveprops, Use)) }

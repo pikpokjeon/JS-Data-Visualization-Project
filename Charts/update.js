@@ -51,10 +51,10 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
 {
     const _ = Use(props)
     const g = _.$.initSVG['group']
-
     while (g.firstChild)
     {
         g.removeChild(g.firstChild)
+
     }
 
     /**
@@ -64,14 +64,16 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const [t1id, t2id, pid, gid] = ['label', 'data', 'plot', 'g'].map(e => `${e}-${i}${value}`)
-
         const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
 
         const { plot, label, gBox, dataText } = _.genSvgFromList(list, w, d, i, value).named('tooltipSVG')
 
         label.textContent = dLabel[i]
         dataText.textContent = value
+
         _.appendAll({ label, dataText, plot }).to(gBox)
+        if (!_.optionStore['isTooltip'] && g.firstChild) updateAttr(plot, { style: 'visibility:hidden' })
+        else updateAttr(plot, { style: 'visibility:visible' })
 
         gBox.appendChild(plot)
         g.appendChild(gBox)

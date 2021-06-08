@@ -95,8 +95,9 @@ const onChangeLineType = (props, Use, target) => (e) =>
 const onChangeInput = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
+    const {w} = _.inputStore
     const [wth, main] = [_._id('width'), _._id('main')]
-    let [w, d,] =
+    let [a, d,] =
         [_.inputData(wth),
         _.inputData(_._id('data-list')),
         ]
@@ -105,120 +106,35 @@ const onChangeInput = (props, Use, target) => (e) =>
     const { isStreaming } = _.chartStore
 
     let d_label = _.inputData(_._id('data-list')).map((d, i) => 2010 + i)
-
     const memo = d.map(e => 1)
 
     _.Publish(_.chartStore, { memo })
-
+    
     const size = _.genSize(w, d)
-
     const random = _.genRandomChartData(size)
-
     const lastLabel = d_label[d_label.lenght - 1] + 1
-
     _.Publish(_.inputStore, { w, d, d_label })
 
     if (target === 'add' && !isStreaming) 
     {
-        d.push(random), d_label.push(lastLabel)
+        d.push(Math.floor(random)), d_label.push(lastLabel)
         memo.push(1), _.Publish(_.chartStore, { memo })
     }
 
     props = [...props, w, d,]
 
-    const getUnitToShow = (d) =>
-    {
-        let { memo, unitToshow, unitGap } = _.chartStore
-        for (let i = 1; i < d.length; i++)
-        {
-            if (memo[i] > 0)
-            {
-
-                let [x, px] = [size.x(0), size.x(unitToshow)]
-                const a = px
-                unitGap = Math.abs(px - x)
-                if (unitGap > 40) unitToshow -= 1
-                unitToshow += 1
-                // secountIdx = i
-                break
-            }
-        }
-        _.Publish(_.chartStore, { unitToshow, unitGap })
-        console.log(unitToshow, memo, unitGap)
-        return unitToshow
-    }
-
-    getUnitToShow(d)
-
-
-    // const labelArr = (d, memo, s) =>
-    // {
-    //     let gap = -1
-    //     let unitToshow = 2
-    //     let secountIdx = 1
-    //     let a = -1
-    //     const size = s(w, d)
-
-    //     // unit = unit(d,memo,gap,unitToshow)
-
-    //     for (let i = 1; i < d.length; i++)
-    //     {
-    //         if (memo[i] > 0)
-    //         {
-
-    //             let [x, px] = [size.x(0), size.x(unitToshow)]
-    //             a = px
-    //             gap = Math.abs(x - px)
-    //             if (gap > 40) unitToshow -= 1
-    //             unitToshow += 1
-    //             secountIdx = i
-    //             break
-    //         }
-    //     }
-    // return unit
-    // console.log(gap, unitToshow, secountIdx, a)
-
-    // console.log(unitToshow, gap)
-
-    //     return d.map((e, i) =>
-    //     {
-    //         if (size.unitX < 30)
-    //         {
-    //             if (i % unitToshow === 0)
-    //             {
-    //                 memo[i] = 1
-    //                 return e
-    //             }
-    //             else
-    //             {
-    //                 memo[i] = 0
-    //                 return undefined
-    //             }
-    //         }
-    //         else
-    //         {
-    //             return e
-    //         }
-    //     })
-    // }
-
-
     _.updateDataInputBox(props, Use)(d)
-
-    const { width } = main.getBoundingClientRect()
-
-    if (w > width)
-    {
-        wth.value = width - 250
-        w = width - 250
-    }
-
     _.updatePathGroup(props, Use)(lineType)(w, d)
     _.updateTooltip(props, Use)(w, d, d_label)
 
 
 }
 
+const resizeChart = () =>
+{
+    const { width } = main.getBoundingClientRect()
+
+}
 
 
 const onSelectPeriod = (props, Use, target) => (e) =>
@@ -312,7 +228,7 @@ const startStream = (props, Use, target) => (e) =>
     const [wth, main] = [_._id('width'), _._id('main')]
     let time = _.inputData(_._id('time'))
 
-    let w = _.inputData(wth)
+    let w = _.inputStore.w
     let d = _.inputData(_._id('data-list'))
     let d_memo = d.map(e => 1)
     let d_label = d.map((_, i) => Number(2010) + i)
@@ -363,11 +279,6 @@ const startStream = (props, Use, target) => (e) =>
         _.Publish(_.chartStore, { isStreaming: true })
         for (let i = 0; i < time; i++)
         {
-            if (w > width)
-            {
-                wth.value = width - 250
-                w = width - 250
-            }
             const random = _.genRandomChartData(size)
             props = [w, temp_d, ...props]
             round += 1
@@ -387,8 +298,9 @@ const startStream = (props, Use, target) => (e) =>
 const onMove = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
-    const [w, d] = [_.inputData(_._id('width')), _.inputData(_._id('data-list'))]
+    const [w, d] = [_.inputStore['w'], _.inputData(_._id('data-list'))]
     const size = _.genSize(w, d)
+    const attr = _.genAttr(w, d)
     let idx = size.idx(e.layerX)
     let value = d[idx]
     let idxAfter = undefined
@@ -401,9 +313,9 @@ const onMove = (props, Use, target) => (e) =>
         {
             updateAll(
                 [
-                    [_._id(`plot-${idx}${value}`), { fill: 'red' }],
-                    [_._id(`label-${idx}${value}`), { fill: 'red' }],
-                    [_._id(`data-${idx}${value}`), { fill: 'red' }],
+                    [_._id(`plot-${idx}${value}`), { fill: attr.color.purple }],
+                    [_._id(`label-${idx}${value}`), { fill: attr.color.purple }],
+                    [_._id(`data-${idx}${value}`), { fill: attr.color.purple }],
                 ]
             )
 
@@ -423,7 +335,6 @@ const onMove = (props, Use, target) => (e) =>
     }
     if (_.optionStore['isFocusLine']) _.updateAttr(_.$.initSVG['lineV'], { x1: e.layerX, x2: e.layerX })
     else _.updateAttr(_.$.initSVG['lineV'], { x1: -1, x2: -1 })
-    // console.log(_.optionStore['fullRangeLine'])
 
 }
 
@@ -449,7 +360,8 @@ const selectOption = (props, Use) => (e) =>
         Reflect.set(options, name, cur.checked)
         return options
     }, _.optionStore)
-
+    onMove(props, Use)(e)
+    _.updateTooltip(props, Use)(_.inputStore['w'], _.inputStore['d'], _.inputStore['d_label'])
     console.log(_.optionStore)
 }
 

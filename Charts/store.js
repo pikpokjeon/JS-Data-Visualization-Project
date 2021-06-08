@@ -15,8 +15,8 @@ chartStore[Symbol.toStringTag] = 'chartStore'
 
 const inputStore =
 {
-    w: -1,
-    d: -1,
+    w: 1400,
+    d: [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0],
     d_label: -1,
     lineType: 'default'
 }
