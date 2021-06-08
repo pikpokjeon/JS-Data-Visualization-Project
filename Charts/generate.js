@@ -5,9 +5,9 @@ import { updateAttr } from './update.js'
 
 const genSize = (w, d) =>
 {
-    const unitX = w / d.length
+    const [height, margin] = [300, 100]
+    const unitX =( w - margin) / d.length
     const gap = unitX / d.length
-    const [height, margin] = [300, 30]
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
     const SUM = (maxData + Math.abs(minData))
@@ -25,7 +25,7 @@ const genSize = (w, d) =>
         leftMargin: 155,
         width: w,
         eventArea: { width: w, height: 750 },
-        data: { text: { width: 30, height: 20 } },
+        data: { text: { width: 30, height: 50 } },
         msgBox: { width: 200, height: 150 },
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
@@ -126,7 +126,7 @@ const genAttr = (w, d, i, v) =>
             'text-anchor': 'middle',
         },
         dataText: {
-            x: 50,
+            x: 40,
             y: s.y(v),
             fill: color.default,
             'dominant-baseline': 'end',
@@ -153,9 +153,9 @@ const genAttr = (w, d, i, v) =>
         },
         fillBG: {
             x: 0,
-            y: 600,
+            y: 700,
             width: w,
-            height: 600,
+            height: 700,
             fill: 'url(#fill)'
         },
         clipPath: { // frame
