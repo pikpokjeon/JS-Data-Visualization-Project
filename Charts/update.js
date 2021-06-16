@@ -12,9 +12,10 @@ const updateAttr = (el, attr) =>
 
 const updateAll = (...updates) =>
 {
-    for (const [el, attr] of Array.from(...updates))
+    for (const [el, attr, text] of Array.from(...updates))
     {
         updateAttr(el, attr)
+        if (text) el.textContent = text
     }
 }
 
