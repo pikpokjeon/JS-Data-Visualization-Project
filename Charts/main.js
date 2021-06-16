@@ -9,20 +9,18 @@ import { getElement, pipe } from './pipeline.js'
 import { _id, _name, appendAll, inputData, copyParams, getLineType } from './helper.js'
 
 
-const resizeChart = (props,Use)=> (e) =>
+const resizeChart = (props, Use) => (e) =>
 {
     const _ = Use(props)
     const { width } = main.getBoundingClientRect()
-    const w = width 
-    Publish(_.inputStore, { w : width - 100 })
-
-      console.log(w)
+    const w = width
+    Publish(_.inputStore, { w: width - 100 })
 }
 
 const initSetPathGroup = (props, Use) => (a, d) =>
 {
     const _ = Use(props)
-    
+
     const { lineType, w } = _.inputStore
     const { stop0, stop1, stop2, stop3, fill, fillG, fillBG, frame, fillPath, pathDefs, path, pathShadow, blur, lineShadow } = _.$.initPathSVG
 
@@ -30,11 +28,6 @@ const initSetPathGroup = (props, Use) => (a, d) =>
 
     props = [...props, w, d]
     updatePathGroup(props, Use)(lineType)(w, d)
-
-    // appendTree 를 만들어 구조를 작성해서 확장 하도록
-    //      renderTo(_.$.initSVG['group')
-    //              .with([_.$.initSVG['group'])),
-    //      ]
 
     appendAll({ blur }).to(lineShadow)
     appendAll({ fillPath }).to(frame)
@@ -60,14 +53,14 @@ const initTooltipMsg = (props, Use) => (w, d) =>
     const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
     updateAll(
         [
-            [avg, { y: 30 }],
-            [max, { y: 60 }],
-            [min, { y: 90 }],
-            [per, { y: 120 }],
-            [avgV, { y: 30, x: 110 }],
-            [maxV, { y: 60, x: 110 }],
-            [minV, { y: 90, x: 110 }],
-            [perV, { y: 120, x: 110 }],
+            [avg, { y: 30 }, 'average'],
+            [max, { y: 60 }, 'max'],
+            [min, { y: 90 }, 'min'],
+            [per, { y: 120 }, 'per'],
+            [avgV, { y: 30, x: 110 }, 'averageV '],
+            [maxV, { y: 60, x: 110 }, 'maxV'],
+            [minV, { y: 90, x: 110 }, 'minV'],
+            [perV, { y: 120, x: 110 }, 'perV'],
         ])
     updateAll(
         [
@@ -76,15 +69,6 @@ const initTooltipMsg = (props, Use) => (w, d) =>
             [msgBlur, { stdDeviation: '10' }]
         ]
     )
-    avg.textContent = 'average'
-    max.textContent = 'max'
-    min.textContent = 'min'
-    per.textContent = 'per'
-
-    avgV.textContent = 'averageV '
-    maxV.textContent = 'maxV'
-    minV.textContent = 'minV'
-    perV.textContent = 'perV'
 
     appendAll({ msgBlur }).to(msgFilter)
     appendAll({ msgFilter }).to(msgDefs)
@@ -109,7 +93,7 @@ const initSVGLists = (idList, list) => list.reduce((obj, cur) =>
 const initSVGElements = (obj) => Object.entries(obj).reduce((elStore, cur) =>
 {
     const [name, list] = [cur[0], cur[1]]
-    const {w,d} = inputStore
+    const { w, d } = inputStore
     const tempEls = genSvgFromList(list, w, d).named(name)
     elStore[Symbol.toStringTag] = '$'
 
@@ -177,11 +161,11 @@ const init = (props, Use) =>
 {
     const _ = Use(props)
 
-    const resizeChartEvent = resizeChart(props,Use)
+    const resizeChartEvent = resizeChart(props, Use)
     window.addEventListener('resize', resizeChartEvent)
 
     const { w, d } = _.inputStore
-    Publish(_.inputStore, { w: w, d:d, dLabel: d.map((_, i) => 2010 + i) })
+    Publish(_.inputStore, { w: w, d: d, dLabel: d.map((_, i) => 2010 + i) })
 
 
     const [svgArea, svg] = [_id('svg-area'), _.$.initSVG['svg']]
@@ -194,7 +178,7 @@ const init = (props, Use) =>
 
     const onMoveprops =
         [
-            updateAttr, genSize,genAttr, _id, _.$, _.$.initSVG, _.$.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore, optionStore
+            updateAttr, genSize, genAttr, _id, _.$, _.$.initSVG, _.$.initPathSVG, inputData, setEvents, Publish, chartStore, inputStore, optionStore
         ]
 
     const mouseOn = () => { svg.addEventListener('mousemove', onMove(onMoveprops, Use)) }
