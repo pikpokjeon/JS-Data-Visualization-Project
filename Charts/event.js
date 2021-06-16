@@ -155,8 +155,6 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     if (selectedStartIdx < 0)
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
-
-
         _.updateAll(
             [
                 [_.$.initPathSVG['fillBG'], { x: 0, width: x }],
@@ -177,7 +175,8 @@ const onSelectPeriod = (props, Use, target) => (e) =>
         const selectedWidth = (size.x(maxIdx) - size.x(minIdx))
         const [start, last] = [size.x(selectedStartIdx), size.idx(e.layerX)]
         const isSelectReverse = last - maxIdx < 0
-        const offsetX = selectedWidth / 3
+        const [offsetX, reversedOffsetX] = [start + (selectedWidth / 3), start - (selectedWidth / 2)]
+
         _.Publish(_.chartStore, { selectedStartIdx: minIdx, selectedEndIdx: maxIdx })
 
         _.updateAll(
@@ -199,8 +198,12 @@ const onSelectPeriod = (props, Use, target) => (e) =>
                         : start + selectedWidth,
                     style: attr.borderLine.style
                 }],
-                [_.$.msgSVG['msgGroup'], { transform: `translate(${start + offsetX},${offsetY})`, style: `visibility: visible` }]
-
+                [_.$.msgSVG['msgGroup'],
+                {
+                    transform: `translate(${isSelectReverse ? reversedOffsetX : offsetX},${offsetY})`,
+                    style: `visibility: visible`
+                }
+                ]
             ]
         )
 
