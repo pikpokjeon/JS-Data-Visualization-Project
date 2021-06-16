@@ -1,11 +1,12 @@
 
 
-const updateAttr = (el, attr) =>
+const updateAttr = (el, attr, text) =>
 {
     for (const [t, v] of Object.entries(attr))
     {
         el.setAttribute(t, v)
     }
+    if (text) el.textContent = text
     return el
 }
 
@@ -14,8 +15,7 @@ const updateAll = (...updates) =>
 {
     for (const [el, attr, text] of Array.from(...updates))
     {
-        updateAttr(el, attr)
-        if (text) el.textContent = text
+        updateAttr(el, attr, text)
     }
 }
 

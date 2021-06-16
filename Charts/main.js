@@ -164,7 +164,8 @@ const init = (props, Use) =>
     const resizeChartEvent = resizeChart(props, Use)
     window.addEventListener('resize', resizeChartEvent)
 
-    const { w, d } = _.inputStore
+    let { w, d, dLabel } = _.inputStore
+    dLabel = d.map((_, i) => 2010 + i)
     Publish(_.inputStore, { w: w, d: d, dLabel: d.map((_, i) => 2010 + i) })
 
 
@@ -197,7 +198,7 @@ const init = (props, Use) =>
     _.$.initSVG = { svg, ..._.$.initSVG }
     setEvents(props, Use).addAll(_.DOMEventAttr)
 
-    updateTooltip(props, Use)(w, d, d.map((_, i) => 2010 + i))
+    updateTooltip(props, Use)(w, d, dLabel)
 
 
 }

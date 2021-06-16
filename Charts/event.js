@@ -81,7 +81,7 @@ const onChangeLineType = (props, Use, target) => (e) =>
     props = [w, d, ...props]
 
     _.updatePathGroup(props, Use)(lineType)(w, d)
-    _.updateTooltip(props, Use)(w, d, dLabel)
+    _.updateTooltip(props, Use)(w, d, d.map((e, i) => 2010 + i))
     return lineType
 }
 
@@ -95,7 +95,7 @@ const onChangeLineType = (props, Use, target) => (e) =>
 const onChangeInput = (props, Use, target) => (e) =>
 {
     const _ = Use(props)
-    const {w} = _.inputStore
+    const { w } = _.inputStore
     const [wth, main] = [_._id('width'), _._id('main')]
     let [a, d,] =
         [_.inputData(wth),
@@ -109,19 +109,21 @@ const onChangeInput = (props, Use, target) => (e) =>
     const memo = d.map(e => 1)
 
     _.Publish(_.chartStore, { memo })
-    
+
     const size = _.genSize(w, d)
     const random = _.genRandomChartData(size)
     const lastLabel = d_label[d_label.lenght - 1] + 1
-    _.Publish(_.inputStore, { w, d, d_label })
 
     if (target === 'add' && !isStreaming) 
     {
         d.push(Math.floor(random)), d_label.push(lastLabel)
         memo.push(1), _.Publish(_.chartStore, { memo })
+        _.Publish(_.inputStore, { w, d, d_label })
+
     }
 
     props = [...props, w, d,]
+    _.Publish(_.inputStore, { w, d, d_label })
 
     _.updateDataInputBox(props, Use)(d)
     _.updatePathGroup(props, Use)(lineType)(w, d)
@@ -283,15 +285,11 @@ const startStream = (props, Use, target) => (e) =>
             props = [w, temp_d, ...props]
             round += 1
             toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label, w, props)
-
         }
-
-
     }
     const { isStreaming } = _.chartStore
     if (!isStreaming) stream(time)
     else console.log(_.chartStore)
-
 }
 
 
