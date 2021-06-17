@@ -80,6 +80,8 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
     while (g.firstChild) g.removeChild(g.firstChild)
 
     let prevData = -1
+    let prevX = -1
+    let prevY = -1
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
         const [t1id, t2id, pid, gid, bid] = ['label', 'data', 'plot', 'g', 'bar'].map(e => `${e}-${i}${value}`)
@@ -110,6 +112,17 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
             }
             gBox.appendChild(bar)
 
+        }
+        if (plotType)
+        {
+            if (volume)
+            {
+                const max = size.y(size.MAX)
+                const unit = Math.abs(max - ((size.y(value)) / 10))
+
+                console.log(unit)
+                updateAttr(plot, { r: unit * unit / max })
+            }
         }
         prevData = size.y(value)
 
