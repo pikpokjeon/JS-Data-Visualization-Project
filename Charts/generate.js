@@ -5,8 +5,8 @@ import { updateAttr } from './update.js'
 
 const genSize = (w, d) =>
 {
-    const [height, margin] = [300, 100]
-    const unitX =( w - margin) / d.length
+    const [height, margin] = [250, 100]
+    const unitX = (w - margin) / d.length
     const gap = unitX / d.length
     const [maxData, minData] = [Math.max(...Array.from(d)), (Math.min(...Array.from(d)))]
     const MAX = Math.max(maxData, Math.abs(minData))
@@ -230,34 +230,6 @@ const genSvgFromList = (list, w, d, i, v) =>
     const createdSVG = {}
     let temp = undefined
 
-    // console.log('dd', (Object.values(list)), list)
-
-    // list.reduce((stored, cur) =>
-    // {
-    //     const [name, info] = cur
-
-    //     if ( info.id )
-    //     {
-    //         const idList = Array.isArray(info.id) ? [...info.id] : [info.id] 
-
-    //         for( const id of idList )
-    //         {
-    //             temp = getElement(w, d, i, v)(info.attr, info.type, id)
-    //                         updateAttr(temp, { id: id, name: info.name })
-    //                         createdSVG[info.attr] = temp
-    //         }
-    //         continue
-    //     }
-    //     else
-    //     {
-    //         temp = getElement(w, d, i, v)(info.attr, info.type, id)
-    //         updateAttr(temp, { id: id, name: info.name })
-    //         createdSVG[info.attr] = temp
-    //     }
-
-    // },{})
-
-
     // ! TODO: need to simplify the logic
 
     for (const [name, info] of (Object.values(list)))
@@ -329,7 +301,7 @@ const genPath = (d, type) => (size) =>
     }, 'M')
     return {
         path: path,
-        fill: path + ` V 800 H 0Z`
+        fill: path + ` V 700 H 100Z`
     }
 }
 
