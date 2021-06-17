@@ -408,7 +408,7 @@ const selectOption = (type) => (props, Use) => (e) =>
 
     }, _.optionStore)
 
-    // console.log(_.optionStore)
+    console.log(_.optionStore)
     onMove(props, Use)(e)
     _.updateTooltip(props, Use)(_.inputStore['w'], _.inputStore['d'], _.inputStore['d'].map((_, i) => 2010 + i))
 }

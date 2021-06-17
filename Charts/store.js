@@ -29,6 +29,15 @@ const optionStore =
     isFocusLine: true,
     isTooltip: true,
     isTooltipBox: true,
+    barType: false,
+    lineType: true,
+    plotType: false,
+    barDefault: true,
+    contrast: false,
+    plotDefault: true,
+    volume: false,
+
+
 }
 optionStore[Symbol.toStringTag] = 'optionStore'
 

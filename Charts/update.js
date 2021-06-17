@@ -53,20 +53,13 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
     const _ = Use(props)
     const g = _.$.initSVG['group']
     const size = _.genSize(w, d)
-    while (g.firstChild)
-    {
-        g.removeChild(g.firstChild)
+    const { barType, plotType, barDefault, plotDefault, contrast, volume } = _.optionStore
 
-    }
+    while (g.firstChild) g.removeChild(g.firstChild)
 
-    /**
-     * genSvgFromList 함수를 사용하여, 
-     * svg 리스트에 있는 요소들을 생성해준다.
-     */
     let prevData = -1
     for (const [i, value] of (Array.from(Object.entries(d))))
     {
-
         const [t1id, t2id, pid, gid, bid] = ['label', 'data', 'plot', 'g', 'bar'].map(e => `${e}-${i}${value}`)
         const list = _.genSvgList('tooltipGroup').setID({ gBox: gid, label: t1id, dataText: t2id, plot: pid })
         const list2 = _.genSvgList('barGroup').setID({ bar: bid })
@@ -77,15 +70,25 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
         label.textContent = dLabel[i]
         dataText.textContent = value
 
-        // const gap = size.y(value) - prevData
-        // if (gap > 0) updateAttr(bar, { fill: '#003cff', y: prevData })
-        // else updateAttr(bar, { fill: '#ff007bf7' })
-        // console.log(gap)
-        // if (i > 0)
-        // {
-        //     updateAttr(bar, { height: Math.abs(gap) })
-        //     gBox.appendChild(bar)
-        // }
+        const gap = size.y(value) - prevData
+
+        if (barType)
+        {
+            if (gap > 0) updateAttr(bar, { fill: '#003cff', y: prevData })
+            else updateAttr(bar, { fill: '#ff007bf7' })
+
+            if (i > 0 && contrast)
+            {
+                updateAttr(bar, { height: Math.abs(gap) })
+            }
+            else if (i > 0 && barDefault)
+            {
+                const h = Math.abs(gap)
+                updateAttr(bar, { width: size.gap * 7, height: h, y: 700 - h, x: size.x(i) - (size.gap * 3.5) })
+            }
+            gBox.appendChild(bar)
+
+        }
         prevData = size.y(value)
 
 
