@@ -77,15 +77,15 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
         label.textContent = dLabel[i]
         dataText.textContent = value
 
-        const gap = size.y(value) - prevData
-        if (gap > 0) updateAttr(bar, { fill: '#003cff', y: prevData })
-        else updateAttr(bar, { fill: '#ff007bf7' })
-        console.log(gap)
-        if (i > 0)
-        {
-            updateAttr(bar, { height: Math.abs(gap) })
-            gBox.appendChild(bar)
-        }
+        // const gap = size.y(value) - prevData
+        // if (gap > 0) updateAttr(bar, { fill: '#003cff', y: prevData })
+        // else updateAttr(bar, { fill: '#ff007bf7' })
+        // console.log(gap)
+        // if (i > 0)
+        // {
+        //     updateAttr(bar, { height: Math.abs(gap) })
+        //     gBox.appendChild(bar)
+        // }
         prevData = size.y(value)
 
 

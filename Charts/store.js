@@ -18,6 +18,7 @@ const inputStore =
     w: 1400,
     d: [0, 230, 120, -450, -200, 1600, 0, 600, -1500, 200, 0, -1200, -800, 800, 0],
     d_label: -1,
+    d_memo: -1,
     lineType: 'default'
 }
 inputStore[Symbol.toStringTag] = 'inputStore'
