@@ -27,6 +27,7 @@ const setEvents = (props, Use) =>
                         }
                         _events.push({ ...e })
                     }))
+
             return Object.assign(acc, Object.assign({}, { ...cur }))
         }, { ...list })
 
@@ -121,6 +122,53 @@ const onChangeInput = (props, Use, target) => (e) =>
         _.Publish(_.inputStore, { w, d, d_label })
 
     }
+
+    let d_memo = d.map(e => 1)
+
+    // const [prev, cur] = [size.x(0), size.x(1)]
+
+    const gap = (memo) =>
+    {
+        for (let i = 1; i < memo.length; i++)
+        {
+            if (memo[i] === 1)
+            {
+                const [prev, cur] = [size.x(0), size.x(i)]
+                return cur - prev
+            }
+        }
+    }
+    function unit()
+    {
+        let count = 1
+        for (let i = 1; i < d_memo.length; i++)
+        {
+            if (gap(d_memo) < 45) count += 1
+            else count -= 1
+            break
+        }
+        return count
+    }
+
+    console.log(gap(d_memo), unit())
+
+    d_memo = d_memo.reduce((acc, cur, i) =>
+    {
+        // if (gap(d_memo) > 45) cur = 0
+
+        // else if (i % unit() !== 0)
+        // {
+        //     cur = 1
+        // }
+        acc.push(cur)
+        return acc
+
+    }, [])
+    console.log(d_memo)
+
+
+
+
 
     props = [...props, w, d,]
     _.Publish(_.inputStore, { w, d, d_label })
@@ -252,9 +300,6 @@ const startStream = (props, Use, target) => (e) =>
         if (i >= time - 1) _.Publish(_.chartStore, { isStreaming: false })
     }
 
-
-
-
     const updateTargetToSort = (i, delay, round, random, arr, arr_memo, arr_label, w, props) => new Promise(res => 
     {
         return setTimeout(() =>
@@ -282,6 +327,7 @@ const startStream = (props, Use, target) => (e) =>
         let round = -1
         const size = _.genSize(w, d)
         _.Publish(_.chartStore, { isStreaming: true })
+
         for (let i = 0; i < time; i++)
         {
             const random = _.genRandomChartData(size)
@@ -290,9 +336,9 @@ const startStream = (props, Use, target) => (e) =>
             toDelayUpdate(i, 500, round, random, temp_d, d_memo, d_label, w, props)
         }
     }
+
     const { isStreaming } = _.chartStore
     if (!isStreaming) stream(time)
-    else console.log(_.chartStore)
 }
 
 
@@ -307,9 +353,7 @@ const onMove = (props, Use, target) => (e) =>
     let idxAfter = undefined
     if (idx !== _.chartStore['lastIdx'])
     {
-        console.log(_)
-        _.Publish(_.chartStore, { lastIdx: size.idx(e.layerX), x: e.layerX })
-        console.log(idx)
+        _.Publish(_.chartStore, { lastIdx: idx, x: e.layerX })
         if (value !== undefined)
         {
             updateAll(
@@ -358,12 +402,14 @@ const selectOption = (props, Use) => (e) =>
             words += w.join('')
             return words
         }, '')
+
         Reflect.set(options, name, cur.checked)
         return options
+
     }, _.optionStore)
+
     onMove(props, Use)(e)
     _.updateTooltip(props, Use)(_.inputStore['w'], _.inputStore['d'], _.inputStore['d_label'])
-    console.log(_.optionStore)
 }
 
 export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption }

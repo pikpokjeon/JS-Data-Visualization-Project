@@ -115,7 +115,8 @@ const initSVGListObj = initSVGLists(svgIdList, [
     {
         from: 'tooltipMsgGroup',
         as: 'msgSVG'
-    }
+    },
+
 ])
 
 

@@ -197,9 +197,20 @@ const svgDefinition = (id) =>
     }
     tooltipMsgGroup[Symbol.toStringTag] = 'tooltipMsgGroup'
 
+    const barGroup =
+    {
+        bar:
+        {
+            type: 'rect',
+            attr: 'bar',
+            id: id.bar,
+            name: 'bar'
+        },
 
+    }
+    barGroup[Symbol.toStringTag] = 'barGroup'
 
-    return { singleSVG, tooltipGroup, pathGroup, tooltipMsgGroup }
+    return { singleSVG, tooltipGroup, pathGroup, tooltipMsgGroup, barGroup }
 }
 svgDefinition[Symbol.toStringTag] = 'svgDefinition'
 

@@ -30,7 +30,7 @@ const genSize = (w, d) =>
         line: 1,
         x: i => Math.floor(unitX * i) + margin,
         y: v => margin + ((MAX - v)) * (unitY),
-        idx: x => Math.floor(x / (unitX))
+        idx: x => Math.floor((x - (w / d.length)) / (unitX))
     }
 }
 
@@ -211,6 +211,15 @@ const genAttr = (w, d, i, v) =>
         },
         msgGroup: {
             transform: `translate(100,100)`
+        },
+        bar: {
+            x: s.x(i),
+            y: s.y(v),
+            width: 7,
+            height: 10,
+            fill: color.default,
+            rx: 10,
+            ry: 10,
         }
 
     }
