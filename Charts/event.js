@@ -174,8 +174,9 @@ const onChangeInput = (props, Use, target) => (e) =>
     _.Publish(_.inputStore, { w, d, d_label })
 
     _.updateDataInputBox(props, Use)(d)
-    _.updatePathGroup(props, Use)(lineType)(w, d)
     _.updateTooltip(props, Use)(w, d, d_label)
+    _.updatePathGroup(props, Use)(lineType)(w, d)
+
 
 
 }

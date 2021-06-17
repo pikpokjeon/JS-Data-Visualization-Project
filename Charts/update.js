@@ -51,7 +51,7 @@ const updatePathGroup = (props, Use) => (lineType) => (w, d) =>
 const updateTooltip = (props, Use) => (w, d, dLabel) =>
 {
     const _ = Use(props)
-    const g = _.$.initSVG['group']
+    const g = _.$.initSVG['g']
     const size = _.genSize(w, d)
     const { barType, plotType, barDefault, plotDefault, contrast, volume } = _.optionStore
 

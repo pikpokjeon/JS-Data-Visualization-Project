@@ -40,7 +40,7 @@ const initSetPathGroup = (props, Use) => (a, d) =>
         ])
 
     appendAll({ fillBG }).to(fillG)
-    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG['g'])
+    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG['group'])
 
 }
 
@@ -193,13 +193,13 @@ const init = (props, Use) =>
         return e
     })
 
-    initSetPathGroup(props, Use)(w, d)
-    initTooltipMsg(props, Use)(w, d)
     appendAll(_.$.initSVG).to(svg)
     _.$.initSVG = { svg, ..._.$.initSVG }
     setEvents(props, Use).addAll(_.DOMEventAttr)
 
     updateTooltip(props, Use)(w, d, dLabel)
+    initTooltipMsg(props, Use)(w, d)
+    initSetPathGroup(props, Use)(w, d)
 
 
 }
