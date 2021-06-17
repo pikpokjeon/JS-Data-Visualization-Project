@@ -388,10 +388,10 @@ const showTooltipMsg = (props, Use) => (e) =>
 {
 }
 
-const selectOption = (props, Use) => (e) =>
+const selectOption = (type) => (props, Use) => (e) =>
 {
     const _ = Use(props)
-    const selectedNodes = _._name('checkbox')
+    const selectedNodes = _._name(type)
 
     Array.from(selectedNodes).reduce((options, cur) =>
     {
@@ -408,6 +408,7 @@ const selectOption = (props, Use) => (e) =>
 
     }, _.optionStore)
 
+    console.log(_.optionStore)
     onMove(props, Use)(e)
     _.updateTooltip(props, Use)(_.inputStore['w'], _.inputStore['d'], _.inputStore['d_label'])
 }

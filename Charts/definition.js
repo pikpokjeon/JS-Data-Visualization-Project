@@ -320,7 +320,31 @@ const DOMEventAttr = {
         [
             {
                 event: 'click',
-                func: selectOption,
+                func: selectOption('checkbox'),
+                isAdded: false,
+            }
+        ],
+    'type-checkbox':
+        [
+            {
+                event: 'click',
+                func: selectOption('type-checkbox'),
+                isAdded: false,
+            }
+        ],
+    'bar-radio':
+        [
+            {
+                event: 'click',
+                func: selectOption('bar-radio'),
+                isAdded: false,
+            }
+        ],
+    'plot-radio':
+        [
+            {
+                event: 'click',
+                func: selectOption('plot-radio'),
                 isAdded: false,
             }
         ]
