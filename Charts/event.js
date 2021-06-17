@@ -393,6 +393,7 @@ const selectOption = (type) => (props, Use) => (e) =>
 {
     const _ = Use(props)
     const selectedNodes = _._name(type)
+    const { w, d } = _.inputStore
 
     Array.from(selectedNodes).reduce((options, cur) =>
     {
@@ -411,7 +412,8 @@ const selectOption = (type) => (props, Use) => (e) =>
 
     console.log(_.optionStore)
     onMove(props, Use)(e)
-    _.updateTooltip(props, Use)(_.inputStore['w'], _.inputStore['d'], _.inputStore['d'].map((_, i) => 2010 + i))
+    _.updatePathGroup(props, Use)(_.inputStore['lineType'])(w, d)
+    _.updateTooltip(props, Use)(w, d, d.map((_, i) => 2010 + i))
 }
 
 export { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption }

@@ -37,14 +37,36 @@ const updateDataInputBox = (props, Use) => (d) =>
 
 
 // Pathgroup 배열이나 객체를 넘기도록 변경
-const updatePathGroup = (props, Use) => (lineType) => (w, d) =>
+const updatePathGroup = (props, Use) => (type) => (w, d) =>
 {
     const _ = Use(props)
     const size = _.genSize(w, d)
-    const path = _.genPath(d, lineType)(size)
-    _.updatePath(_.$.initPathSVG['path'], path.path)
-    _.updatePath(_.$.initPathSVG['pathShadow'], path.path)
-    _.updatePath(_.$.initPathSVG['fillPath'], path.fill)
+    const genPath = _.genPath(d, type)(size)
+    const { lineType } = _.optionStore
+    const { path, pathShadow, fillPath } = _.$.initPathSVG
+    _.updatePath(path, genPath.path)
+    _.updatePath(pathShadow, genPath.path)
+    _.updatePath(fillPath, genPath.fill)
+    if (!lineType)
+    {
+        _.updateAll(
+            [
+                [path, { style: 'visibility:hidden' }],
+                [pathShadow, { style: 'visibility:hidden' }],
+                [fillPath, { style: 'visibility:hidden' }],
+            ]
+        )
+    } else
+    {
+        _.updateAll(
+            [
+                [path, { style: 'visibility:visible' }],
+                [pathShadow, { style: 'visibility:visible' }],
+                [fillPath, { style: 'visibility:visible' }],
+            ]
+        )
+    }
+
 }
 
 

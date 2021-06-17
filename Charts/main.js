@@ -166,6 +166,7 @@ const init = (props, Use) =>
     window.addEventListener('resize', resizeChartEvent)
 
     let { w, d, dLabel } = _.inputStore
+    const { lineType } = _.optionStore
     dLabel = d.map((_, i) => 2010 + i)
     Publish(_.inputStore, { w: w, d: d, dLabel: d.map((_, i) => 2010 + i) })
 
@@ -199,7 +200,7 @@ const init = (props, Use) =>
 
     updateTooltip(props, Use)(w, d, dLabel)
     initTooltipMsg(props, Use)(w, d)
-    initSetPathGroup(props, Use)(w, d)
+    if (lineType) initSetPathGroup(props, Use)(w, d)
 
 
 }
