@@ -76,7 +76,27 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
     const g = _.$.initSVG['g']
     const size = _.genSize(w, d)
     const { barType, plotType, barDefault, plotDefault, contrast, volume } = _.optionStore
+    const temp = [...d]
+    const sorted = temp.sort((a, b) => a - b)
+    const data_memo = sorted.reduce((prev, cur, i) =>
+    {
+        if (i === 0) prev.push(cur)
+        else
+        {
+            for (let idx = i; idx > -1; idx--)
+            {
+                if (prev[idx] !== null)
+                {
+                    if (Math.abs(prev[idx] - Math.abs(cur)) < 130) prev[idx] = null
+                    // else prev.push(cur)
+                    break
+                }
+            }
+        }
+        return prev
 
+    }, [...temp])
+    console.log(sorted, data_memo)
     while (g.firstChild) g.removeChild(g.firstChild)
 
     let prevData = -1
@@ -92,6 +112,7 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
         const { bar } = _.genSvgFromList(list2, w, d, i, value).named('barSVG')
         updateAttr(bar, { id: bid })
         label.textContent = dLabel[i]
+        // if (data_memo.includes(value))
         dataText.textContent = value
 
         const gap = size.y(value) - prevData
@@ -137,6 +158,37 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
     }
 }
 
+const updateTooltipMsg = (props, Use) => (w, d) =>
+{
+    const _ = Use(props)
+    console.log(_)
+    const { msgBlur, msgDefs, msgFilter } = _.$.initPathSVG
+    const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
+    _.updateAll(
+        [
+            [avg, { y: 30 }, 'average'],
+            [max, { y: 60 }, 'max'],
+            [min, { y: 90 }, 'min'],
+            [per, { y: 120 }, 'per'],
+            [avgV, { y: 30, x: 110 }, 'averageV '],
+            [maxV, { y: 60, x: 110 }, 'maxV'],
+            [minV, { y: 90, x: 110 }, 'minV'],
+            [perV, { y: 120, x: 110 }, 'perV'],
+        ])
+    _.updateAll(
+        [
+            [msgFilter, { width: 200, height: 200 }],
+
+            [msgBlur, { stdDeviation: '10' }]
+        ]
+    )
+
+    _.appendAll({ msgBlur }).to(msgFilter)
+    _.appendAll({ msgFilter }).to(msgDefs)
+    _.appendAll({ msgBox, msgShadow, avg, avgV, max, maxV, min, minV, per, perV, }).to(msgGroup)
+    _.appendAll({ msgDefs, msgGroup }).to(_.$.initSVG['msgG'])
+}
 
 
-export { updateAttr, updateAll, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox }
+
+export { updateAttr, updateAll, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox, updateTooltipMsg }

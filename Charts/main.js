@@ -2,7 +2,7 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 import { chartStore, inputStore, optionStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList, genRandomChartData } from './generate.js'
-import { updateAttr, updateAll, updatePath, updatePathGroup, updateTexts, updateTooltip, updateDataInputBox } from './update.js'
+import { updateAttr, updateAll, updatePath, updatePathGroup, updateTexts, updateTooltip, updateDataInputBox, updateTooltipMsg } from './update.js'
 import { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove } from './event.js'
 import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
 import { getElement, pipe } from './pipeline.js'
@@ -45,36 +45,36 @@ const initSetPathGroup = (props, Use) => (a, d) =>
 }
 
 
-const initTooltipMsg = (props, Use) => (w, d) =>
-{
-    const _ = Use(props)
-    console.log(_)
-    const { msgBlur, msgDefs, msgFilter } = _.$.initPathSVG
-    const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
-    updateAll(
-        [
-            [avg, { y: 30 }, 'average'],
-            [max, { y: 60 }, 'max'],
-            [min, { y: 90 }, 'min'],
-            [per, { y: 120 }, 'per'],
-            [avgV, { y: 30, x: 110 }, 'averageV '],
-            [maxV, { y: 60, x: 110 }, 'maxV'],
-            [minV, { y: 90, x: 110 }, 'minV'],
-            [perV, { y: 120, x: 110 }, 'perV'],
-        ])
-    updateAll(
-        [
-            [msgFilter, { width: 200, height: 200 }],
+// const initTooltipMsg = (props, Use) => (w, d) =>
+// {
+//     const _ = Use(props)
+//     console.log(_)
+//     const { msgBlur, msgDefs, msgFilter } = _.$.initPathSVG
+//     const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
+//     updateAll(
+//         [
+//             [avg, { y: 30 }, 'average'],
+//             [max, { y: 60 }, 'max'],
+//             [min, { y: 90 }, 'min'],
+//             [per, { y: 120 }, 'per'],
+//             [avgV, { y: 30, x: 110 }, 'averageV '],
+//             [maxV, { y: 60, x: 110 }, 'maxV'],
+//             [minV, { y: 90, x: 110 }, 'minV'],
+//             [perV, { y: 120, x: 110 }, 'perV'],
+//         ])
+//     updateAll(
+//         [
+//             [msgFilter, { width: 200, height: 200 }],
 
-            [msgBlur, { stdDeviation: '10' }]
-        ]
-    )
+//             [msgBlur, { stdDeviation: '10' }]
+//         ]
+//     )
 
-    appendAll({ msgBlur }).to(msgFilter)
-    appendAll({ msgFilter }).to(msgDefs)
-    appendAll({ msgBox, msgShadow, avg, avgV, max, maxV, min, minV, per, perV, }).to(msgGroup)
-    appendAll({ msgDefs, msgGroup }).to(_.$.initSVG['msgG'])
-}
+//     appendAll({ msgBlur }).to(msgFilter)
+//     appendAll({ msgFilter }).to(msgDefs)
+//     appendAll({ msgBox, msgShadow, avg, avgV, max, maxV, min, minV, per, perV, }).to(msgGroup)
+//     appendAll({ msgDefs, msgGroup }).to(_.$.initSVG['msgG'])
+// }
 
 
 const initSVGLists = (idList, list) => list.reduce((obj, cur) =>
@@ -143,6 +143,7 @@ const initParams = [
     updateTexts,
     updateTooltip,
     updateDataInputBox,
+    updateTooltipMsg,
     genSvgList,
     genPath,
     initSVGElements(initSVGListObj),
@@ -199,7 +200,7 @@ const init = (props, Use) =>
     setEvents(props, Use).addAll(_.DOMEventAttr)
 
     updateTooltip(props, Use)(w, d, dLabel)
-    initTooltipMsg(props, Use)(w, d)
+    updateTooltipMsg(props, Use)(w, d)
     if (lineType) initSetPathGroup(props, Use)(w, d)
 
 

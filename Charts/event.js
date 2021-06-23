@@ -256,6 +256,17 @@ const onSelectPeriod = (props, Use, target) => (e) =>
             ]
         )
 
+        const calcSelectedData = (props, Use) => 
+        {
+            const rangeArr = d.filter((_, i) => i >= minIdx && i <= maxIdx)
+            const [min, max] = [Math.min(...rangeArr), Math.max(...rangeArr)]
+            const avg = Math.floor(rangeArr.reduce((acc, cur) => acc + cur) / rangeArr.length)
+            const [startData, endData] = [rangeArr[0] === 0 ? 1 : rangeArr[0], rangeArr[rangeArr.length - 1] === 0 ? 1 : rangeArr[rangeArr.length - 1]]
+            const rangePer = Math.floor(((endData / startData) * 100))
+        }
+        calcSelectedData(props, Use)
+
+
     }
     else
     {
