@@ -1,42 +1,41 @@
-# Data Visualization Projects 
-- Demo Pages <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Algorithms/binarySearch.html">1. Binary Search</a> <br />
-<a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/Charts/index.html">2. Line Charts</a>
-
-### This branch < refactoring > is for refactoring the initial trial codes
-
-### HOW TO RUN 
-- git clone this repo
-- make sure there's at least a couple of html and js files in the project folder you found it interesting <br />
-To start Chart project
+# 차트 리팩토링
 ```
-git checkout publish
-npm run parcel
-```
+    1. 차트 옵션에서 함수가 필요한 부분을 나눈다
+    - 차트 생성에 필요한 요소들
+    - 차트에 필요한 이벤트
+    - x/y 축 좌표 계산하는 함수
+    ```
 
-Insert it in the file named event.js for preventing async/await error on Parcel
-```
-import 'regenerator-runtime/runtime' 
+    ```
+    2. 차트 생성에 필요한 요소들을 분류한다
+    https://developer.mozilla.org/ko/docs/Web/SVG/Element
 
-```
+    (1) 한번만 렌더링 되는지/ 지속적으로 특정 조건하에 렌더링 되는지
+    (2) 한 요소가 여러개 생성되어야 하는지
 
+    - 컨테이너
+    - 필터
+    - 그래픽/ 모양 : 원, 사각형, 선, 패스, 텍스트
+    - 그라디언트
+    - 스크립트 필터 등등 ..
+    ```
 
-## Project List
+    ```
+    3. 요소들을 생성하는 함수
+    - 초기 속성이 적용된 요소 생성
+    - 요소들에 속성을 동적으로 적용
+    - 요소를 반복적으로 생성
+    - 요소를 동적으로 생성( 업데이트)
+    - 요소들을 결합하여, 형태를 구성하기 위한 함수 (그라데이션/ 배경자르기)
+    ```
 
-### 1. Algorithms 
-### (1) Binary search
-#### Last update (17,Apr) : TODO > Add searching failure case, adjust and maintain its width
-
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/bs.gif)
-
-### 2. Chart 
-### (1) Line chart
-##### Last update (24,Apr): TODO > make width responsive
-
-![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/main/linechart.gif)
-
-
-
+    ```
+    4. 요소들로 트리를 구성하고 렌더링하는 함수
+    - 요소들로 만들 수 있는 형태 트리 구조로 만들고
+    - 사용자 입력값에 따른 전체 비율과 좌표값 연산
+    - 필요한 부분에 해당 트리를 확장 가능하도록
+    - 완성된 트리를 렌더링 (차트 init)
+    ```
 
 
 ## Chart 프로젝트가 리팩토링이 필요한 이유
