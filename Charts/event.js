@@ -1,6 +1,6 @@
 // import 'regenerator-runtime/runtime' // parcel async/await 에러 해결
 
-import { updateAll } from "./update.js"
+import { updateAll, updateSelectedData, updateTooltipMsg } from "./update.js"
 
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
@@ -201,6 +201,9 @@ const onSelectPeriod = (props, Use, target) => (e) =>
     const unit = (y / d.length)
     const offsetY = maxY + size.data.text.height * 3 > 750 ? y - unit - size.msgBox.height : y + unit
     const visibility = (v) => ({ style: `visibility: ${v}` })
+
+
+
     if (selectedStartIdx < 0)
     {
         _.Publish(_.chartStore, { selectedStartIdx: lastIdx })
@@ -255,16 +258,9 @@ const onSelectPeriod = (props, Use, target) => (e) =>
                 ]
             ]
         )
-
-        const calcSelectedData = (props, Use) => 
-        {
-            const rangeArr = d.filter((_, i) => i >= minIdx && i <= maxIdx)
-            const [min, max] = [Math.min(...rangeArr), Math.max(...rangeArr)]
-            const avg = Math.floor(rangeArr.reduce((acc, cur) => acc + cur) / rangeArr.length)
-            const [startData, endData] = [rangeArr[0] === 0 ? 1 : rangeArr[0], rangeArr[rangeArr.length - 1] === 0 ? 1 : rangeArr[rangeArr.length - 1]]
-            const rangePer = Math.floor(((endData / startData) * 100))
-        }
-        calcSelectedData(props, Use)
+        
+        updateSelectedData(props, Use)(d,minIdx,maxIdx)
+        updateTooltipMsg(props,Use)(w,d)
 
 
     }

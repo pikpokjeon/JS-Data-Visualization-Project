@@ -112,7 +112,6 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
         const { bar } = _.genSvgFromList(list2, w, d, i, value).named('barSVG')
         updateAttr(bar, { id: bid })
         label.textContent = dLabel[i]
-        // if (data_memo.includes(value))
         dataText.textContent = value
 
         const gap = size.y(value) - prevData
@@ -158,22 +157,40 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
     }
 }
 
+const updateSelectedData = (props, Use) => (d,minIdx,maxIdx)=>
+
+{
+    const _ = Use(props)
+    const rangeArr = d.filter((_, i) => i >= minIdx && i <= maxIdx)
+    const [min, max] = [Math.min(...rangeArr), Math.max(...rangeArr)]
+    const avg = Math.floor(rangeArr.reduce((acc, cur) => acc + cur) / rangeArr.length)
+    const [startData, endData] = [rangeArr[0] === 0 ? 1 : rangeArr[0], rangeArr[rangeArr.length - 1] === 0 ? 1 : rangeArr[rangeArr.length - 1]]
+    const rangePer = Math.floor((endData )*100/(endData+startData))
+    
+    const data = {rangeArr,min,max,avg,startData,endData,rangePer}
+    _.Publish(_.chartStore, {selectedRangeData: data})
+
+}
+
+
 const updateTooltipMsg = (props, Use) => (w, d) =>
 {
     const _ = Use(props)
-    console.log(_)
     const { msgBlur, msgDefs, msgFilter } = _.$.initPathSVG
-    const { avg, avgV, max, maxV, min, minV, per, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
+    const { avgT, avgV, maxT, maxV, minT, minV, perT, perV, msgBox, msgShadow, msgGroup } = _.$.msgSVG
+    const {selectedRangeData } = _.chartStore
+    const {rangeArr,min,max,avg,startData,endData,rangePer} = selectedRangeData
+
     _.updateAll(
         [
-            [avg, { y: 30 }, 'average'],
-            [max, { y: 60 }, 'max'],
-            [min, { y: 90 }, 'min'],
-            [per, { y: 120 }, 'per'],
-            [avgV, { y: 30, x: 110 }, 'averageV '],
-            [maxV, { y: 60, x: 110 }, 'maxV'],
-            [minV, { y: 90, x: 110 }, 'minV'],
-            [perV, { y: 120, x: 110 }, 'perV'],
+            [avgT, { y: 30 }, 'avg'],
+            [maxT, { y: 60 }, 'max'],
+            [minT, { y: 90 }, 'min'],
+            [perT, { y: 120 }, 'per'],
+            [avgV, { y: 30, x: 110 }, avg ??'Select Range'],
+            [maxV, { y: 60, x: 110 }, max],
+            [minV, { y: 90, x: 110 }, min],
+            [perV, { y: 120, x: 110 }, rangePer + '%'],
         ])
     _.updateAll(
         [
@@ -182,13 +199,14 @@ const updateTooltipMsg = (props, Use) => (w, d) =>
             [msgBlur, { stdDeviation: '10' }]
         ]
     )
+    console.log(selectedRangeData)
 
     _.appendAll({ msgBlur }).to(msgFilter)
     _.appendAll({ msgFilter }).to(msgDefs)
-    _.appendAll({ msgBox, msgShadow, avg, avgV, max, maxV, min, minV, per, perV, }).to(msgGroup)
+    _.appendAll({ msgBox, msgShadow, avgT, avgV, maxT, maxV, minT, minV, perT, perV, }).to(msgGroup)
     _.appendAll({ msgDefs, msgGroup }).to(_.$.initSVG['msgG'])
 }
 
 
 
-export { updateAttr, updateAll, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox, updateTooltipMsg }
+export { updateAttr, updateAll, updateTexts, updatePath, updatePathGroup, updateTooltip, updateDataInputBox, updateTooltipMsg, updateSelectedData }

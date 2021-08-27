@@ -236,7 +236,7 @@ const svgIdList =
     fillPath: ['fillPath'],
     filter: ['lineShadow', 'msgFilter'],
     feGaussianBlur: ['blur', 'msgBlur'],
-    msgTitle: ['max', 'min', 'avg', 'per'],
+    msgTitle: ['maxT', 'minT', 'avgT', 'perT'],
     msgValue: ['maxV', 'minV', 'avgV', 'perV'],
     msgBox: ['msgBox'],
     msgShadow: ['msgShadow'],
