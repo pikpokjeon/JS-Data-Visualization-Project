@@ -1,10 +1,13 @@
 
 # Data Visualization Projects <a href="https://hits.seeyoufarm.com"><img width="100" src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fpikpokjeon%2FJS-Data-Visualization-Project&count_bg=%23FFAD0F&title_bg=%23555555&icon=&icon_color=%23984040&title=%EB%B0%A9%EB%AC%B8%EC%9E%90&edge_flat=true"/></a>
-### 바닐라 자바스크립트 프로젝트 리스트
 
-> 번들링과 자바스크립트 호환성을 위한 패키지 이외 다른 라이브러리를 사용하지 않고 개발 하였습니다.
----
+## TODO
+1. Research studies in Data Visualization
+2. Explore how business level of data visualization is organized.
+3. Study D3 project' sub repositories 
 
+[ieeevis.org](http://ieeevis.org/year/2021/info/papers-sessions) <br />
+[D3](https://github.com/d3)
 ## Project List
 
 ### 1. Algorithms 
@@ -19,7 +22,6 @@
 ##### Last update (3,june): TODO > Add options of functionality and styles
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/publish/linechart.gif)
-
 
 
 
