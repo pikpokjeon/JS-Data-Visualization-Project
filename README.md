@@ -2,9 +2,9 @@
 # Data Visualization Projects <a href="https://hits.seeyoufarm.com"><img width="100" src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fpikpokjeon%2FJS-Data-Visualization-Project&count_bg=%23FFAD0F&title_bg=%23555555&icon=&icon_color=%23984040&title=%EB%B0%A9%EB%AC%B8%EC%9E%90&edge_flat=true"/></a>
 
 ## TODO
-1. Research studies in Data Visualization
-2. Explore how business level of data visualization is organized.
-3. Study D3 project' sub repositories 
+- 공통적으로 쓰이는 함수 모듈화 / 미니 프로젝트 폴더에서 분리
+- 인터페이스 디자인
+- 기능상 에러 개선
 
 [ieeevis.org](http://ieeevis.org/year/2021/info/papers-sessions) <br />
 [D3](https://github.com/d3)
@@ -19,7 +19,7 @@
 ### 2. Chart 
 ### (1) Line chart <a href="https://pikpokjeon.github.io/JS-Data-Visualization-Project/"> >demo page</a>
 
-##### Last update (3,june): TODO > Add options of functionality and styles
+##### Last update (19,Sep): TODO > 반응형 사이즈 변화 및 마우스 선택 선 좌표값 
 
 ![demonstration-webpages](https://github.com/pikpokjeon/JS-Data-Visualization-Project/blob/publish/linechart.gif)
 
