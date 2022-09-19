@@ -230,17 +230,11 @@ const genAttr = (w, d, i, v) =>
 }
 
 
-// const genElById = (w, d, i, v) => (attr,info,id) =>
-// {
-//     const el = getElement(w, d, i, v)(attr, info.type, id)
-//     updateAttr(el, { id: id, name: info.name })
-//     return el
-// }
-
 const genSvgFromList = (list, w, d, i, v) =>
 {
-    const createdSVG = {}
-    let temp = undefined
+  const createdSVG = {}
+  let _tempElement = getElement(w, d, i, v)
+  let temp = undefined
 
     // ! TODO: need to simplify the logic
 
@@ -256,14 +250,14 @@ const genSvgFromList = (list, w, d, i, v) =>
                     {
                         for (const attr of info.attr)
                         {
-                            temp = getElement(w, d, i, v)(attr, info.type, id)
+                            temp =_tempElement(attr, info.type, id)
                             updateAttr(temp, { id: id, name: info.name })
                             createdSVG[attr] = temp
                         }
                     }
                     else
                     {
-                        temp = getElement(w, d, i, v)(info.attr, info.type, id)
+                        temp =_tempElement(info.attr, info.type, id)
                         updateAttr(temp, { id: id, name: info.name })
                         createdSVG[id] = temp
                     }
@@ -272,7 +266,7 @@ const genSvgFromList = (list, w, d, i, v) =>
                 continue
             }
         }
-        temp = getElement(w, d, i, v)(info.attr, info.type)
+        temp =_tempElement(info.attr, info.type)
         updateAttr(temp, { id: info.id, name: info.name })
         createdSVG[name] = temp
     }
