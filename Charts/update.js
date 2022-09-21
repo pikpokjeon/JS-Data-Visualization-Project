@@ -123,7 +123,7 @@ const updateTooltip = (props, Use) => (w, d, dLabel) =>
 
             if (i > 0 && contrast)
             {
-                updateAttr(bar, { height: Math.abs(gap) })
+                updateAttr(bar, { height: Math.abs(gap), x: size.x(i)- 3 })
             }
             else if (i > 0 && barDefault)
             {
