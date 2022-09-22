@@ -1,0 +1,149 @@
+html {
+  height: 110vh;
+  overflow-x: overlay;
+  background: linear-gradient(0deg, #0e1422fc 29%, #161d2a 53%, #131a23 100%);
+}
+
+main {
+  margin: 0;
+  font-family: Roboto;
+}
+
+h3 {
+  width: 6rem;
+  text-align: center;
+  background: linear-gradient(0deg, #050913 29%, #121a2b 53%, #131a23 100%);
+  border: 1px solid #ffffffc7;
+  border-radius: 55px;
+  margin: 1rem;
+  padding: .8rem;
+  box-shadow: 3px 3px 0 2px #4b00ff73;
+}
+
+h4 {
+  width: 6rem;
+  text-align: center;
+  background: #6720c4;
+  border: 1px solid #ffffffc7;
+  border-radius: 55px;
+  margin: 1rem;
+  padding: .8rem;
+  box-shadow: 3px 3px 0 2px #4b00ff73;
+}
+
+summary {
+  padding-bottom: 1rem;
+}
+
+#setting-wrapper {
+  width: 100%;
+  margin: 0;
+  padding-top: 1rem;
+  display: flex;
+  position: fixed;
+  box-shadow: 62px 31px 0 -19px #0000002e;
+}
+
+#left-section {
+  width: -moz-fit-content;
+  width: fit-content;
+  color: #fff;
+}
+
+#right-section {
+  width: -moz-fit-content;
+  width: fit-content;
+  z-index: 99;
+  flex-direction: column;
+  padding-top: 1rem;
+  display: inline-flex;
+}
+
+#close-section {
+  color: #fff;
+}
+
+section {
+  color: #fff;
+  justify-content: stretch;
+  align-items: baseline;
+  padding: .5rem;
+  display: flex;
+}
+
+article {
+  align-items: center;
+  display: flex;
+}
+
+article div {
+  align-items: inherit;
+  flex-wrap: wrap;
+  margin: 0 10px;
+  display: inline-flex;
+}
+
+#data-box {
+  width: 150vh;
+}
+
+label {
+  padding-block-end: 5px;
+  min-width: 80px;
+  background: #131b27;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+}
+
+input[type="text"], textarea {
+  color: #fff;
+  letter-spacing: 1px;
+  background-color: #000;
+  border: 0;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.input-wrap {
+  width: 90%;
+}
+
+.input-group {
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+#width, #target {
+  width: 6vh;
+}
+
+#data-list {
+  width: 90vh;
+}
+
+#svg-area {
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  display: flex;
+}
+
+#search-answer {
+  font-size: 20px;
+}
+
+button {
+  color: #fff;
+  cursor: pointer;
+  background: #000;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 10px 20px;
+  font-size: 17px;
+}
+
+/*# sourceMappingURL=index.0a022a74.css.map */

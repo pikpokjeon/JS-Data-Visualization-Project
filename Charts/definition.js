@@ -1,5 +1,5 @@
 
-import { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption } from './event.js'
+import { onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, showTooltipMsg, selectOption, resizeChart } from './event.js'
 
 const svgDefinition = (id) =>
 {
@@ -347,7 +347,15 @@ const DOMEventAttr = {
                 func: selectOption('plot-radio'),
                 isAdded: false,
             }
-        ]
+        ],
+    'main':
+        [
+            {
+                event: 'resize',
+                func: resizeChart,
+                isAdded: false,
+        }
+    ]
 
 
 }

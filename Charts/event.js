@@ -117,10 +117,6 @@ const onChangeInput = (props, Use, target) => (e) => {
   _.updatePathGroup(props, Use)(lineType)(w, d);
 };
 
-const resizeChart = () => {
-  const { width } = main.getBoundingClientRect();
-};
-
 const onSelectPeriod = (props, Use, target) => (e) => {
   const _ = Use(props);
   const { w, d } = _.inputStore;
@@ -364,6 +360,17 @@ const selectOption = (type) => (props, Use) => (e) => {
   );
 };
 
+const resizeChart = ( props, Use ) =>
+  e =>
+{
+  const { width } = main.getBoundingClientRect();
+  const _ = Use( props )
+  _.Publish( _.inputStore, {w: width} )
+  const {w} = _.inputStore
+  console.log(w)
+}
+
+
 export {
   setEvents,
   onChangeLineType,
@@ -373,4 +380,5 @@ export {
   onMove,
   showTooltipMsg,
   selectOption,
+  resizeChart
 };
