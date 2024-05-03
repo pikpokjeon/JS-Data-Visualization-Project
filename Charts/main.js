@@ -128,9 +128,8 @@ const init = (props, Use) =>
 
     let { w, d, dLabel } = _.inputStore
     const { lineType } = _.optionStore
-    dLabel = d.map((_, i) => 2010 + i)
     Publish(_.inputStore, { w: w, d: d, dLabel: d.map((_, i) => 2010 + i) })
-
+    // console.log(dLabel)
 
     const [ svgArea, svg ] = [ _id('svg-area'), _.$.initSVG[ 'svg' ] ]
 

@@ -1,5 +1,4 @@
 import { updateAll, updateSelectedData, updateTooltip, updateTooltipMsg } from "./update.js";
-
 /**
  * @param {*} list DOM에 적용할 DOMEventAttr 리스트
  * @param {*} event 삭제할 이벤트리스너 이름
@@ -222,13 +221,12 @@ const onSelectPeriod = (props, Use, target) => (e) =>
 const startStream = (props, Use, target) => (e) =>
 {
   const _ = Use(props);
-  const [ wth, main ] = [ _._id("width"), _._id("main") ];
   let time = _.inputData(_._id("time"));
-
-  let w = _.inputStore.w;
-  let d = _.inputData(_._id("data-list"));
+  let { w, d } = _.inputStore;
+  // let d = _.inputData(_._id("data-list"));
   let d_memo = d.map((e) => 1);
   let d_label = d.map((_, i) => Number(2010) + i);
+  _.Publish(_.inputStore, { dLabel: d_label })
 
   const updateBox = ({ i, arr, arr_memo, arr_label, w, props }) =>
     new Promise((res) =>
@@ -401,18 +399,18 @@ const resizeChart = (props, Use) =>
     _.Publish(_.inputStore, { w: width })
     let { w } = _.inputStore
     updateResized(props, Use)
-    console.log(_)
   }
 
 const updateResized = (props, Use) =>
 {
   const _ = Use(props)
   const { lineType } = _.optionStore
-  let { w, d, d_label } = _.inputStore
+  let { w, d, dLabel } = _.inputStore
   _.updatePathGroup(props, Use)(lineType)(w, d);
-  updateTooltip(props, Use)(w, d, d_label)
+  updateTooltip(props, Use)(w, d, dLabel)
   updateTooltipMsg(props, Use)(w, d)
-  if (lineType) initSetPathGroup(props, Use)(w, d)
+  console.log(_)
+
 }
 
 

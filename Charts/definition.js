@@ -51,7 +51,7 @@ const svgDefinition = (id) =>
         },
 
     }
-    singleSVG[Symbol.toStringTag] = 'singleSVG'
+    singleSVG[ Symbol.toStringTag ] = 'singleSVG'
 
     const tooltipGroup =
     {
@@ -85,7 +85,7 @@ const svgDefinition = (id) =>
         },
 
     }
-    tooltipGroup[Symbol.toStringTag] = 'tooltipGroup'
+    tooltipGroup[ Symbol.toStringTag ] = 'tooltipGroup'
 
     const pathGroup = {
         stop: {
@@ -152,7 +152,7 @@ const svgDefinition = (id) =>
         },
 
     }
-    pathGroup[Symbol.toStringTag] = 'pathGroup'
+    pathGroup[ Symbol.toStringTag ] = 'pathGroup'
 
 
 
@@ -195,7 +195,7 @@ const svgDefinition = (id) =>
         },
 
     }
-    tooltipMsgGroup[Symbol.toStringTag] = 'tooltipMsgGroup'
+    tooltipMsgGroup[ Symbol.toStringTag ] = 'tooltipMsgGroup'
 
     const barGroup =
     {
@@ -208,11 +208,11 @@ const svgDefinition = (id) =>
         },
 
     }
-    barGroup[Symbol.toStringTag] = 'barGroup'
+    barGroup[ Symbol.toStringTag ] = 'barGroup'
 
     return { singleSVG, tooltipGroup, pathGroup, tooltipMsgGroup, barGroup }
 }
-svgDefinition[Symbol.toStringTag] = 'svgDefinition'
+svgDefinition[ Symbol.toStringTag ] = 'svgDefinition'
 
 
 /**
@@ -221,28 +221,28 @@ svgDefinition[Symbol.toStringTag] = 'svgDefinition'
  */
 const svgIdList =
 {
-    svg: ['svg'],
-    eventArea: ['eventArea'],
-    fillBG: ['fillBG'],
-    lineH: ['lineH'],
-    lineV: ['lineV'],
-    g: ['g', 'group', 'msgG'],
-    path: ['path', 'pathShadow'],
-    defs: ['pathDefs', 'msgDefs'],
-    borderLine: ['left', 'right'],
-    linearGradient: ['fill'],
-    clipPath: ['frame'],
-    stop: ['stop0', 'stop1', 'stop2', 'stop3'],
-    fillPath: ['fillPath'],
-    filter: ['lineShadow', 'msgFilter'],
-    feGaussianBlur: ['blur', 'msgBlur'],
-    msgTitle: ['maxT', 'minT', 'avgT', 'perT'],
-    msgValue: ['maxV', 'minV', 'avgV', 'perV'],
-    msgBox: ['msgBox'],
-    msgShadow: ['msgShadow'],
-    msgGroup: ['msgGroup']
+    svg: [ 'svg' ],
+    eventArea: [ 'eventArea' ],
+    fillBG: [ 'fillBG' ],
+    lineH: [ 'lineH' ],
+    lineV: [ 'lineV' ],
+    g: [ 'g', 'group', 'msgG' ],
+    path: [ 'path', 'pathShadow' ],
+    defs: [ 'pathDefs', 'msgDefs' ],
+    borderLine: [ 'left', 'right' ],
+    linearGradient: [ 'fill' ],
+    clipPath: [ 'frame' ],
+    stop: [ 'stop0', 'stop1', 'stop2', 'stop3' ],
+    fillPath: [ 'fillPath' ],
+    filter: [ 'lineShadow', 'msgFilter' ],
+    feGaussianBlur: [ 'blur', 'msgBlur' ],
+    msgTitle: [ 'maxT', 'minT', 'avgT', 'perT' ],
+    msgValue: [ 'maxV', 'minV', 'avgV', 'perV' ],
+    msgBox: [ 'msgBox' ],
+    msgShadow: [ 'msgShadow' ],
+    msgGroup: [ 'msgGroup' ]
 }
-svgIdList[Symbol.toStringTag] = 'svgIdList'
+svgIdList[ Symbol.toStringTag ] = 'svgIdList'
 
 
 
@@ -348,18 +348,10 @@ const DOMEventAttr = {
                 isAdded: false,
             }
         ],
-    'main':
-        [
-            {
-                event: 'resize',
-                func: resizeChart,
-                isAdded: false,
-        }
-    ]
 
 
 }
-DOMEventAttr[Symbol.toStringTag] = 'DOMEventAttr'
+DOMEventAttr[ Symbol.toStringTag ] = 'DOMEventAttr'
 
 
 export { svgDefinition, svgIdList, DOMEventAttr }
