@@ -3,7 +3,7 @@
 import { chartStore, inputStore, optionStore, Publish } from './store.js'
 import { genAttr, genSize, genPath, genElement, genSvgFromList, genSvgList, genRandomChartData } from './generate.js'
 import { updateAttr, updateAll, updatePath, updatePathGroup, updateTexts, updateTooltip, updateDataInputBox, updateTooltipMsg } from './update.js'
-import { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove,resizeChart } from './event.js'
+import { setEvents, onChangeLineType, onChangeInput, onSelectPeriod, startStream, onMove, resizeChart } from './event.js'
 import { svgDefinition, svgIdList, DOMEventAttr } from './definition.js'
 import { getElement, pipe } from './pipeline.js'
 import { _id, _name, appendAll, inputData, copyParams, getLineType } from './helper.js'
@@ -19,7 +19,7 @@ const initSetPathGroup = (props, Use) => (a, d) =>
 
     appendAll({ stop0, stop1, stop2, stop3 }).to(fill)
 
-    props = [...props, w, d]
+    props = [ ...props, w, d ]
     updatePathGroup(props, Use)(lineType)(w, d)
 
     appendAll({ blur }).to(lineShadow)
@@ -28,23 +28,23 @@ const initSetPathGroup = (props, Use) => (a, d) =>
 
     updateAll(
         [
-            [fillBG, { width: w, y: -100 }],
-            [pathShadow, { filter: 'url(#lineShadow)', style: `stroke: #373205, stroke-width:10`, opacity: 1 }]
+            [ fillBG, { width: w, y: -100 } ],
+            [ pathShadow, { filter: 'url(#lineShadow)', style: `stroke: #373205, stroke-width:10`, opacity: 1 } ]
         ])
 
     appendAll({ fillBG }).to(fillG)
-    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG['group'])
+    appendAll({ pathDefs, fillG, path, pathShadow }).to(_.$.initSVG[ 'group' ])
 
 }
 
 const initSVGLists = (idList, list) => list.reduce((obj, cur) =>
 {
-    const [svgGroup, groupName] = [cur.from, cur.as]
+    const [ svgGroup, groupName ] = [ cur.from, cur.as ]
 
     const initList = genSvgList(`${svgGroup}`).setID(idList)
-    initList[Symbol.toStringTag] = groupName
+    initList[ Symbol.toStringTag ] = groupName
 
-    Object.assign(obj, { [groupName]: initList })
+    Object.assign(obj, { [ groupName ]: initList })
 
     return obj
 }, {})
@@ -52,12 +52,12 @@ const initSVGLists = (idList, list) => list.reduce((obj, cur) =>
 
 const initSVGElements = (obj) => Object.entries(obj).reduce((elStore, cur) =>
 {
-    const [name, list] = [cur[0], cur[1]]
+    const [ name, list ] = [ cur[ 0 ], cur[ 1 ] ]
     const { w, d } = inputStore
     const tempEls = genSvgFromList(list, w, d).named(name)
-    elStore[Symbol.toStringTag] = '$'
+    elStore[ Symbol.toStringTag ] = '$'
 
-    Object.assign(elStore, { [name]: { ...tempEls } })
+    Object.assign(elStore, { [ name ]: { ...tempEls } })
 
     return elStore
 }, {})
@@ -132,13 +132,13 @@ const init = (props, Use) =>
     Publish(_.inputStore, { w: w, d: d, dLabel: d.map((_, i) => 2010 + i) })
 
 
-    const [svgArea, svg] = [_id('svg-area'), _.$.initSVG['svg']]
+    const [ svgArea, svg ] = [ _id('svg-area'), _.$.initSVG[ 'svg' ] ]
 
     _id('data-list').value = d.join(',')
 
     svgArea.appendChild(svg)
 
-    delete (_.$.initSVG['svg'])
+    delete (_.$.initSVG[ 'svg' ])
 
     const onMoveprops =
         [
@@ -148,13 +148,13 @@ const init = (props, Use) =>
     const mouseOn = () => { svg.addEventListener('mousemove', onMove(onMoveprops, Use)) }
     const mouseOut = () => { svg.removeEventListener('mousemove', onMove(onMoveprops, Use)) }
 
-    _.DOMEventAttr['svg'] = _.DOMEventAttr['svg'].map(e =>
+    _.DOMEventAttr[ 'svg' ] = _.DOMEventAttr[ 'svg' ].map(e =>
     {
         if (e.event === 'mouseenter') e.func = mouseOn
         if (e.event === 'mouseleave') e.func = mouseOut
         return e
-    } )
-    
+    })
+
 
     appendAll(_.$.initSVG).to(svg)
     _.$.initSVG = { svg, ..._.$.initSVG }
